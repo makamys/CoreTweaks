@@ -34,8 +34,8 @@ configurations {
 apply plugin: 'forge'
 
 version = "0.0"
-group= "makamys.lodmod" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = "lodmod"
+group= "makamys.toomanycrashes" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+archivesBaseName = "toomanycrashes"
 
 minecraft {
     version = "1.7.10-10.13.4.1614-1.7.10"
@@ -54,12 +54,12 @@ dependencies {
     //embed 'com.google.guava:guava:21.0'
 }
 
-def outRefMapFile = tasks.compileJava.temporaryDir.toString() + "/lodmod.mixin.refmap.json" // 1.7.10 mixin compatibility
+def outRefMapFile = tasks.compileJava.temporaryDir.toString() + "/toomanycrashes.mixin.refmap.json" // 1.7.10 mixin compatibility
 
 jar {
     manifest {
         attributes (
-            'MixinConfigs': 'lodmod.mixin.json',
+            'MixinConfigs': 'toomanycrashes.mixin.json',
             'TweakClass': 'org.spongepowered.asm.launch.MixinTweaker',
             'TweakOrder': 0,
             

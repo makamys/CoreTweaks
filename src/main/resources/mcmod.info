@@ -1,8 +1,8 @@
 [
 {
-  "modid": "lodmod",
-  "name": "LOD mod",
-  "description": "Increases render distance by rendering distant chunks with a low level of detail",
+  "modid": "toomanycrashes",
+  "name": "Too Many Crashes",
+  "description": "Makes the game not exit when a crash happens",
   "version": "${version}",
   "mcversion": "${mcversion}",
   "url": "",
