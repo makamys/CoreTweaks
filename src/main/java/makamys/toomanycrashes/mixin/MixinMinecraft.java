@@ -8,6 +8,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import makamys.toomanycrashes.TooManyCrashes;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiMainMenu;
@@ -29,11 +30,11 @@ abstract class MixinMinecraft {
         try {
             runGameLoop();
         } catch(Throwable e) {
-            throw new OutOfMemoryError("client crashed");
+            TooManyCrashes.handleCrash(e);
         }
         if(hasCrashed) {
             hasCrashed = false;
-            throw new OutOfMemoryError("server crashed");
+            TooManyCrashes.handleCrash(null);
         }
     }
     
