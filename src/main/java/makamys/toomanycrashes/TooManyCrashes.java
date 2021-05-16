@@ -1,5 +1,7 @@
 package makamys.toomanycrashes;
 
+import org.lwjgl.input.Keyboard;
+
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -7,6 +9,7 @@ import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent.ClientTickEvent;
+import net.minecraft.entity.player.EntityPlayer;
 
 @Mod(modid = TooManyCrashes.MODID, version = TooManyCrashes.VERSION)
 public class TooManyCrashes
@@ -22,6 +25,8 @@ public class TooManyCrashes
     
     @SubscribeEvent
     public void onClientTick(ClientTickEvent event) {
-        
+        /*if(Keyboard.isKeyDown(Keyboard.KEY_O)) {
+            System.out.println(((EntityPlayer)null).posX);
+        }*/
     }
 }

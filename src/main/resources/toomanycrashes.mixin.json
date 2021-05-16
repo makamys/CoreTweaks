@@ -2,9 +2,9 @@
     "required": true,
     "minVersion": "0.6",
     "package": "makamys.toomanycrashes.mixin",
-    "refmap": "lodmod.mixin.refmap.json",
+    "refmap": "toomanycrashes.mixin.refmap.json",
     "compatibilityLevel": "JAVA_8",
     "mixins": [
-        "MixinMainMenu"
+        "MixinMinecraft"
     ]
 }
