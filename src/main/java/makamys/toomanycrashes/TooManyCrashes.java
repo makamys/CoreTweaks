@@ -10,6 +10,7 @@ import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent.ClientTickEvent;
+import net.minecraft.client.gui.GuiMemoryErrorScreen;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.player.EntityPlayer;
 
@@ -17,7 +18,7 @@ import net.minecraft.entity.player.EntityPlayer;
 public class TooManyCrashes
 {
     public static final String MODID = "toomanycrashes";
-    public static final String VERSION = "0.0";
+    public static final String VERSION = "0.1";
     
     @EventHandler
     public void init(FMLInitializationEvent event)
@@ -28,9 +29,9 @@ public class TooManyCrashes
     @SubscribeEvent
     public void onClientTick(ClientTickEvent event) {
         /*if(Keyboard.isKeyDown(Keyboard.KEY_O)) {
-            //System.out.println(((EntityPlayer)null).posX);
-            Tessellator.instance.startDrawing(GL11.GL_QUADS);
-            Tessellator.instance.startDrawing(GL11.GL_QUADS);
+            System.out.println(((EntityPlayer)null).posX);
+            //Tessellator.instance.startDrawing(GL11.GL_QUADS);
+            //Tessellator.instance.startDrawing(GL11.GL_QUADS);
         }*/
     }
     

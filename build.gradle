@@ -33,7 +33,7 @@ configurations {
 
 apply plugin: 'forge'
 
-version = "0.0"
+version = "0.1"
 group= "makamys.toomanycrashes" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "toomanycrashes"
 
