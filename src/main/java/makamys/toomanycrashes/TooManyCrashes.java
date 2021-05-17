@@ -39,6 +39,11 @@ public class TooManyCrashes
         if(t instanceof IllegalStateException && t.getMessage().equals("Already tesselating!")) {
             Tessellator.instance.draw();
         }
+        if(t != null) {
+            System.out.println("Caught exception:");
+            t.printStackTrace();
+        }
+        
         throw new OutOfMemoryError();
     }
 }
