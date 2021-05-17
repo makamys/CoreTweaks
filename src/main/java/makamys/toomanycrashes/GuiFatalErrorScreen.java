@@ -59,7 +59,7 @@ public class GuiFatalErrorScreen extends GuiScreen {
             this.drawString(this.fontRendererObj, "in class", this.width / 2 - 140, this.height / 4 - 70 + 60 + 9 * 9 + 8, 10526880);
             this.drawString(this.fontRendererObj, theError.getStackTrace()[0].getClassName(), this.width / 2 - 140 + 44, this.height / 4 - 70 + 60 + 9 * 9 + 8, 0xFFFFFF);
         } else {
-            this.drawString(this.fontRendererObj, "Caught exception on server thread.", this.width / 2 - 140, this.height / 4 - 70 + 60 + 9 * 7 + 4, 10526880);
+            this.drawString(this.fontRendererObj, "Caught exception on server thread.", this.width / 2 - 140, this.height / 4 - 70 + 60 + 9 * 8 + 4, 0xFFFFFF);
         }
         this.drawString(this.fontRendererObj, "See the log for more details.", this.width / 2 - 140, this.height / 4 - 70 + 60 + 9 * 12, 10526880);
         
