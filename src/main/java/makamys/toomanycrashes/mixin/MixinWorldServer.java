@@ -34,12 +34,14 @@ abstract class MixinWorldServer {
     @Shadow
     static private Logger logger;
     
-    Map<Long, List<NextTickListEntry>> map = new HashMap<>();
+    Map<Long, List<NextTickListEntry>> map;
     
     @Redirect(method = {"scheduleBlockUpdateWithPriority", "func_147446_b"}, at = @At(value = "INVOKE", target = "Ljava/util/TreeSet;add(Ljava/lang/Object;)Z"))
     public boolean redirectAdd(TreeSet set, Object o) {
         NextTickListEntry e = (NextTickListEntry)o;
         long key = ChunkCoordIntPair.chunkXZ2Int(e.xCoord / 16, e.yCoord / 16);
+        
+        if(map == null) map = new HashMap<>();
         List<NextTickListEntry> list = map.get(key);
         if(list == null) {
             list = new LinkedList<>();
