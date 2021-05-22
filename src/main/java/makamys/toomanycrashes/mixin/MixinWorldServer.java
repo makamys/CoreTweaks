@@ -71,28 +71,30 @@ abstract class MixinWorldServer {
         int k = (chunkcoordintpair.chunkZPos << 4) - 2;
         int l = k + 16 + 2;
         
-        for(int cx = p_72920_1_.xPosition - 1; cx <= p_72920_1_.xPosition + 1; cx++) {
-            for(int cz = p_72920_1_.zPosition - 1; cz <= p_72920_1_.zPosition + 1; cz++) {
-                List<NextTickListEntry> list = map.get(ChunkCoordIntPair.chunkXZ2Int(cx, cz));
-                if(list != null) {
-                    Iterator<NextTickListEntry> it = list.iterator();
-                    while(it.hasNext()) {
-                        NextTickListEntry nte = it.next();
-                        if (nte.xCoord >= i && nte.xCoord < j && nte.zCoord >= k && nte.zCoord < l)
-                        {
-                            if (p_72920_2_)
+        if(map != null) {
+            for(int cx = p_72920_1_.xPosition - 1; cx <= p_72920_1_.xPosition + 1; cx++) {
+                for(int cz = p_72920_1_.zPosition - 1; cz <= p_72920_1_.zPosition + 1; cz++) {
+                    List<NextTickListEntry> list = map.get(ChunkCoordIntPair.chunkXZ2Int(cx, cz));
+                    if(list != null) {
+                        Iterator<NextTickListEntry> it = list.iterator();
+                        while(it.hasNext()) {
+                            NextTickListEntry nte = it.next();
+                            if (nte.xCoord >= i && nte.xCoord < j && nte.zCoord >= k && nte.zCoord < l)
                             {
-                                this.pendingTickListEntriesHashSet.remove(nte);
-                                this.pendingTickListEntriesTreeSet.remove(nte);
-                                it.remove();
+                                if (p_72920_2_)
+                                {
+                                    this.pendingTickListEntriesHashSet.remove(nte);
+                                    this.pendingTickListEntriesTreeSet.remove(nte);
+                                    it.remove();
+                                }
+    
+                                if (arraylist == null)
+                                {
+                                    arraylist = new ArrayList();
+                                }
+    
+                                arraylist.add(nte);
                             }
-
-                            if (arraylist == null)
-                            {
-                                arraylist = new ArrayList();
-                            }
-
-                            arraylist.add(nte);
                         }
                     }
                 }
