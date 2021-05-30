@@ -9,7 +9,9 @@ import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.TickEvent;
 import cpw.mods.fml.common.gameevent.TickEvent.ClientTickEvent;
+import makamys.toomanycrashes.command.TMCCommand;
 import makamys.toomanycrashes.ducks.IChunkProviderClient;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiMemoryErrorScreen;
@@ -20,6 +22,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.LongHashMap;
 import net.minecraft.world.chunk.IChunkProvider;
+import net.minecraftforge.client.ClientCommandHandler;
 
 @Mod(modid = TooManyCrashes.MODID, version = TooManyCrashes.VERSION)
 public class TooManyCrashes
@@ -31,6 +34,8 @@ public class TooManyCrashes
     public void init(FMLInitializationEvent event)
     {
         FMLCommonHandler.instance().bus().register(this);
+        
+        ClientCommandHandler.instance.registerCommand(new TMCCommand());
     }
     
     @SubscribeEvent
@@ -51,6 +56,13 @@ public class TooManyCrashes
                     ((ClientChunkMap) cm).setCenter(((int)player.posX / 16), ((int)player.posZ / 16));
                 }
             }
+        }
+    }
+    
+    @SubscribeEvent
+    public void onRenderTick(TickEvent.RenderTickEvent event) {
+        if(event.phase == TickEvent.Phase.START) {
+            FrameTimer.instance.onFrameStart();
         }
     }
     
