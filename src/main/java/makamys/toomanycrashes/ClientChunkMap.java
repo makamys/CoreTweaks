@@ -155,30 +155,51 @@ public class ClientChunkMap extends LongHashMap {
         return (Math.floorDiv(offZ, getDiameter()) + (z < (Math.floorMod(offZ, getDiameter())) ? 1 : 0)) * getDiameter() + z;
     }
     
+    private void updateDirty(int x, int z) {
+        x = Math.floorMod(x, getDiameter());
+        z = Math.floorMod(z, getDiameter());
+        
+        int worldX = chunkXinternal2world(x);
+        int worldZ = chunkZinternal2world(z);
+        
+        Chunk chunk = getMapElement(x, z);
+        
+        
+        Chunk farChunk = farMap.remove(ChunkCoordIntPair.chunkXZ2Int(worldX, worldZ));
+        
+        if(farChunk != null) {
+            putMapElement(farChunk, farChunk.xPosition, farChunk.zPosition);
+        }
+        if(chunk != null) {
+            farMap.put(ChunkCoordIntPair.chunkXZ2Int(chunk.xPosition, chunk.zPosition), chunk);
+        }
+    }
+    
     public void setCenter(int newCenterX, int newCenterZ) {
         int newX = newCenterX - radius;
         int newZ = newCenterZ - radius;
+        
+        int oldOffX = offX;
+        int oldOffZ = offZ;
         
         if(newX == offX && newZ == offZ) return;
         
         int deleteX = MathHelper.clamp_int(newX - offX, -getDiameter(), getDiameter());
         int deleteZ = MathHelper.clamp_int(newZ - offZ, -getDiameter(), getDiameter());
+        
+        offX = newX;
+        offZ = newZ;
+        
         for(int ix = deleteX; ix != 0; ix += -Math.signum(deleteX)) {
-            for(int iz = deleteZ; iz != 0; iz += -Math.signum(deleteZ)) {
-                int x = ix;
-                int z = iz;
-                if(x < 0) x += getDiameter();
-                if(z < 0) z += getDiameter();
-                Chunk chunk = getMapElement(x, z);
-                
-                int worldX = chunkXinternal2world(x);
-                int worldZ = chunkZinternal2world(z);
-                Chunk farChunk = farMap.remove(ChunkCoordIntPair.chunkXZ2Int(worldX, worldZ));
-                
-                putMapElement(farChunk, x, z);
-                if(chunk != null) {
-                    farMap.put(ChunkCoordIntPair.chunkXZ2Int(chunk.xPosition, chunk.zPosition), chunk);
-                }
+            int dx = ix - (deleteX > 0 ? 1 : 0);
+            for(int z = 0; z < getDiameter(); z++) {
+                updateDirty(oldOffX + dx, z);
+            }
+        }
+        for(int iz = deleteZ; iz != 0; iz += -Math.signum(deleteZ)) {
+            int dz = iz - (deleteZ > 0 ? 1 : 0);
+            for(int x = 0; x < getDiameter(); x++) {
+                updateDirty(x, oldOffZ + dz);
             }
         }
         
@@ -187,8 +208,5 @@ public class ClientChunkMap extends LongHashMap {
                 assert !isInRange(chunk.xPosition, chunk.zPosition);
             }
         }
-        
-        offX = newX;
-        offZ = newZ;
     }
 }
