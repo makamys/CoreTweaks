@@ -10,7 +10,7 @@ import net.minecraft.world.chunk.Chunk;
 
 public class ClientChunkMap extends LongHashMap {
     
-    int radius = 64; // TODO
+    int radius = 32; // TODO
     int offX, offZ;
     
     int chunksContained = 0;
