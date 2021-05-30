@@ -11,6 +11,7 @@ public class Config {
     public static boolean getPendingBlockUpdates;
     public static boolean clientChunkMap;
     public static boolean TMCCommand;
+    public static boolean printActive;
     
     public static int spikeThreshold;
     
@@ -23,6 +24,7 @@ public class Config {
         clientChunkMap = config.get("Optimizations", "clientChunkMap", true).getBoolean();
         TMCCommand = config.get("Misc", "TMCCommand", true).getBoolean();
         spikeThreshold = config.get("Misc", "spikeThreshold", 30).getInt();
+        printActive = config.get("Misc", "printActive", true).getBoolean();
         
         if(config.hasChanged()) {
             config.save();
