@@ -33,27 +33,28 @@ public class TooManyCrashes
     @EventHandler
     public void init(FMLInitializationEvent event)
     {
+        Config.reload();
+        
         FMLCommonHandler.instance().bus().register(this);
         
-        ClientCommandHandler.instance.registerCommand(new TMCCommand());
+        if(Config.TMCCommand) {
+            ClientCommandHandler.instance.registerCommand(new TMCCommand());
+        }
     }
     
     @SubscribeEvent
     public void onClientTick(ClientTickEvent event) {
-        /*if(Keyboard.isKeyDown(Keyboard.KEY_O)) {
-            System.out.println(((EntityPlayer)null).posX);
-            //Tessellator.instance.startDrawing(GL11.GL_QUADS);
-            //Tessellator.instance.startDrawing(GL11.GL_QUADS);
-        }*/
-        WorldClient world = Minecraft.getMinecraft().theWorld;
-        if(world != null) {
-            IChunkProvider provider = world.getChunkProvider();
-            if(provider != null && provider instanceof ChunkProviderClient) {
-                ChunkProviderClient cp = (ChunkProviderClient)provider;
-                LongHashMap cm = ((IChunkProviderClient)cp).getChunkMapping();
-                if(cm instanceof ClientChunkMap) {
-                    Entity player = Minecraft.getMinecraft().renderViewEntity;
-                    ((ClientChunkMap) cm).setCenter(((int)player.posX / 16), ((int)player.posZ / 16));
+        if(Config.clientChunkMap) {
+            WorldClient world = Minecraft.getMinecraft().theWorld;
+            if(world != null) {
+                IChunkProvider provider = world.getChunkProvider();
+                if(provider != null && provider instanceof ChunkProviderClient) {
+                    ChunkProviderClient cp = (ChunkProviderClient)provider;
+                    LongHashMap cm = ((IChunkProviderClient)cp).getChunkMapping();
+                    if(cm instanceof ClientChunkMap) {
+                        Entity player = Minecraft.getMinecraft().renderViewEntity;
+                        ((ClientChunkMap) cm).setCenter(((int)player.posX / 16), ((int)player.posZ / 16));
+                    }
                 }
             }
         }

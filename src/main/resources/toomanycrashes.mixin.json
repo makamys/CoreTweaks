@@ -8,5 +8,6 @@
         "MixinMinecraft",
         "MixinWorldServer",
         "MixinChunkProviderClient"
-    ]
+    ],
+    "plugin": "makamys.toomanycrashes.MixinConfigPlugin"
 }

@@ -43,7 +43,6 @@ public class FrameTimer {
     
     private void analyzeFrameTimes() {
         long last = -1;
-        int spikeThreshold = 30;
         int spikes = 0;
         long sumMs = 0;
         for(long frameTime : frameTimes) {
@@ -51,14 +50,14 @@ public class FrameTimer {
                 long delta = frameTime - last;
                 int deltaMs = (int)(delta / 1_000_000);
                 sumMs += deltaMs;
-                if(deltaMs > spikeThreshold) {
+                if(deltaMs > Config.spikeThreshold) {
                     spikes++;
                 }
             }
             last = frameTime;
         }
         int deltaCount = (frameTimes.size() - 1);
-        System.out.println("spikes (above " + spikeThreshold + " ms): " + spikes + " / " + deltaCount + " (" + (spikes / (double)deltaCount) + ")");
+        System.out.println("spikes (above " + Config.spikeThreshold + " ms): " + spikes + " / " + deltaCount + " (" + (spikes / (double)deltaCount) + ")");
         System.out.println("average: " + (sumMs / (double)deltaCount) + " ms (" + (deltaCount / (sumMs / 1000.0)) + " fps)");
     }
     
