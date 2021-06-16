@@ -10,6 +10,8 @@ public class Config {
     public static boolean crashHandler;
     public static boolean getPendingBlockUpdates;
     public static boolean clientChunkMap;
+    public static boolean restoreTravelSound;
+    
     public static boolean TMCCommand;
     public static boolean printActive;
     
@@ -20,6 +22,7 @@ public class Config {
         
         config.load();
         crashHandler = config.get("Tweaks", "crashHandler", true, "Handle crashes without exiting the game. May cause graphical glitches in the newly loaded game!").getBoolean();
+        restoreTravelSound = config.get("Tweaks", "restoreTravelSound", true, "Restore interdimensional travel sound (travel.ogg). Fixes MC-233, fixed in 1.9").getBoolean();
         getPendingBlockUpdates = config.get("Optimizations", "getPendingBlockUpdates", true).getBoolean();
         clientChunkMap = config.get("Optimizations", "clientChunkMap", true).getBoolean();
         TMCCommand = config.get("Misc", "TMCCommand", true).getBoolean();

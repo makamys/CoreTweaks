@@ -38,6 +38,10 @@ public class MixinConfigPlugin implements IMixinConfigPlugin {
                 "makamys.toomanycrashes.mixin.MixinWorldServer"
                 ).contains(mixinClassName)){
             return Config.getPendingBlockUpdates;
+        } else if(Arrays.asList(
+                "makamys.toomanycrashes.mixin.MixinNetHandlerPlayClient"
+                ).contains(mixinClassName)){
+            return Config.restoreTravelSound;
         } else {
             return true;
         }

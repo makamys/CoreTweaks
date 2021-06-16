@@ -7,7 +7,8 @@
     "mixins": [
         "MixinMinecraft",
         "MixinWorldServer",
-        "MixinChunkProviderClient"
+        "MixinChunkProviderClient",
+        "MixinNetHandlerPlayClient"
     ],
     "plugin": "makamys.toomanycrashes.MixinConfigPlugin"
 }
