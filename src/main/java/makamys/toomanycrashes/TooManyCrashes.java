@@ -7,6 +7,7 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
@@ -40,6 +41,12 @@ public class TooManyCrashes
         if(Config.TMCCommand) {
             ClientCommandHandler.instance.registerCommand(new TMCCommand());
         }
+    }
+    
+    @EventHandler
+    public void postInit(FMLPostInitializationEvent event)
+    {
+        System.out.println("post");
     }
     
     @SubscribeEvent
