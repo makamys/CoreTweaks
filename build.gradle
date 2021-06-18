@@ -59,7 +59,7 @@ def outRefMapFile = tasks.compileJava.temporaryDir.toString() + "/toomanycrashes
 jar {
     manifest {
         attributes (
-            'MixinConfigs': 'toomanycrashes.mixin.json',
+            'MixinConfigs': 'toomanycrashes.mixin.json,toomanycrashes-init.mixin.json',
             'TweakClass': 'org.spongepowered.asm.launch.MixinTweaker',
             'TweakOrder': 0,
             

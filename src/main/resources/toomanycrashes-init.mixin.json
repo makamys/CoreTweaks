@@ -5,10 +5,8 @@
     "refmap": "toomanycrashes.mixin.refmap.json",
     "compatibilityLevel": "JAVA_8",
     "mixins": [
-        "MixinMinecraft",
-        "MixinWorldServer",
-        "MixinChunkProviderClient",
-        "MixinNetHandlerPlayClient"
+        "MixinModDiscoverer"
     ],
-    "plugin": "makamys.toomanycrashes.MixinConfigPlugin"
+    "plugin": "makamys.toomanycrashes.MixinConfigPlugin",
+    "target": "@env(INIT)"
 }
