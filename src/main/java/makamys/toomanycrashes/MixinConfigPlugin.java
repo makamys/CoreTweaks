@@ -42,6 +42,10 @@ public class MixinConfigPlugin implements IMixinConfigPlugin {
                 "makamys.toomanycrashes.mixin.MixinNetHandlerPlayClient"
                 ).contains(mixinClassName)){
             return Config.restoreTravelSound;
+        } else if(Arrays.asList(
+                "makamys.toomanycrashes.mixin.MixinModDiscoverer"
+                ).contains(mixinClassName)){
+            return Config.modDiscovererSkipKnownLibraries;
         } else {
             return true;
         }
