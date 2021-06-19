@@ -52,6 +52,10 @@ public class MixinConfigPlugin implements IMixinConfigPlugin {
                 "makamys.toomanycrashes.mixin.MixinJarDiscoverer"
                 ).contains(mixinClassName)){
             return Config.jarDiscovererCache;
+        } else if(Arrays.asList(
+                "makamys.toomanycrashes.mixin.MixinProgressBar"
+                ).contains(mixinClassName)){
+            return Config.fastProgressBar;
         } else {
             return true;
         }

@@ -13,6 +13,7 @@ public class Config {
     public static boolean restoreTravelSound;
     public static boolean modDiscovererSkipKnownLibraries;
     public static boolean jarDiscovererCache;
+    public static boolean fastProgressBar;
     
     public static boolean TMCCommand;
     public static boolean printActive;
@@ -29,6 +30,7 @@ public class Config {
         clientChunkMap = config.get("Optimizations", "clientChunkMap", true, "Faster implementation of ChunkProviderClient#chunkMapping. From 1.16 (I don't know when exactly it was added). Might be buggy when travelling between dimensions?").getBoolean();
         modDiscovererSkipKnownLibraries = config.get("Optimizations", "modDiscovererSkipKnownLibraries", true, "Skip over known libraries during Forge mod discovery. From Forge 1.12 (added in 1.9)").getBoolean();
         jarDiscovererCache = config.get("Optimizations", "jarDiscovererCache", true, "Cache jar discoverer results").getBoolean();
+        fastProgressBar = config.get("Optimizations", "fastProgressBar", true, "Don't update progress bar on steps").getBoolean();
         TMCCommand = config.get("Misc", "TMCCommand", true).getBoolean();
         spikeThreshold = config.get("Misc", "spikeThreshold", 30).getInt();
         printActive = config.get("Misc", "printActive", true).getBoolean();

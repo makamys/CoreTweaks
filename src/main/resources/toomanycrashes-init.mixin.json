@@ -6,7 +6,8 @@
     "compatibilityLevel": "JAVA_8",
     "mixins": [
         "MixinModDiscoverer",
-        "MixinJarDiscoverer"
+        "MixinJarDiscoverer",
+        "MixinProgressBar"
     ],
     "plugin": "makamys.toomanycrashes.MixinConfigPlugin",
     "target": "@env(INIT)"
