@@ -56,6 +56,10 @@ public class MixinConfigPlugin implements IMixinConfigPlugin {
                 "makamys.toomanycrashes.mixin.MixinProgressBar"
                 ).contains(mixinClassName)){
             return Config.fastProgressBar;
+        } else if(Arrays.asList(
+                "makamys.toomanycrashes.mixin.MixinFMLClientHandler"
+                ).contains(mixinClassName)){
+            return Config.fastStepMessageStrip;
         } else {
             return true;
         }
