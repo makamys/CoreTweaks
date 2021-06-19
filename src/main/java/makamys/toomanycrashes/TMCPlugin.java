@@ -25,7 +25,10 @@ public class TMCPlugin implements IFMLLoadingPlugin {
 
 	@Override
 	public String getSetupClass() {
-		JarDiscovererCache.load();
+		Config.reload();
+		if(Config.jarDiscovererCache) {
+			JarDiscovererCache.load();
+		}
 		// TODO Auto-generated method stub
 		return null;
 	}

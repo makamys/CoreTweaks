@@ -48,6 +48,10 @@ public class MixinConfigPlugin implements IMixinConfigPlugin {
                 "makamys.toomanycrashes.mixin.MixinModDiscoverer"
                 ).contains(mixinClassName)){
             return Config.modDiscovererSkipKnownLibraries;
+        } else if(Arrays.asList(
+                "makamys.toomanycrashes.mixin.MixinJarDiscoverer"
+                ).contains(mixinClassName)){
+            return Config.jarDiscovererCache;
         } else {
             return true;
         }
