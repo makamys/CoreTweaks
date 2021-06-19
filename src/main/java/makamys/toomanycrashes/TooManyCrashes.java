@@ -46,7 +46,7 @@ public class TooManyCrashes
     @EventHandler
     public void postInit(FMLPostInitializationEvent event)
     {
-        System.out.println("post");
+        JarDiscovererCache.finish();
     }
     
     @SubscribeEvent

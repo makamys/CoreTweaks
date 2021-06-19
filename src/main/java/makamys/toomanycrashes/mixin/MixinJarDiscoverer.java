@@ -33,8 +33,9 @@ abstract class MixinJarDiscoverer implements INetHandlerPlayClient {
 	String lastHash;
 	CachedModInfo lastCMI;
 	
-    @Inject(method = "discover", at = @At("HEAD"))
+    @Inject(method = "discover", at = @At("HEAD"), remap = false)
     public void preDiscover(ModCandidate candidate, ASMDataTable table, CallbackInfoReturnable cir) {
+    	System.out.println("preDiscover " + candidate.getModContainer());
 		String hash = null;
     	try {
     		hash = DigestUtils.md5Hex(new BufferedInputStream(new FileInputStream(candidate.getModContainer())));
@@ -62,7 +63,7 @@ abstract class MixinJarDiscoverer implements INetHandlerPlayClient {
 		return parser;
     }
 	
-	@Redirect(method = "discover", at = @At(value = "INVOKE", target = "Lcpw/mods/fml/common/ModContainerFactory;build(Lcpw/mods/fml/common/discovery/asm/ASMModParser;Ljava/io/File;Lcpw/mods/fml/common/discovery/ModCandidate;)Lcpw/mods/fml/common/ModContainer;", args = {"log=true"}), remap = false)
+	@Redirect(method = "discover", at = @At(value = "INVOKE", target = "Lcpw/mods/fml/common/ModContainerFactory;build(Lcpw/mods/fml/common/discovery/asm/ASMModParser;Ljava/io/File;Lcpw/mods/fml/common/discovery/ModCandidate;)Lcpw/mods/fml/common/ModContainer;"), remap = false)
     public ModContainer redirectBuild(ModContainerFactory factory, ASMModParser modParser, File modSource, ModCandidate container, ModCandidate candidate, ASMDataTable table) {
 		int isModClass = lastCMI.getCachedIsModClass(lastZipEntry);
 		ModContainer mc = null;

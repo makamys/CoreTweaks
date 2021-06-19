@@ -1,17 +1,102 @@
 package makamys.toomanycrashes;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.zip.ZipEntry;
 
+import org.objectweb.asm.Type;
+
+import com.esotericsoftware.kryo.Kryo;
+import com.esotericsoftware.kryo.KryoException;
+import com.esotericsoftware.kryo.Serializer;
+import com.esotericsoftware.kryo.io.Input;
+import com.esotericsoftware.kryo.io.Output;
+import com.esotericsoftware.kryo.unsafe.UnsafeInput;
+import com.esotericsoftware.kryo.unsafe.UnsafeOutput;
+import com.esotericsoftware.minlog.Log;
+
 import cpw.mods.fml.common.discovery.asm.ASMModParser;
+import cpw.mods.fml.common.discovery.asm.ModAnnotation;
+import cpw.mods.fml.common.discovery.asm.ModAnnotation.EnumHolder;
+import net.minecraft.launchwrapper.Launch;
 
 public class JarDiscovererCache {
 	
 	private static Map<String, CachedModInfo> cache = new HashMap<>();
 	private static Map<String, CachedModInfo> dirtyCache = new HashMap<>();
+	
+	private static final File file = new File(new File(Launch.minecraftHome, "toomanycrashes"), "jarDiscovererCache.dat");
+	
+	private static final Kryo kryo = new Kryo();
+	
+	public static void load() {
+		System.out.println("Loading JarDiscovererCache");
+		//Log.TRACE();
+		kryo.register(Type.class, new TypeSerializer());
+		kryo.register(ModAnnotation.class, new ModAnnotationSerializer());
+		kryo.setRegistrationRequired(false);
+		
+		
+		if(file.exists()) {
+			try(Input is = new UnsafeInput(new BufferedInputStream(new FileInputStream(file)))) {
+				try {
+					while(true) {
+						Map<String, CachedModInfo> m = kryo.readObject(is, HashMap.class);
+						cache.putAll(m);
+					}
+					
+				} catch(KryoException e) {
+					// this feels dirty but I don't know a better way to check for EOF..
+					if(!e.getMessage().equals("Buffer underflow.")) {
+						throw e;
+					}
+				}
+				
+			} catch (FileNotFoundException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
+	}
+	
+	public static void finish() {
+		if(!dirtyCache.isEmpty()) {
+			try {
+				if(!file.exists()) {
+					file.getParentFile().mkdirs();
+					file.createNewFile();
+				}
+				try(Output output = new UnsafeOutput(new BufferedOutputStream(new FileOutputStream(file, true)))) {
+					kryo.writeObject(output, dirtyCache);
+				}
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		cache = null;
+		dirtyCache = null;
+	}
 	
 	public static CachedModInfo getCachedModInfo(String hash) {
 		CachedModInfo cmi = cache.get(hash);
@@ -22,16 +107,10 @@ public class JarDiscovererCache {
 		return cmi;
 	}
 	
-	public static class CachedModInfo {
+	public static class CachedModInfo implements Serializable {
 		
-		Map<String, ASMModParser> parserMap;
-		Set<String> modClasses;
-		Set<String> dirtyModClasses;
-		
-		public CachedModInfo() {
-			parserMap = new HashMap<>();
-			dirtyModClasses = new HashSet<>();
-		}
+		Map<String, ASMModParser> parserMap = new HashMap<>();
+		Set<String> modClasses = new HashSet<>();
 		
 		public ASMModParser getCachedParser(ZipEntry ze) {
 			return parserMap.get(ze.getName());
@@ -47,8 +126,92 @@ public class JarDiscovererCache {
 		
 		public void putIsModClass(ZipEntry ze, boolean value) {
 			if(value) {
-				dirtyModClasses.add(ze.getName());
+				modClasses.add(ze.getName());
 			}
 		}
+	}
+	
+	public static class TypeSerializer extends Serializer<Type> {
+
+		@Override
+		public void write(Kryo kryo, Output output, Type type) {
+			output.writeString(type.getInternalName());
+		}
+
+		@Override
+		public Type read(Kryo kryo, Input input, Class<? extends Type> type) {
+			return Type.getObjectType(input.readString());
+		}
+		
+	}
+	
+	public static class ModAnnotationSerializer extends Serializer<ModAnnotation> {
+
+		@Override
+		public void write(Kryo kryo, Output output, ModAnnotation ma) {
+			kryo.writeObject(output, ma.getType());
+			kryo.writeObject(output, ma.getASMType());
+			output.writeString(ma.getMember());
+			Map<String, Object> serializableValues = new HashMap<>();
+			ma.getValues().forEach((k, v) -> {
+				Object value = v;
+				if(v instanceof ModAnnotation.EnumHolder) {
+					value = new SerializableEnumHolder((EnumHolder)v);
+				}
+				serializableValues.put(k, value);
+			});
+			kryo.writeObject(output, serializableValues);
+		}
+
+		@Override
+		public ModAnnotation read(Kryo kryo, Input input, Class<? extends ModAnnotation> ma) {
+			try {
+				Field type = ma.getDeclaredField("type");
+				Object at = kryo.readObject(input, type.getType());
+				ModAnnotation maa = new ModAnnotation(null, kryo.readObject(input, Type.class), input.readString());
+				type.setAccessible(true);
+				type.set(maa, at);
+				Map<String, Object> values = kryo.readObject(input, HashMap.class);
+				values.forEach((k, v) -> {
+					if(v instanceof SerializableEnumHolder) {
+						SerializableEnumHolder seh = (SerializableEnumHolder)v;
+						maa.addEnumProperty(k, seh.desc, seh.value);
+					} else {
+						maa.addProperty(k, v);
+					}
+					
+				});
+				return maa;
+			} catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			return null;
+		}
+		
+	}
+	
+	public static class SerializableEnumHolder {
+        private String desc;
+        private String value;
+        
+        public SerializableEnumHolder() {}
+        
+        public SerializableEnumHolder(EnumHolder eh) {
+        	try {
+				Field descF = eh.getClass().getDeclaredField("desc");
+				descF.setAccessible(true);
+				Field valueF = eh.getClass().getDeclaredField("value");
+				valueF.setAccessible(true);
+				
+				desc = (String) descF.get(eh);
+				value = (String) valueF.get(eh);
+			} catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+        	
+        }
 	}
 }
