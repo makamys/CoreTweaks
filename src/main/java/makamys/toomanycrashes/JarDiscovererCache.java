@@ -82,25 +82,32 @@ public class JarDiscovererCache {
 	
 	public static void finish() {
 		if(!dirtyCache.isEmpty()) {
-			try {
-				if(!file.exists()) {
-					file.getParentFile().mkdirs();
-					file.createNewFile();
-				}
-				try(Output output = new UnsafeOutput(new BufferedOutputStream(new FileOutputStream(file, true)))) {
-					for(Entry<String, CachedModInfo> e : dirtyCache.entrySet()) {
-						System.out.println("Writing CachedModInfo " + e.getKey());
-						kryo.writeObject(output, e.getKey());
-						kryo.writeObject(output, e.getValue());
+			new Thread(new Runnable() {
+
+				@Override
+				public void run() {
+					try {
+						if(!file.exists()) {
+							file.getParentFile().mkdirs();
+							file.createNewFile();
+						}
+						try(Output output = new UnsafeOutput(new BufferedOutputStream(new FileOutputStream(file, true)))) {
+							for(Entry<String, CachedModInfo> e : dirtyCache.entrySet()) {
+								System.out.println("Writing CachedModInfo " + e.getKey());
+								kryo.writeObject(output, e.getKey());
+								kryo.writeObject(output, e.getValue());
+							}
+						}
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
 					}
+					cache = null;
+					dirtyCache = null;
 				}
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+				
+			}, "TooManyCrashes JarDiscovererCache save thread").start();
 		}
-		cache = null;
-		dirtyCache = null;
 	}
 	
 	public static CachedModInfo getCachedModInfo(String hash) {
