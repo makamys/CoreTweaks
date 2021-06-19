@@ -30,7 +30,6 @@ import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 import com.esotericsoftware.kryo.unsafe.UnsafeInput;
 import com.esotericsoftware.kryo.unsafe.UnsafeOutput;
-import com.esotericsoftware.minlog.Log;
 
 import cpw.mods.fml.common.discovery.asm.ASMModParser;
 import cpw.mods.fml.common.discovery.asm.ModAnnotation;
@@ -48,9 +47,9 @@ public class JarDiscovererCache {
 	
 	public static void load() {
 		System.out.println("Loading JarDiscovererCache");
-		//Log.TRACE();
 		kryo.register(Type.class, new TypeSerializer());
 		kryo.register(ModAnnotation.class, new ModAnnotationSerializer());
+		kryo.register(EnumHolder.class, new EnumHolderSerializer());
 		kryo.setRegistrationRequired(false);
 		
 		
@@ -154,10 +153,6 @@ public class JarDiscovererCache {
 
 		@Override
 		public void write(Kryo kryo, Output output, Type type) {
-			/*if(type.getInternalName().equals("com/sk89q/worldedit/util/command/parametric/BindingMatch")) {
-				System.out.println("hmm..");
-			}*/
-			//System.out.println("Serializing type: " + String.valueOf(type) + " (internal: " + type.getInternalName() + ")");
 			output.writeByte(type.getSort());
 			if(type.getSort() >= Type.ARRAY) {
 				output.writeString(type.getInternalName());
@@ -200,21 +195,17 @@ public class JarDiscovererCache {
 	}
 	
 	public static class ModAnnotationSerializer extends Serializer<ModAnnotation> {
-
+		
+		private static ModAnnotation lastMa;
+		
 		@Override
 		public void write(Kryo kryo, Output output, ModAnnotation ma) {
 			kryo.writeObject(output, ma.getType());
 			kryo.writeObject(output, ma.getASMType());
 			output.writeString(ma.getMember());
 			Map<String, Object> serializableValues = new HashMap<>();
-			ma.getValues().forEach((k, v) -> {
-				Object value = v;
-				if(v instanceof ModAnnotation.EnumHolder) {
-					value = new SerializableEnumHolder((EnumHolder)v);
-				}
-				serializableValues.put(k, value);
-			});
-			kryo.writeObject(output, serializableValues);
+			
+			kryo.writeObject(output, ma.getValues());
 		}
 
 		@Override
@@ -225,16 +216,17 @@ public class JarDiscovererCache {
 				ModAnnotation maa = new ModAnnotation(null, kryo.readObject(input, Type.class), input.readString());
 				type.setAccessible(true);
 				type.set(maa, at);
+				
+				lastMa = maa;
+				try {
 				Map<String, Object> values = kryo.readObject(input, HashMap.class);
 				values.forEach((k, v) -> {
-					if(v instanceof SerializableEnumHolder) {
-						SerializableEnumHolder seh = (SerializableEnumHolder)v;
-						maa.addEnumProperty(k, seh.desc, seh.value);
-					} else {
-						maa.addProperty(k, v);
-					}
+					maa.addProperty(k, v);
 					
 				});
+				} catch(Exception e) {
+					return null;
+				}
 				return maa;
 			} catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
 				// TODO Auto-generated catch block
@@ -246,26 +238,31 @@ public class JarDiscovererCache {
 		
 	}
 	
-	public static class SerializableEnumHolder {
-        private String desc;
-        private String value;
-        
-        public SerializableEnumHolder() {}
-        
-        public SerializableEnumHolder(EnumHolder eh) {
-        	try {
+	public static class EnumHolderSerializer extends Serializer<EnumHolder> {
+
+		@Override
+		public void write(Kryo kryo, Output output, EnumHolder eh) {
+			try {
 				Field descF = eh.getClass().getDeclaredField("desc");
 				descF.setAccessible(true);
 				Field valueF = eh.getClass().getDeclaredField("value");
 				valueF.setAccessible(true);
 				
-				desc = (String) descF.get(eh);
-				value = (String) valueF.get(eh);
+				String desc = (String) descF.get(eh);
+				String value = (String) valueF.get(eh);
+				
+				output.writeString(desc);
+				output.writeString(value);
 			} catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-        	
-        }
+		}
+
+		@Override
+		public EnumHolder read(Kryo kryo, Input input, Class<? extends EnumHolder> type) {
+			return ModAnnotationSerializer.lastMa.new EnumHolder(input.readString(), input.readString());
+		}
+		
 	}
 }
