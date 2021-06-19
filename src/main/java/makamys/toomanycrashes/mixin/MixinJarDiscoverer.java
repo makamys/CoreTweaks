@@ -35,7 +35,6 @@ abstract class MixinJarDiscoverer implements INetHandlerPlayClient {
 	
     @Inject(method = "discover", at = @At("HEAD"), remap = false)
     public void preDiscover(ModCandidate candidate, ASMDataTable table, CallbackInfoReturnable cir) {
-    	System.out.println("preDiscover " + candidate.getModContainer());
 		String hash = null;
     	try {
     		hash = DigestUtils.md5Hex(new BufferedInputStream(new FileInputStream(candidate.getModContainer())));
@@ -45,6 +44,8 @@ abstract class MixinJarDiscoverer implements INetHandlerPlayClient {
     	}
     	lastHash = hash;
     	lastCMI = JarDiscovererCache.getCachedModInfo(lastHash);
+    	
+    	System.out.println("preDiscover " + candidate.getModContainer() + "(hash " + lastHash + ")");
     }
 	
 	@Redirect(method = "discover", at = @At(value = "INVOKE", target = "Ljava/util/jar/JarFile;getInputStream(Ljava/util/zip/ZipEntry;)Ljava/io/InputStream;"), remap = false)

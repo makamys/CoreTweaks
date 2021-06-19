@@ -58,8 +58,10 @@ public class JarDiscovererCache {
 			try(Input is = new UnsafeInput(new BufferedInputStream(new FileInputStream(file)))) {
 				try {
 					while(true) {
-						Map<String, CachedModInfo> m = kryo.readObject(is, HashMap.class);
-						cache.putAll(m);
+						String k = kryo.readObject(is, String.class);
+						CachedModInfo v = kryo.readObject(is, CachedModInfo.class);
+						System.out.println("Read CachedModInfo " + k);
+						cache.put(k, v);
 					}
 					
 				} catch(KryoException e) {
@@ -87,7 +89,11 @@ public class JarDiscovererCache {
 					file.createNewFile();
 				}
 				try(Output output = new UnsafeOutput(new BufferedOutputStream(new FileOutputStream(file, true)))) {
-					kryo.writeObject(output, dirtyCache);
+					for(Entry<String, CachedModInfo> e : dirtyCache.entrySet()) {
+						System.out.println("Writing CachedModInfo " + e.getKey());
+						kryo.writeObject(output, e.getKey());
+						kryo.writeObject(output, e.getValue());
+					}
 				}
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
@@ -101,16 +107,25 @@ public class JarDiscovererCache {
 	public static CachedModInfo getCachedModInfo(String hash) {
 		CachedModInfo cmi = cache.get(hash);
 		if(cmi == null) {
-			cmi = new CachedModInfo();
+			cmi = new CachedModInfo(true);
 			dirtyCache.put(hash, cmi);
 		}
 		return cmi;
 	}
 	
-	public static class CachedModInfo implements Serializable {
+	public static class CachedModInfo {
 		
 		Map<String, ASMModParser> parserMap = new HashMap<>();
 		Set<String> modClasses = new HashSet<>();
+		transient boolean dirty;
+		
+		public CachedModInfo(boolean dirty) {
+			this.dirty = dirty;
+		}
+		
+		public CachedModInfo() {
+			this(false);
+		}
 		
 		public ASMModParser getCachedParser(ZipEntry ze) {
 			return parserMap.get(ze.getName());
@@ -121,10 +136,14 @@ public class JarDiscovererCache {
 		}
 		
 		public int getCachedIsModClass(ZipEntry ze) {
-			return modClasses == null ? -1 : modClasses.contains(ze.getName()) ? 1 : 0; 
+			return dirty ? -1 : modClasses.contains(ze.getName()) ? 1 : 0; 
 		}
 		
 		public void putIsModClass(ZipEntry ze, boolean value) {
+			if(!dirty) {
+				throw new IllegalStateException();
+			}
+			
 			if(value) {
 				modClasses.add(ze.getName());
 			}
@@ -135,12 +154,47 @@ public class JarDiscovererCache {
 
 		@Override
 		public void write(Kryo kryo, Output output, Type type) {
-			output.writeString(type.getInternalName());
+			/*if(type.getInternalName().equals("com/sk89q/worldedit/util/command/parametric/BindingMatch")) {
+				System.out.println("hmm..");
+			}*/
+			//System.out.println("Serializing type: " + String.valueOf(type) + " (internal: " + type.getInternalName() + ")");
+			output.writeByte(type.getSort());
+			if(type.getSort() >= Type.ARRAY) {
+				output.writeString(type.getInternalName());
+			}
 		}
 
 		@Override
 		public Type read(Kryo kryo, Input input, Class<? extends Type> type) {
-			return Type.getObjectType(input.readString());
+			int sort = input.readByte();
+			String buf = sort >= Type.ARRAY ? input.readString() : null;
+			switch(sort) {
+				case Type.VOID:
+					return Type.VOID_TYPE;
+				case Type.BOOLEAN:
+					return Type.BOOLEAN_TYPE;
+				case Type.CHAR:
+					return Type.CHAR_TYPE;
+				case Type.BYTE:
+					return Type.BYTE_TYPE;
+				case Type.SHORT:
+					return Type.SHORT_TYPE;
+				case Type.INT:
+					return Type.INT_TYPE;
+				case Type.FLOAT:
+					return Type.FLOAT_TYPE;
+				case Type.LONG:
+					return Type.LONG_TYPE;
+				case Type.DOUBLE:
+					return Type.DOUBLE_TYPE;
+				case Type.ARRAY:
+				case Type.OBJECT:
+					return Type.getObjectType(buf);
+				case Type.METHOD:
+					return Type.getMethodType(buf);
+				default:
+					return null;
+			}
 		}
 		
 	}
