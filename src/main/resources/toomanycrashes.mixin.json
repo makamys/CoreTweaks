@@ -8,7 +8,8 @@
         "MixinMinecraft",
         "MixinWorldServer",
         "MixinChunkProviderClient",
-        "MixinNetHandlerPlayClient"
+        "MixinNetHandlerPlayClient",
+        "MixinEntityRenderer"
     ],
     "plugin": "makamys.toomanycrashes.MixinConfigPlugin"
 }
