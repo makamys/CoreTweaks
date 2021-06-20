@@ -60,6 +60,10 @@ public class MixinConfigPlugin implements IMixinConfigPlugin {
                 "makamys.toomanycrashes.mixin.MixinFMLClientHandler"
                 ).contains(mixinClassName)){
             return Config.fastStepMessageStrip;
+        } else if(Arrays.asList(
+                "makamys.toomanycrashes.mixin.MixinEntityRenderer"
+                ).contains(mixinClassName)){
+            return Config.cloudHeightCheck != Config.CloudHeightCheck.UNCHANGED;
         } else {
             return true;
         }
