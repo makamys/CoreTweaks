@@ -28,30 +28,26 @@ public class ASMModParserTransformer implements IClassTransformer {
 	private static byte[] doTransform(byte[] bytes) {
 		System.out.println("Transforming ASMModParser");
 		
-		boolean fail = true;
 		ClassWriter writer = null;
-		while(fail) {
-			try {
-				ClassNode classNode = new ClassNode();
-				ClassReader classReader = new ClassReader(bytes);
-				classReader.accept(classNode, 0);
-				MethodNode emptyConstructor = new MethodNode(ACC_PUBLIC, "<init>", "()V", null, null);
-				
-				emptyConstructor.instructions.add(new VarInsnNode(ALOAD, 0));
-				emptyConstructor.instructions.add(new MethodInsnNode(INVOKESPECIAL, "java/lang/Object", "<init>", "()V", false));
-				emptyConstructor.instructions.add(new VarInsnNode(ALOAD, 0));
-				emptyConstructor.instructions.add(new MethodInsnNode(INVOKESTATIC, "com/google/common/collect/Lists", "newLinkedList", "()Ljava/util/LinkedList;", false));
-				emptyConstructor.instructions.add(new FieldInsnNode(PUTFIELD, "cpw/mods/fml/common/discovery/asm/ASMModParser", "annotations", "Ljava/util/LinkedList;"));
-				emptyConstructor.instructions.add(new InsnNode(Opcodes.RETURN));
-				
-				classNode.methods.add(emptyConstructor);
-				
-				writer = new ClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
-				classNode.accept(writer);
-				fail = false;
-			} catch(Exception e) {
-				e.printStackTrace();
-			}
+		try {
+			ClassNode classNode = new ClassNode();
+			ClassReader classReader = new ClassReader(bytes);
+			classReader.accept(classNode, 0);
+			MethodNode emptyConstructor = new MethodNode(ACC_PUBLIC, "<init>", "()V", null, null);
+			
+			emptyConstructor.instructions.add(new VarInsnNode(ALOAD, 0));
+			emptyConstructor.instructions.add(new MethodInsnNode(INVOKESPECIAL, "java/lang/Object", "<init>", "()V", false));
+			emptyConstructor.instructions.add(new VarInsnNode(ALOAD, 0));
+			emptyConstructor.instructions.add(new MethodInsnNode(INVOKESTATIC, "com/google/common/collect/Lists", "newLinkedList", "()Ljava/util/LinkedList;", false));
+			emptyConstructor.instructions.add(new FieldInsnNode(PUTFIELD, "cpw/mods/fml/common/discovery/asm/ASMModParser", "annotations", "Ljava/util/LinkedList;"));
+			emptyConstructor.instructions.add(new InsnNode(Opcodes.RETURN));
+			
+			classNode.methods.add(emptyConstructor);
+			
+			writer = new ClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
+			classNode.accept(writer);
+		} catch(Exception e) {
+			e.printStackTrace();
 		}
 		return writer.toByteArray();
 	}
