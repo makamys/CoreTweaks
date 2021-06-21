@@ -14,7 +14,7 @@ public class TMCPlugin implements IFMLLoadingPlugin {
 	@Override
 	public String[] getASMTransformerClass() {
 		// TODO Auto-generated method stub
-		return new String[] {"makamys.toomanycrashes.ASMModParserTransformer"};
+		return new String[] {"makamys.toomanycrashes.ASMModParserTransformer", "makamys.toomanycrashes.ProfilerTransformer"};
 	}
 
 	@Override
@@ -29,6 +29,7 @@ public class TMCPlugin implements IFMLLoadingPlugin {
 		if(Config.jarDiscovererCache) {
 			JarDiscovererCache.load();
 		}
+		ProfilerTransformer.init();
 		// TODO Auto-generated method stub
 		return null;
 	}

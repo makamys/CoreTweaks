@@ -21,6 +21,7 @@ public class Config {
     
     public static boolean TMCCommand;
     public static boolean printActive;
+    public static String methodsToProfile;
     
     public static int spikeThreshold;
     
@@ -47,6 +48,7 @@ public class Config {
         TMCCommand = config.get("Misc", "TMCCommand", true).getBoolean();
         spikeThreshold = config.get("Misc", "spikeThreshold", 30).getInt();
         printActive = config.get("Misc", "printActive", true).getBoolean();
+        methodsToProfile = config.get("Misc", "methodsToProfile", "").getString();
         cloudHeightCheck = CloudHeightCheck.valueOf(config.get("Tweaks", "cloudHeightCheck", CloudHeightCheck.VARIABLE_CORRECTED.toString(),
         		"Lets you tweak the condition used to decide whether to render opaque or transparent clouds.\n" + 
 		        "UNCHANGED: Don't change anything\n" +
