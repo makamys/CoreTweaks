@@ -12,9 +12,9 @@ public class Util {
 	static {
 		try {
 			ofCloudsHeight_F = GameSettings.class.getDeclaredField("ofCloudsHeight");
-			System.out.println("Found ofCloudsHeight field");
+			System.out.println("Found ofCloudsHeight field, assuming OptiFine is present");
 		} catch (NoSuchFieldException | SecurityException e) {
-			System.out.println("Couldn't find ofCloudsHeight field (" + e.getMessage() + ")");
+			System.out.println("Couldn't find ofCloudsHeight field (" + e.getMessage() + "), assuming OptiFine is not present");
 		} 
 	}
 	
@@ -28,6 +28,10 @@ public class Util {
 			}
 		}
 		return 0;
+	}
+	
+	public static boolean isOptifinePresent() {
+		return ofCloudsHeight_F != null;
 	}
 	
 }

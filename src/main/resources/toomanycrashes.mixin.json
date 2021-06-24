@@ -5,11 +5,13 @@
     "refmap": "toomanycrashes.mixin.refmap.json",
     "compatibilityLevel": "JAVA_8",
     "mixins": [
-        "MixinMinecraft",
+        "MixinMinecraft_CrashHandler",
+        "MixinMinecraft_SyncTweak",
         "MixinWorldServer",
         "MixinChunkProviderClient",
         "MixinNetHandlerPlayClient",
-        "MixinEntityRenderer"
+        "MixinEntityRenderer",
+        "MixinRenderGlobal"
     ],
     "plugin": "makamys.toomanycrashes.MixinConfigPlugin"
 }

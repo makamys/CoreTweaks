@@ -33,9 +33,17 @@ public class MixinConfigPlugin implements IMixinConfigPlugin {
                 ).contains(mixinClassName)){
             return Config.clientChunkMap;
         } else if(Arrays.asList(
-                "makamys.toomanycrashes.mixin.MixinMinecraft"
+                "makamys.toomanycrashes.mixin.MixinMinecraft_CrashHandler"
                 ).contains(mixinClassName)){
             return Config.crashHandler;
+        } else if(Arrays.asList(
+                "makamys.toomanycrashes.mixin.MixinMinecraft_SyncTweak"
+                ).contains(mixinClassName)){
+            return Config.syncTweak;
+        } else if(Arrays.asList(
+                "makamys.toomanycrashes.mixin.MixinRenderGlobal"
+                ).contains(mixinClassName)){
+            return Config.ofFixUpdateRenderersReturnValue;
         } else if(Arrays.asList(
                 "makamys.toomanycrashes.mixin.MixinWorldServer"
                 ).contains(mixinClassName)){

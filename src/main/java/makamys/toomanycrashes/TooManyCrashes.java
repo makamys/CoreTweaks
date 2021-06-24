@@ -1,5 +1,7 @@
 package makamys.toomanycrashes;
 
+import java.util.HashMap;
+
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 

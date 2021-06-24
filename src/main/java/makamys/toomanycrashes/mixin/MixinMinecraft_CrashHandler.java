@@ -11,7 +11,7 @@ import makamys.toomanycrashes.TooManyCrashes;
 import net.minecraft.client.Minecraft;
 
 @Mixin(Minecraft.class)
-abstract class MixinMinecraft {
+abstract class MixinMinecraft_CrashHandler {
     
     @Shadow
     public abstract void runGameLoop();
@@ -42,6 +42,5 @@ abstract class MixinMinecraft {
     public void redirectDisplayGuiScreen(Minecraft minecraft) {
         minecraft.displayGuiScreen(new GuiFatalErrorScreen(theError));
     }
-    
-    
+
 }

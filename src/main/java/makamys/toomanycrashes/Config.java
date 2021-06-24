@@ -10,6 +10,8 @@ import net.minecraftforge.common.config.Configuration;
 public class Config {
     
     public static boolean crashHandler;
+    public static boolean syncTweak;
+    public static boolean ofFixUpdateRenderersReturnValue;
     public static boolean getPendingBlockUpdates;
     public static boolean clientChunkMap;
     public static boolean restoreTravelSound;
@@ -38,6 +40,8 @@ public class Config {
         
         config.load();
         crashHandler = config.get("Tweaks", "crashHandler", true, "Lets you survive crashes without the game exiting, usually. May cause graphical glitches in the newly loaded game!").getBoolean();
+        syncTweak = config.get("Tweaks", "syncTweak", true, "Don't sync with framerate limit").getBoolean();
+        ofFixUpdateRenderersReturnValue = config.get("Tweaks", "ofFixUpdateRenderersReturnValue", true, "Fixes updateRenderers returning the opposite value of what it should when OptiFine is present (probably a bug?)").getBoolean();
         restoreTravelSound = config.get("Tweaks", "restoreTravelSound", true, "Restore interdimensional travel sound (travel.ogg). Fixes MC-233, fixed in 1.9").getBoolean();
         getPendingBlockUpdates = config.get("Optimizations", "getPendingBlockUpdates", true, "Optimizes WorldServer#getPendingBlockUpdates. OptiFine also does this, but this won't have an effect when OF is present, so there's no conflict.").getBoolean();
         clientChunkMap = config.get("Optimizations", "clientChunkMap", true, "Faster implementation of ChunkProviderClient#chunkMapping. From 1.16 (I don't know when exactly it was added). Might be buggy when travelling between dimensions?").getBoolean();
