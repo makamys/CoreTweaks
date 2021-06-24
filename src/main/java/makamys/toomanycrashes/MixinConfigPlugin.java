@@ -39,7 +39,7 @@ public class MixinConfigPlugin implements IMixinConfigPlugin {
         } else if(Arrays.asList(
                 "makamys.toomanycrashes.mixin.MixinMinecraft_SyncTweak"
                 ).contains(mixinClassName)){
-            return Config.syncTweak;
+            return Config.forceUncapFramerate;
         } else if(Arrays.asList(
                 "makamys.toomanycrashes.mixin.MixinRenderGlobal"
                 ).contains(mixinClassName)){

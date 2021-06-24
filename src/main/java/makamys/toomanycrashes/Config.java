@@ -10,7 +10,7 @@ import net.minecraftforge.common.config.Configuration;
 public class Config {
     
     public static boolean crashHandler;
-    public static boolean syncTweak;
+    public static boolean forceUncapFramerate;
     public static boolean ofFixUpdateRenderersReturnValue;
     public static boolean getPendingBlockUpdates;
     public static boolean clientChunkMap;
@@ -39,12 +39,12 @@ public class Config {
         Configuration config = new Configuration(new File(Launch.minecraftHome, "config/toomanycrashes.cfg"));
         
         config.load();
-        crashHandler = config.get("Tweaks", "crashHandler", true, "Lets you survive crashes without the game exiting, usually. May cause graphical glitches in the newly loaded game!").getBoolean();
-        syncTweak = config.get("Tweaks", "syncTweak", true, "Don't sync with framerate limit").getBoolean();
-        ofFixUpdateRenderersReturnValue = config.get("Tweaks", "ofFixUpdateRenderersReturnValue", true, "Fixes updateRenderers returning the opposite value of what it should when OptiFine is present (probably a bug?)").getBoolean();
+        crashHandler = config.get("Tweaks", "crashHandler", false, "Lets you survive crashes without the game exiting, usually. May cause graphical glitches after the crash, so I only recommend enabling it in test/dev sessions.").getBoolean();
+        forceUncapFramerate = config.get("Tweaks", "forceUncapFramerate", false, "Uncaps framerate even when framelimiter is enabled. Vanilla Beta 1.7.3 behavior. It seems to make things worse though, at least with OptiFine.").getBoolean();
+        ofFixUpdateRenderersReturnValue = config.get("Tweaks", "ofFixUpdateRenderersReturnValue", true, "Fixes OptiFine's implementation of updateRenderers returning the opposite value of what it should (probably a bug). Only effective when framerate limiter is enabled. Speeds up chunk updates significantly, and increases framerate when there aren't many chunk updates. However, during heavy chunk updating (e.g. when loading a world) it decreases the framerate as a side effect of not being as lazy.").getBoolean();
         restoreTravelSound = config.get("Tweaks", "restoreTravelSound", true, "Restore interdimensional travel sound (travel.ogg). Fixes MC-233, fixed in 1.9").getBoolean();
         getPendingBlockUpdates = config.get("Optimizations", "getPendingBlockUpdates", true, "Optimizes WorldServer#getPendingBlockUpdates. OptiFine also does this, but this won't have an effect when OF is present, so there's no conflict.").getBoolean();
-        clientChunkMap = config.get("Optimizations", "clientChunkMap", true, "Faster implementation of ChunkProviderClient#chunkMapping. From 1.16 (I don't know when exactly it was added). Might be buggy when travelling between dimensions?").getBoolean();
+        clientChunkMap = config.get("Optimizations", "clientChunkMap", false, "Faster implementation of ChunkProviderClient#chunkMapping. From 1.16 (I don't know when exactly it was added). Might be a little buggy (it should only cause client-side errors though).").getBoolean();
         modDiscovererSkipKnownLibraries = config.get("Optimizations", "modDiscovererSkipKnownLibraries", true, "Skip over known libraries during Forge mod discovery. From Forge 1.12 (added in 1.9)").getBoolean();
         jarDiscovererCache = config.get("Optimizations", "jarDiscovererCache", true, "Cache jar discoverer results").getBoolean();
         fastProgressBar = config.get("Optimizations", "fastProgressBar", true, "Don't update progress bar on steps").getBoolean();
