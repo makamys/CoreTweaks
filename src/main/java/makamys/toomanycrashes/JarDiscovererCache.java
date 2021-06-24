@@ -119,6 +119,10 @@ public class JarDiscovererCache {
 		return cmi;
 	}
 	
+	public static boolean isActive() {
+		return Config.jarDiscovererCache;
+	}
+	
 	public static class CachedModInfo {
 		
 		Map<String, ASMModParser> parserMap = new HashMap<>();

@@ -98,6 +98,10 @@ public class ProfilerTransformer implements IClassTransformer {
 		data.calls++;
 	}
 	
+	public static boolean isActive() {
+		return !Config.methodsToProfile.isEmpty();
+	}
+	
 	private static class MethodInstrumentationData {
 		String owner;
 		String name;

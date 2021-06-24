@@ -1,9 +1,10 @@
 package makamys.toomanycrashes;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
-import net.minecraft.launchwrapper.IClassTransformer;
 
 public class TMCPlugin implements IFMLLoadingPlugin {
 
@@ -13,8 +14,15 @@ public class TMCPlugin implements IFMLLoadingPlugin {
 	
 	@Override
 	public String[] getASMTransformerClass() {
-		// TODO Auto-generated method stub
-		return new String[] {"makamys.toomanycrashes.ASMModParserTransformer", "makamys.toomanycrashes.ProfilerTransformer"};
+		Config.reload();
+		List<String> transformerClasses = new ArrayList<>();
+		if(JarDiscovererCache.isActive()) {
+			transformerClasses.add("makamys.toomanycrashes.ASMModParserTransformer");
+		}
+		if(ProfilerTransformer.isActive()) {
+			transformerClasses.add("makamys.toomanycrashes.ProfilerTransformer");
+		}
+		return transformerClasses.toArray(new String[] {});
 	}
 
 	@Override
@@ -26,11 +34,12 @@ public class TMCPlugin implements IFMLLoadingPlugin {
 	@Override
 	public String getSetupClass() {
 		Config.reload();
-		if(Config.jarDiscovererCache) {
+		if(JarDiscovererCache.isActive()) {
 			JarDiscovererCache.load();
 		}
-		ProfilerTransformer.init();
-		// TODO Auto-generated method stub
+		if(ProfilerTransformer.isActive()) {
+			ProfilerTransformer.init();
+		}
 		return null;
 	}
 
