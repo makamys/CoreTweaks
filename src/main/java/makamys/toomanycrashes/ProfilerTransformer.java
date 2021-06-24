@@ -85,7 +85,7 @@ public class ProfilerTransformer implements IClassTransformer {
 				}
 			}
 			
-			writer = new ClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
+			writer = new ClassWriter(0);
 			classNode.accept(writer);
 		} catch(Exception e) {
 			e.printStackTrace();
