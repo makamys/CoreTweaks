@@ -163,15 +163,15 @@ public class ClientChunkMap extends LongHashMap {
         int worldZ = chunkZinternal2world(z);
         
         Chunk chunk = getMapElement(x, z);
-        
+        if(chunk != null && !isInRange(chunk.xPosition, chunk.zPosition)) {
+        	farMap.put(ChunkCoordIntPair.chunkXZ2Int(chunk.xPosition, chunk.zPosition), chunk);
+        	map[x][z] = null;
+        }
         
         Chunk farChunk = farMap.remove(ChunkCoordIntPair.chunkXZ2Int(worldX, worldZ));
         
         if(farChunk != null) {
             putMapElement(farChunk, farChunk.xPosition, farChunk.zPosition);
-        }
-        if(chunk != null) {
-            farMap.put(ChunkCoordIntPair.chunkXZ2Int(chunk.xPosition, chunk.zPosition), chunk);
         }
     }
     
@@ -184,23 +184,20 @@ public class ClientChunkMap extends LongHashMap {
         
         if(newX == offX && newZ == offZ) return;
         
-        int deleteX = MathHelper.clamp_int(newX - offX, -getDiameter(), getDiameter());
-        int deleteZ = MathHelper.clamp_int(newZ - offZ, -getDiameter(), getDiameter());
-        
         offX = newX;
         offZ = newZ;
         
-        for(int ix = deleteX; ix != 0; ix += -Math.signum(deleteX)) {
-            int dx = ix - (deleteX > 0 ? 1 : 0);
-            for(int z = 0; z < getDiameter(); z++) {
-                updateDirty(oldOffX + dx, z);
-            }
+        int signDx = (int)Math.signum(newX - oldOffX);
+        int signDz = (int)Math.signum(newZ - oldOffZ);
+        for(int px = oldOffX + (signDx > 0 ? 0 : -1); px != newX + (signDx > 0 ? 0 : -1); px += signDx) {
+        	for(int z = 0; z < getDiameter(); z++) {
+        		updateDirty(px, z);
+        	}
         }
-        for(int iz = deleteZ; iz != 0; iz += -Math.signum(deleteZ)) {
-            int dz = iz - (deleteZ > 0 ? 1 : 0);
-            for(int x = 0; x < getDiameter(); x++) {
-                updateDirty(x, oldOffZ + dz);
-            }
+        for(int pz = oldOffZ + (signDz > 0 ? 0 : -1); pz != newZ + (signDz > 0 ? 0 : -1); pz += signDz) {
+        	for(int x = 0; x < getDiameter(); x++) {
+        		updateDirty(x, pz);
+        	}
         }
         
         if(test) {
