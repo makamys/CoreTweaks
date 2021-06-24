@@ -11,7 +11,8 @@
         "MixinChunkProviderClient",
         "MixinNetHandlerPlayClient",
         "MixinEntityRenderer",
-        "MixinRenderGlobal"
+        "MixinRenderGlobal",
+        "MixinWorldRenderer"
     ],
     "plugin": "makamys.toomanycrashes.MixinConfigPlugin"
 }

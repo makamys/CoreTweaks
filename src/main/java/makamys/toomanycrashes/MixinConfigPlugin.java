@@ -45,6 +45,10 @@ public class MixinConfigPlugin implements IMixinConfigPlugin {
                 ).contains(mixinClassName)){
             return Config.ofFixUpdateRenderersReturnValue;
         } else if(Arrays.asList(
+                "makamys.toomanycrashes.mixin.MixinWorldRenderer"
+                ).contains(mixinClassName)){
+            return Config.ofOptimizeWorldRenderer;
+        } else if(Arrays.asList(
                 "makamys.toomanycrashes.mixin.MixinWorldServer"
                 ).contains(mixinClassName)){
             return Config.getPendingBlockUpdates;
