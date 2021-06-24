@@ -9,6 +9,9 @@ import makamys.toomanycrashes.GuiFatalErrorScreen;
 import makamys.toomanycrashes.MixinLogger;
 import makamys.toomanycrashes.TooManyCrashes;
 import net.minecraft.client.Minecraft;
+import net.minecraft.crash.CrashReport;
+import net.minecraft.util.MinecraftError;
+import net.minecraft.util.ReportedException;
 
 @Mixin(Minecraft.class)
 abstract class MixinMinecraft_CrashHandler {
@@ -18,6 +21,9 @@ abstract class MixinMinecraft_CrashHandler {
     
     @Shadow
     private boolean hasCrashed;
+    
+    @Shadow
+    private CrashReport crashReporter;
     
     private Throwable theError;
     
@@ -29,11 +35,11 @@ abstract class MixinMinecraft_CrashHandler {
             runGameLoop();
         } catch(Throwable e) {
             theError = e;
-            TooManyCrashes.handleCrash(e);
+            TooManyCrashes.handleCrash(e, crashReporter);
         }
         if(hasCrashed) {
             hasCrashed = false;
-            TooManyCrashes.handleCrash(null);
+            TooManyCrashes.handleCrash(null, crashReporter);
         }
     }
     

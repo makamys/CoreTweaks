@@ -1,5 +1,8 @@
 package makamys.toomanycrashes;
 
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 
 import org.lwjgl.input.Keyboard;
@@ -21,11 +24,15 @@ import net.minecraft.client.gui.GuiMemoryErrorScreen;
 import net.minecraft.client.multiplayer.ChunkProviderClient;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.crash.CrashReport;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.LongHashMap;
+import net.minecraft.util.MinecraftError;
+import net.minecraft.util.ReportedException;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraftforge.client.ClientCommandHandler;
+import net.minecraftforge.event.world.ChunkEvent;
 
 @Mod(modid = TooManyCrashes.MODID, version = TooManyCrashes.VERSION)
 public class TooManyCrashes
@@ -76,7 +83,17 @@ public class TooManyCrashes
         }
     }
     
-    public static void handleCrash(Throwable t) {
+    @SubscribeEvent
+    public void onCEL(ChunkEvent.Load event) {
+    	System.out.println("ChunkEvent.Load " + event.getChunk().xPosition + " " + event.getChunk().zPosition);
+    }
+    
+    @SubscribeEvent
+    public void onCEU(ChunkEvent.Unload event) {
+    	System.out.println("ChunkEvent.Unload " + event.getChunk().xPosition + " " + event.getChunk().zPosition);
+    }
+    
+    public static void handleCrash(Throwable t, CrashReport crashReporter) {
         if(t instanceof IllegalStateException && t.getMessage().equals("Already tesselating!")) {
             Tessellator.instance.draw();
         }
@@ -84,7 +101,39 @@ public class TooManyCrashes
             System.out.println("Caught exception:");
             t.printStackTrace();
         }
+        if(!(t instanceof OutOfMemoryError)) {
+        	if(crashReporter != null) {
+        		TooManyCrashes.createCrashReport(crashReporter);
+        	} else if(t instanceof MinecraftError) {
+        		// do nothing
+        	} else {
+        		if(t instanceof ReportedException) {
+	        		ReportedException re = (ReportedException)t;
+	        		Minecraft.getMinecraft().addGraphicsAndWorldToCrashReport(re.getCrashReport());
+	        		TooManyCrashes.createCrashReport(re.getCrashReport());
+        		} else {
+        			CrashReport cr = Minecraft.getMinecraft().addGraphicsAndWorldToCrashReport(new CrashReport("Unexpected error", t));
+        			TooManyCrashes.createCrashReport(cr);
+        		}
+        	}
+        }
         
+        // Throw OOME to trigger the crash handler screen
         throw new OutOfMemoryError();
+    }
+    
+    public static void createCrashReport(CrashReport crashReporter) {
+    	File file1 = new File(Minecraft.getMinecraft().mcDataDir, "crash-reports");
+        File file2 = new File(file1, "crash-" + (new SimpleDateFormat("yyyy-MM-dd_HH.mm.ss")).format(new Date()) + "-client.txt");
+        System.out.println(crashReporter.getCompleteReport());
+
+        if (crashReporter.getFile() != null) {
+            System.out.println("#@!@# Game crashed! Crash report saved to: #@!@# " + crashReporter.getFile());
+        }
+        else if (crashReporter.saveToFile(file2)) {
+            System.out.println("#@!@# Game crashed! Crash report saved to: #@!@# " + file2.getAbsolutePath());
+        } else {
+            System.out.println("#@?@# Game crashed! Crash report could not be saved. #@?@#");
+        }
     }
 }
