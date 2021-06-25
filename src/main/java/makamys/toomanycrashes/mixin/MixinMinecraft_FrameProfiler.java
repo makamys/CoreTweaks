@@ -13,10 +13,13 @@ import net.minecraft.client.Minecraft;
 @Mixin(Minecraft.class)
 public class MixinMinecraft_FrameProfiler {
 	
-	@Redirect(method = "runGameLoop", at = @At(value = "INVOKE", target= "Lorg/lwjgl/opengl/Display;sync(I)V", args= {"log=true"}))
-	public void redirectSync(int fps) {
+	@Inject(method = "runGameLoop", at = @At(value = "INVOKE", target= "Lorg/lwjgl/opengl/Display;sync(I)V"))
+	public void preSync(CallbackInfo ci) {
 		FrameProfiler.instance.preSync();
-		Display.sync(fps);
+	}
+	
+	@Inject(method = "runGameLoop", at = @At(value = "INVOKE", target= "Lorg/lwjgl/opengl/Display;sync(I)V", shift = At.Shift.AFTER))
+	public void postSync(CallbackInfo ci) {
 		FrameProfiler.instance.postSync();
 	}
 	
