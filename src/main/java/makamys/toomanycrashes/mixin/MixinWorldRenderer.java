@@ -12,7 +12,7 @@ import net.minecraft.client.renderer.WorldRenderer;
 @Mixin(WorldRenderer.class)
 abstract class MixinWorldRenderer {
 
-    @Redirect(method = "updateRenderer", at = @At(value = "INVOKE", target = "LReflector;callBoolean(Ljava/lang/Object;LReflectorMethod;[Ljava/lang/Object;)Z", args = {"log=true"}))
+    @Redirect(method = "updateRenderer", at = @At(value = "INVOKE", target = "LReflector;callBoolean(Ljava/lang/Object;LReflectorMethod;[Ljava/lang/Object;)Z"))
     public boolean redirectCallBoolean(Object o, @Coerce Object rm, Object... objects) {
 		if(Util.Reflector_ForgeBlock_hasTileEntity.equals(rm)) {
 			return ((Block)o).hasTileEntity((int)objects[0]);

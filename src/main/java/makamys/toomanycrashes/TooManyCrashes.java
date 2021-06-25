@@ -83,16 +83,6 @@ public class TooManyCrashes
         }
     }
     
-    @SubscribeEvent
-    public void onCEL(ChunkEvent.Load event) {
-    	System.out.println("ChunkEvent.Load " + event.getChunk().xPosition + " " + event.getChunk().zPosition);
-    }
-    
-    @SubscribeEvent
-    public void onCEU(ChunkEvent.Unload event) {
-    	System.out.println("ChunkEvent.Unload " + event.getChunk().xPosition + " " + event.getChunk().zPosition);
-    }
-    
     public static void handleCrash(Throwable t, CrashReport crashReporter) {
         if(t instanceof IllegalStateException && t.getMessage().equals("Already tesselating!")) {
             Tessellator.instance.draw();
