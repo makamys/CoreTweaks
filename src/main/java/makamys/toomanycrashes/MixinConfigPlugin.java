@@ -76,6 +76,11 @@ public class MixinConfigPlugin implements IMixinConfigPlugin {
                 "makamys.toomanycrashes.mixin.MixinEntityRenderer_Clouds"
                 ).contains(mixinClassName)){
             return Config.cloudHeightCheck != Config.CloudHeightCheck.UNCHANGED;
+        } else if(Arrays.asList(
+                "makamys.toomanycrashes.mixin.MixinEntityRenderer_FrameProfiler",
+                "makamys.toomanycrashes.mixin.MixinMinecraft_FrameProfiler"
+                ).contains(mixinClassName)){
+            return Config.frameProfilerHooks;
         } else {
             return true;
         }

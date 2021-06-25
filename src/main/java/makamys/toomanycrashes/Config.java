@@ -20,6 +20,7 @@ public class Config {
     public static boolean jarDiscovererCache;
     public static boolean fastProgressBar;
     public static boolean fastStepMessageStrip;
+    public static boolean frameProfilerHooks;
     public static CloudHeightCheck cloudHeightCheck;
     
     public static boolean TMCCommand;
@@ -55,6 +56,7 @@ public class Config {
         spikeThreshold = config.get("Misc", "spikeThreshold", 30).getInt();
         printActive = config.get("Misc", "printActive", true).getBoolean();
         methodsToProfile = config.get("Misc", "methodsToProfile", "").getString();
+        frameProfilerHooks = config.get("Misc", "frameProfilerHooks", false, "Insert hooks that lets the frame profiler profile various parts of frame rendering. Highly recommended if you are using the frame profiler.").getBoolean();
         cloudHeightCheck = CloudHeightCheck.valueOf(config.get("Tweaks", "cloudHeightCheck", CloudHeightCheck.VARIABLE_CORRECTED.toString(),
         		"Lets you tweak the condition used to decide whether to render opaque or transparent clouds.\n" + 
 		        "UNCHANGED: Don't change anything\n" +
