@@ -3,7 +3,9 @@ package makamys.toomanycrashes.mixin;
 import org.lwjgl.opengl.Display;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
 
 import makamys.toomanycrashes.FrameProfiler;
 import net.minecraft.client.Minecraft;
@@ -16,5 +18,15 @@ public class MixinMinecraft_FrameProfiler {
 		FrameProfiler.instance.preSync();
 		Display.sync(fps);
 		FrameProfiler.instance.postSync();
+	}
+	
+	@Inject(method = "runGameLoop", at = @At(value = "HEAD"))
+	public void preRunGameLoop(CallbackInfo ci) {
+		FrameProfiler.instance.preRunGameLoop();
+	}
+	
+	@Inject(method = "runGameLoop", at = @At(value = "RETURN"))
+	public void postRunGameLoop(CallbackInfo ci) {
+		FrameProfiler.instance.postRunGameLoop();
 	}
 }

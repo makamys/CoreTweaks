@@ -19,7 +19,9 @@ public class FrameProfiler {
     	UPDATERENDERERS_END,
     	UPDATERENDERERS_DEADLINE,
     	SYNC_START,
-    	SYNC_END
+    	SYNC_END,
+    	GAMELOOP_START,
+    	GAMELOOP_END
     }
     
     
@@ -33,7 +35,6 @@ public class FrameProfiler {
     
     public void onFrameStart() {
         if(started) {
-        	tb.endRow();
             addEntry(FRAME_START);
         }
     }
@@ -66,6 +67,19 @@ public class FrameProfiler {
     public void postSync() {
     	if(started) {
 	    	addEntry(SYNC_END);
+    	}
+    }
+    
+    public void preRunGameLoop() {
+    	if(started) {
+        	tb.endRow();
+	    	addEntry(GAMELOOP_START);
+    	}
+    }
+    
+    public void postRunGameLoop() {
+    	if(started) {
+	    	addEntry(GAMELOOP_END);
     	}
     }
     
