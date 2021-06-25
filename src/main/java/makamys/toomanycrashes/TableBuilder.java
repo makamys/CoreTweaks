@@ -45,6 +45,7 @@ public class TableBuilder<C extends Enum, V> {
     					rowValues[valI] = rowValue != null ? String.valueOf(rowValue) : "";
     				}
     				writer.write(String.join(",", rowValues) + "\n");
+    				row.clear();
     				Arrays.fill(rowValues, null);
     			} else {
     				row.put(key, value);

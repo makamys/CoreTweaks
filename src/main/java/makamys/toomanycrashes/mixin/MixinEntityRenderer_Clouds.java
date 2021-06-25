@@ -12,7 +12,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.EntityRenderer;
 
 @Mixin(EntityRenderer.class)
-abstract class MixinEntityRenderer {
+abstract class MixinEntityRenderer_Clouds {
 	
 	@ModifyConstant(method = "renderWorld", constant = @Constant(doubleValue = 128.0D, ordinal = 0))
 	double cloudHeight0(double o) {

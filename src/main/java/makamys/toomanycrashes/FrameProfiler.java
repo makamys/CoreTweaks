@@ -13,7 +13,13 @@ public class FrameProfiler {
     private boolean started = false;
     
     enum Entry {
-    	FRAME_START
+    	FRAME_START,
+    	FRAME_END,
+    	RENDERWORLD_END,
+    	UPDATERENDERERS_END,
+    	UPDATERENDERERS_DEADLINE,
+    	SYNC_START,
+    	SYNC_END
     }
     
     
@@ -30,6 +36,37 @@ public class FrameProfiler {
         	tb.endRow();
             addEntry(FRAME_START);
         }
+    }
+    
+    public void onFrameEnd() {
+        if(started) {
+            addEntry(FRAME_END);
+        }
+    }
+    
+    public void postRenderWorld(float alpha, long deadline) {
+    	if(started) {
+	    	addEntry(RENDERWORLD_END);
+	        addEntry(UPDATERENDERERS_DEADLINE, deadline);
+    	}
+    }
+    
+    public void postUpdateRenderers() {
+    	if(started) {
+	    	addEntry(UPDATERENDERERS_END);
+    	}
+    }
+    
+    public void preSync() {
+    	if(started) {
+	    	addEntry(SYNC_START);
+    	}
+    }
+    
+    public void postSync() {
+    	if(started) {
+	    	addEntry(SYNC_END);
+    	}
     }
     
     public void start() {

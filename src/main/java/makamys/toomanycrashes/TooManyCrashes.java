@@ -80,6 +80,8 @@ public class TooManyCrashes
     public void onRenderTick(TickEvent.RenderTickEvent event) {
         if(event.phase == TickEvent.Phase.START) {
             FrameProfiler.instance.onFrameStart();
+        } else if(event.phase == TickEvent.Phase.END) {
+        	FrameProfiler.instance.onFrameEnd();
         }
     }
     

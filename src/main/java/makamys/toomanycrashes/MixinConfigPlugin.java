@@ -73,7 +73,7 @@ public class MixinConfigPlugin implements IMixinConfigPlugin {
                 ).contains(mixinClassName)){
             return Config.fastStepMessageStrip;
         } else if(Arrays.asList(
-                "makamys.toomanycrashes.mixin.MixinEntityRenderer"
+                "makamys.toomanycrashes.mixin.MixinEntityRenderer_Clouds"
                 ).contains(mixinClassName)){
             return Config.cloudHeightCheck != Config.CloudHeightCheck.UNCHANGED;
         } else {
