@@ -30,12 +30,18 @@ public class ClientChunkMap extends LongHashMap {
         }
     }
     
+    public void onBug() {
+    	System.out.println("Bug detected in ClientChunkMap");
+    }
+    
     public int getNumHashElements()
     {
         int result = chunksContained;
         
         if(testMap != null) {
-            assert result == testMap.getNumHashElements();
+        	if(result != testMap.getNumHashElements()) {
+        		onBug();
+        	}
         }
         
         return result;
@@ -57,7 +63,9 @@ public class ClientChunkMap extends LongHashMap {
         }
         
         if(testMap != null) {
-            assert result == testMap.getValueByKey(xz);
+            if(result != testMap.getValueByKey(xz)) {
+            	onBug();
+            }
         }
         
         return result;
@@ -73,7 +81,9 @@ public class ClientChunkMap extends LongHashMap {
         int mapX = Math.floorMod(x, radius * 2 + 1);
         int mapZ = Math.floorMod(z, radius * 2 + 1);
         
-        assert chunkXinternal2world(mapX) == x && chunkZinternal2world(mapZ) == z;
+        if(chunkXinternal2world(mapX) != x || chunkZinternal2world(mapZ) != z) {
+        	onBug();
+        }
         
         map[mapX][mapZ] = chunk;
     }
@@ -90,7 +100,9 @@ public class ClientChunkMap extends LongHashMap {
         boolean result = (isInRange(chunkX, chunkZ) && getMapElement(chunkX, chunkZ) != null) || farMap.containsKey(xz);
         
         if(testMap != null) {
-            assert result == testMap.containsItem(xz);
+            if(result != testMap.containsItem(xz)) {
+            	onBug();
+            }
         }
         
         return result;
@@ -138,7 +150,9 @@ public class ClientChunkMap extends LongHashMap {
         }
         
         if(testMap != null) {
-            assert result == testMap.remove(xz);
+            if(result != testMap.remove(xz)) {
+            	onBug();
+            }
         }
         return result;
     }
@@ -202,7 +216,9 @@ public class ClientChunkMap extends LongHashMap {
         
         if(test) {
             for(Chunk chunk : farMap.values()) {
-                assert !isInRange(chunk.xPosition, chunk.zPosition);
+                if(isInRange(chunk.xPosition, chunk.zPosition)) {
+                	onBug();
+                }
             }
         }
     }
