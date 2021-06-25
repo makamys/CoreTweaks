@@ -79,7 +79,7 @@ public class TooManyCrashes
     @SubscribeEvent
     public void onRenderTick(TickEvent.RenderTickEvent event) {
         if(event.phase == TickEvent.Phase.START) {
-            FrameTimer.instance.onFrameStart();
+            FrameProfiler.instance.onFrameStart();
         }
     }
     

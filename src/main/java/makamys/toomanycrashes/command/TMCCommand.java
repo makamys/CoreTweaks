@@ -1,6 +1,6 @@
 package makamys.toomanycrashes.command;
 
-import makamys.toomanycrashes.FrameTimer;
+import makamys.toomanycrashes.FrameProfiler;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
@@ -27,26 +27,26 @@ public class TMCCommand extends CommandBase {
     @Override
     public void processCommand(ICommandSender sender, String[] args) {
         if(args.length > 0) {
-            if(args[0].equals("frametimer")) {
+            if(args[0].equals("frameprofiler")) {
                 if(args.length == 2) {
                     switch(args[1]) {
                         case "start": {
-                            if(FrameTimer.instance.isStarted()) {
-                                sender.addChatMessage(new ChatComponentText(EnumChatFormatting.RED + "Already started frame timer"));
+                            if(FrameProfiler.instance.isStarted()) {
+                                sender.addChatMessage(new ChatComponentText(EnumChatFormatting.RED + "Already started frame profiler"));
                             } else {
-                                FrameTimer.instance.start();
-                                sender.addChatMessage(new ChatComponentText("Started frame timer"));
+                                FrameProfiler.instance.start();
+                                sender.addChatMessage(new ChatComponentText("Started frame profiler"));
                             }
                             return;
                         }
                         case "stop": {
-                            if(!FrameTimer.instance.isStarted()) {
-                                sender.addChatMessage(new ChatComponentText(EnumChatFormatting.RED + "Frame timer is not running"));
+                            if(!FrameProfiler.instance.isStarted()) {
+                                sender.addChatMessage(new ChatComponentText(EnumChatFormatting.RED + "Frame profiler is not running"));
                             } else {
-                                if(FrameTimer.instance.stop()) {
-                                    sender.addChatMessage(new ChatComponentText("Stopped frame timer"));
+                                if(FrameProfiler.instance.stop()) {
+                                    sender.addChatMessage(new ChatComponentText("Stopped frame profiler"));
                                 } else {
-                                    sender.addChatMessage(new ChatComponentText(EnumChatFormatting.RED + "Failed to save frame times, see log for details"));
+                                    sender.addChatMessage(new ChatComponentText(EnumChatFormatting.RED + "Failed to save frame profiler results, see log for details"));
                                 }
                             }
                             
@@ -57,7 +57,7 @@ public class TMCCommand extends CommandBase {
             }
         }
         
-        throw new WrongUsageException("tmc (frametimer (start|stop))", new Object[0]);
+        throw new WrongUsageException("tmc (frameprofiler (start|stop))", new Object[0]);
     }
     
 }
