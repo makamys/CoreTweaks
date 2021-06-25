@@ -29,7 +29,7 @@ public class TableBuilder<C extends Enum, V> {
     }
     
     public void writeToCSV(File file) throws IOException {
-    	List<C> vals = EnumUtils.getEnumList(entryKeys.get(0).getClass());
+    	List<C> vals = EnumUtils.getEnumList((Class<C>)entryKeys.get(0).getClass());
     	try(FileWriter writer = new FileWriter(file)) {
     		writer.write(String.join(",", vals.stream().map(String::valueOf).toArray(String[]::new)) + "\n");
     		Map<C, V> row = new HashMap<>();
