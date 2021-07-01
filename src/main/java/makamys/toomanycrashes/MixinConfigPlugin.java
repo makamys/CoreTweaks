@@ -81,6 +81,10 @@ public class MixinConfigPlugin implements IMixinConfigPlugin {
                 "makamys.toomanycrashes.mixin.MixinMinecraft_FrameProfiler"
                 ).contains(mixinClassName)){
             return Config.frameProfilerHooks;
+        } else if(Arrays.asList(
+                "makamys.toomanycrashes.mixin.MixinEntity"
+                ).contains(mixinClassName)){
+            return Config.fixSmallEntitySwim;
         } else {
             return true;
         }

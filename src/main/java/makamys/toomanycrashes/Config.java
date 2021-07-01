@@ -16,6 +16,7 @@ public class Config {
     public static boolean getPendingBlockUpdates;
     public static boolean clientChunkMap;
     public static boolean restoreTravelSound;
+    public static boolean fixSmallEntitySwim;
     public static boolean modDiscovererSkipKnownLibraries;
     public static boolean jarDiscovererCache;
     public static boolean fastProgressBar;
@@ -46,6 +47,7 @@ public class Config {
         ofFixUpdateRenderersReturnValue = config.get("Tweaks", "ofFixUpdateRenderersReturnValue", true, "Fixes OptiFine's implementation of updateRenderers returning the opposite value of what it should (probably a bug). Only effective when framerate limiter is enabled. Speeds up chunk updates significantly, and increases framerate when there aren't many chunk updates. However, during heavy chunk updating (e.g. when loading a world) it decreases the framerate as a side effect of not being as lazy.").getBoolean();
         ofOptimizeWorldRenderer = config.get("Optimizations", "ofOptimizeWorldRenderer", true, "Replaces the reflection OptiFine uses to access Forge methods in WorldRenderer#updateRenderer with direct calls to those methods. Small speedup during chunk updates.").getBoolean();
         restoreTravelSound = config.get("Tweaks", "restoreTravelSound", true, "Restore interdimensional travel sound (travel.ogg). Fixes MC-233, fixed in 1.9").getBoolean();
+        fixSmallEntitySwim = config.get("Tweaks", "fixSmallEntitySwim", true, "Fixes bug in entity swimming code resulting in small entities (ones with hitboxes less than 0.8 units tall, such as DMod's foxes) being prone to drowning.").getBoolean();
         getPendingBlockUpdates = config.get("Optimizations", "getPendingBlockUpdates", true, "Optimizes WorldServer#getPendingBlockUpdates. OptiFine also does this, but this won't have an effect when OF is present, so there's no conflict.").getBoolean();
         clientChunkMap = config.get("Optimizations", "clientChunkMap", false, "Faster implementation of ChunkProviderClient#chunkMapping. From 1.16 (I don't know when exactly it was added). Might be a little buggy (it should only cause client-side errors though).").getBoolean();
         modDiscovererSkipKnownLibraries = config.get("Optimizations", "modDiscovererSkipKnownLibraries", true, "Skip over known libraries during Forge mod discovery. From Forge 1.12 (added in 1.9)").getBoolean();
