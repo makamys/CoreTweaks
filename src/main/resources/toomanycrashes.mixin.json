@@ -14,7 +14,8 @@
         "MixinEntityRenderer_Clouds",
         "MixinEntityRenderer_FrameProfiler",
         "MixinRenderGlobal",
-        "MixinWorldRenderer"
+        "MixinWorldRenderer",
+        "MixinEntity"
     ],
     "plugin": "makamys.toomanycrashes.MixinConfigPlugin"
 }
