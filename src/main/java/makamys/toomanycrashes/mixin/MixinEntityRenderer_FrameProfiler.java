@@ -18,7 +18,7 @@ abstract class MixinEntityRenderer_FrameProfiler {
 		FrameProfiler.instance.postRenderWorld(alpha, deadline);
 	}
 	
-	@Redirect(method = "renderWorld", at = @At(value = "INVOKE", target = "Lnet/minecraft/profiler/Profiler;endStartSection(Ljava/lang/String;)V", args= {"log=true"}))
+	@Redirect(method = "renderWorld", at = @At(value = "INVOKE", target = "Lnet/minecraft/profiler/Profiler;endStartSection(Ljava/lang/String;)V"))
 	public void redirectEndStartSection(Profiler profiler, String str) {
 		if(str.equals("prepareterrain")) {
 			FrameProfiler.instance.postUpdateRenderers();
