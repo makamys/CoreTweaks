@@ -5,10 +5,7 @@
     "refmap": "toomanycrashes.mixin.refmap.json",
     "compatibilityLevel": "JAVA_8",
     "mixins": [
-        "MixinModDiscoverer",
-        "MixinJarDiscoverer",
-        "MixinProgressBar",
-        "MixinFMLClientHandler"
+
     ],
     "plugin": "makamys.toomanycrashes.MixinConfigPlugin",
     "target": "@env(INIT)"

@@ -1,10 +1,13 @@
 package makamys.toomanycrashes;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
 import org.spongepowered.asm.lib.tree.ClassNode;
+import org.spongepowered.asm.mixin.MixinEnvironment;
+import org.spongepowered.asm.mixin.MixinEnvironment.Phase;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
 
@@ -26,68 +29,7 @@ public class MixinConfigPlugin implements IMixinConfigPlugin {
 
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
-        Config.reload();
-        
-        if(Arrays.asList(
-                "makamys.toomanycrashes.mixin.MixinChunkProviderClient"
-                ).contains(mixinClassName)){
-            return Config.clientChunkMap;
-        } else if(Arrays.asList(
-                "makamys.toomanycrashes.mixin.MixinMinecraft_CrashHandler"
-                ).contains(mixinClassName)){
-            return Config.crashHandler;
-        } else if(Arrays.asList(
-                "makamys.toomanycrashes.mixin.MixinMinecraft_SyncTweak"
-                ).contains(mixinClassName)){
-            return Config.forceUncapFramerate;
-        } else if(Arrays.asList(
-                "makamys.toomanycrashes.mixin.MixinRenderGlobal"
-                ).contains(mixinClassName)){
-            return Config.ofFixUpdateRenderersReturnValue;
-        } else if(Arrays.asList(
-                "makamys.toomanycrashes.mixin.MixinWorldRenderer"
-                ).contains(mixinClassName)){
-            return Config.ofOptimizeWorldRenderer;
-        } else if(Arrays.asList(
-                "makamys.toomanycrashes.mixin.MixinWorldServer"
-                ).contains(mixinClassName)){
-            return Config.getPendingBlockUpdates;
-        } else if(Arrays.asList(
-                "makamys.toomanycrashes.mixin.MixinNetHandlerPlayClient"
-                ).contains(mixinClassName)){
-            return Config.restoreTravelSound;
-        } else if(Arrays.asList(
-                "makamys.toomanycrashes.mixin.MixinModDiscoverer"
-                ).contains(mixinClassName)){
-            return Config.modDiscovererSkipKnownLibraries;
-        } else if(Arrays.asList(
-                "makamys.toomanycrashes.mixin.MixinJarDiscoverer"
-                ).contains(mixinClassName)){
-            return Config.jarDiscovererCache;
-        } else if(Arrays.asList(
-                "makamys.toomanycrashes.mixin.MixinProgressBar"
-                ).contains(mixinClassName)){
-            return Config.fastProgressBar;
-        } else if(Arrays.asList(
-                "makamys.toomanycrashes.mixin.MixinFMLClientHandler"
-                ).contains(mixinClassName)){
-            return Config.fastStepMessageStrip;
-        } else if(Arrays.asList(
-                "makamys.toomanycrashes.mixin.MixinEntityRenderer_Clouds"
-                ).contains(mixinClassName)){
-            return Config.cloudHeightCheck != Config.CloudHeightCheck.UNCHANGED;
-        } else if(Arrays.asList(
-                "makamys.toomanycrashes.mixin.MixinEntityRenderer_FrameProfiler",
-                "makamys.toomanycrashes.mixin.MixinMinecraft_FrameProfiler"
-                ).contains(mixinClassName)){
-            return Config.frameProfilerHooks;
-        } else if(Arrays.asList(
-                "makamys.toomanycrashes.mixin.MixinEntity"
-                ).contains(mixinClassName)){
-            return Config.fixSmallEntitySwim;
-        } else {
-            return true;
-        }
+        return true;
     }
 
     @Override
@@ -98,8 +40,30 @@ public class MixinConfigPlugin implements IMixinConfigPlugin {
 
     @Override
     public List<String> getMixins() {
-        // TODO Auto-generated method stub
-        return null;
+        Config.reload();
+        
+        List<String> mixins = new ArrayList<>();
+        
+        Phase phase = MixinEnvironment.getCurrentEnvironment().getPhase();
+        if(phase == Phase.INIT) {
+            if(Config.modDiscovererSkipKnownLibraries) mixins.add("MixinModDiscoverer");
+            if(Config.jarDiscovererCache) mixins.add("MixinJarDiscoverer");
+            if(Config.fastProgressBar) mixins.add("MixinProgressBar");
+            if(Config.fastStepMessageStrip) mixins.add("MixinFMLClientHandler");
+        } else if(phase == Phase.DEFAULT) {
+            if(Config.clientChunkMap) mixins.add("MixinChunkProviderClient");
+            if(Config.crashHandler) mixins.add("MixinMinecraft_CrashHandler");
+            if(Config.forceUncapFramerate) mixins.add("MixinMinecraft_SyncTweak");
+            if(Config.ofFixUpdateRenderersReturnValue) mixins.add("MixinRenderGlobal");
+            if(Config.ofOptimizeWorldRenderer) mixins.add("MixinWorldRenderer");
+            if(Config.getPendingBlockUpdates) mixins.add("MixinWorldServer");
+            if(Config.restoreTravelSound) mixins.add("MixinNetHandlerPlayClient");
+            if(Config.cloudHeightCheck != Config.CloudHeightCheck.UNCHANGED) mixins.add("MixinEntityRenderer_Clouds");
+            if(Config.frameProfilerHooks) mixins.addAll(Arrays.asList("MixinEntityRenderer_FrameProfiler",
+                                                                        "MixinMinecraft_FrameProfiler"));
+            if(Config.fixSmallEntitySwim) mixins.add("MixinEntity");
+        }
+        return mixins;
     }
 
     @Override
