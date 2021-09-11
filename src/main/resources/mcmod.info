@@ -1,8 +1,8 @@
 [
 {
-  "modid": "toomanycrashes",
-  "name": "Too Many Crashes",
-  "description": "Makes the game not exit when a crash happens",
+  "modid": "coretweaks",
+  "name": "CoreTweaks",
+  "description": "Various bug fixes and performance improvements",
   "version": "${version}",
   "mcversion": "${mcversion}",
   "url": "",

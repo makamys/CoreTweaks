@@ -34,8 +34,8 @@ configurations {
 apply plugin: 'forge'
 
 version = "0.1"
-group= "makamys.toomanycrashes" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = "toomanycrashes"
+group= "makamys.coretweaks" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+archivesBaseName = "coretweaks"
 
 minecraft {
     version = "1.7.10-10.13.4.1614-1.7.10"
@@ -56,19 +56,19 @@ dependencies {
     //embed 'com.google.guava:guava:21.0'
 }
 
-def outRefMapFile = tasks.compileJava.temporaryDir.toString() + "/toomanycrashes.mixin.refmap.json" // 1.7.10 mixin compatibility
+def outRefMapFile = tasks.compileJava.temporaryDir.toString() + "/coretweaks.mixin.refmap.json" // 1.7.10 mixin compatibility
 
 jar {
     manifest {
         attributes (
-            'MixinConfigs': 'toomanycrashes.mixin.json,toomanycrashes-init.mixin.json',
+            'MixinConfigs': 'coretweaks.mixin.json,coretweaks-init.mixin.json',
             'TweakClass': 'org.spongepowered.asm.launch.MixinTweaker',
             'TweakOrder': 0,
             
             // If these two are not set, Forge will not detect the mod, it will only run the mixins
             'FMLCorePluginContainsFMLMod': 'true',
             'ForceLoadAsMod': 'true',
-			'FMLCorePlugin': 'makamys.toomanycrashes.TMCPlugin'
+			'FMLCorePlugin': 'makamys.coretweaks.CoreTweaksPlugin'
         )
     }
 
