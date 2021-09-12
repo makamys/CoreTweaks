@@ -12,7 +12,9 @@ import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
 
 import cpw.mods.fml.common.Loader;
+import cpw.mods.fml.common.ObfuscationReflectionHelper;
 import net.minecraft.launchwrapper.Launch;
+import net.minecraft.launchwrapper.LaunchClassLoader;
 
 public class MixinConfigPlugin implements IMixinConfigPlugin {
     
@@ -20,6 +22,10 @@ public class MixinConfigPlugin implements IMixinConfigPlugin {
     public void onLoad(String mixinPackage) {
         //JarDiscovererCache.load();
         //Launch.classLoader.registerTransformer(ASMModParserTransformer.class.getName());
+        if(MixinEnvironment.getCurrentEnvironment() == MixinEnvironment.getDefaultEnvironment()) {
+            Set<String> transformerExceptions = (Set<String>)ObfuscationReflectionHelper.getPrivateValue(LaunchClassLoader.class, Launch.classLoader, "transformerExceptions");
+            transformerExceptions.remove("fastcraft");
+        }
     }
 
     @Override
@@ -63,6 +69,8 @@ public class MixinConfigPlugin implements IMixinConfigPlugin {
             if(Config.frameProfilerHooks) mixins.addAll(Arrays.asList("MixinEntityRenderer_FrameProfiler",
                                                                         "MixinMinecraft_FrameProfiler"));
             if(Config.fixSmallEntitySwim) mixins.add("MixinEntity");
+            mixins.add("optimization.fastcraft_texture_load.MixinFastcraftTextureUtil");
+            mixins.add("optimization.fastcraft_texture_load.MixinTextureMap");
         }
         return mixins;
     }

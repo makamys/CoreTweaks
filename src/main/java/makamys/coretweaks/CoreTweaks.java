@@ -40,6 +40,8 @@ public class CoreTweaks
     public static final String MODID = "coretweaks";
     public static final String VERSION = "0.1";
     
+    public static int boundTexture;
+    
     @EventHandler
     public void init(FMLInitializationEvent event)
     {
@@ -127,5 +129,9 @@ public class CoreTweaks
         } else {
             System.out.println("#@?@# Game crashed! Crash report could not be saved. #@?@#");
         }
+    }
+
+    public static void preFastcraftA() {
+        System.out.println("Hi! " + (GL11.glGetInteger(GL11.GL_TEXTURE_BINDING_2D) == CoreTweaks.boundTexture));
     }
 }
