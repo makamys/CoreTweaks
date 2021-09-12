@@ -2,7 +2,7 @@
 {
   "modid": "coretweaks",
   "name": "CoreTweaks",
-  "description": "Various bug fixes and performance improvements",
+  "description": "A bunch of random bug fixes and performance improvements",
   "version": "${version}",
   "mcversion": "${mcversion}",
   "url": "",
