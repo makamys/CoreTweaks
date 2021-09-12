@@ -5,7 +5,6 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 import makamys.coretweaks.GuiFatalErrorScreen;
-import makamys.coretweaks.MixinLogger;
 import makamys.coretweaks.CoreTweaks;
 
 import org.spongepowered.asm.mixin.injection.At;
@@ -31,8 +30,6 @@ abstract class MixinMinecraft_CrashHandler {
     
     @Redirect(method = "Lnet/minecraft/client/Minecraft;run()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;runGameLoop()V"))
     public void run(Minecraft minecraft) {
-        MixinLogger.printActive(this);
-        
         try {
             runGameLoop();
         } catch(Throwable e) {

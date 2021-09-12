@@ -9,7 +9,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import cpw.mods.fml.common.discovery.asm.ASMModParser;
 import makamys.coretweaks.ClientChunkMap;
-import makamys.coretweaks.MixinLogger;
 import makamys.coretweaks.ducks.IChunkProviderClient;
 import net.minecraft.client.multiplayer.ChunkProviderClient;
 import net.minecraft.world.World;

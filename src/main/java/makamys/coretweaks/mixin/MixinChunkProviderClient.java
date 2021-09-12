@@ -4,7 +4,6 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
 import makamys.coretweaks.ClientChunkMap;
-import makamys.coretweaks.MixinLogger;
 import makamys.coretweaks.ducks.IChunkProviderClient;
 
 import org.spongepowered.asm.mixin.injection.At;
@@ -23,8 +22,6 @@ abstract class MixinChunkProviderClient implements IChunkProviderClient {
     
     @Inject(method = "<init>*", at = @At("RETURN"))
     public void preConstructed(World world, CallbackInfo ci) {
-        MixinLogger.printActive(this);
-        
         chunkMapping = new ClientChunkMap();
     }
     

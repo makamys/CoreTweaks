@@ -8,7 +8,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import makamys.coretweaks.MixinLogger;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.network.NetHandlerPlayClient;
@@ -28,8 +27,6 @@ abstract class MixinNetHandlerPlayClient implements INetHandlerPlayClient {
 	
     @Inject(method = "handleRespawn", at = @At("HEAD"))
     public void preHandleRespawn(S07PacketRespawn packet, CallbackInfo ci) {
-        MixinLogger.printActive(this);
-        
         int dimension = packet.func_149082_c();
         if (dimension != gameController.thePlayer.dimension) {
         	soundPending = true;

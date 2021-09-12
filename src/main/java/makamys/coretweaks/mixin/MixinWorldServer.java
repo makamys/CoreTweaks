@@ -15,8 +15,6 @@ import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
-import makamys.coretweaks.MixinLogger;
-
 import org.spongepowered.asm.mixin.injection.At;
 
 import net.minecraft.world.ChunkCoordIntPair;
@@ -67,8 +65,6 @@ abstract class MixinWorldServer {
     @Overwrite
     public List getPendingBlockUpdates(Chunk p_72920_1_, boolean p_72920_2_)
     {
-        MixinLogger.printActive(this);
-        
         ArrayList arraylist = null;
         ChunkCoordIntPair chunkcoordintpair = p_72920_1_.getChunkCoordIntPair();
         int i = (chunkcoordintpair.chunkXPos << 4) - 2;
