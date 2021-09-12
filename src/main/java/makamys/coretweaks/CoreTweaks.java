@@ -41,6 +41,7 @@ public class CoreTweaks
     public static final String VERSION = "0.1";
     
     public static int boundTexture;
+    public static boolean isStitching;
     
     @EventHandler
     public void init(FMLInitializationEvent event)
@@ -132,6 +133,8 @@ public class CoreTweaks
     }
 
     public static void preFastcraftA() {
-        System.out.println("Hi! " + (GL11.glGetInteger(GL11.GL_TEXTURE_BINDING_2D) == CoreTweaks.boundTexture));
+        if(isStitching) {
+            assert GL11.glGetInteger(GL11.GL_TEXTURE_BINDING_2D) == CoreTweaks.boundTexture;
+        }
     }
 }
