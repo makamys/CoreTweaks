@@ -57,7 +57,7 @@ public class Config {
         coreTweaksCommand = config.get("Misc", "coreTweaksCommand", true).getBoolean();
         spikeThreshold = config.get("Misc", "spikeThreshold", 30).getInt();
         printActive = config.get("Misc", "printActive", true).getBoolean();
-        methodsToProfile = config.get("Misc", "methodsToProfile", "").getString();
+        methodsToProfile = config.get("Misc", "methodsToProfile", "Comma-separated list of methods to profile. The results will be written to profiler-<timestamp>.json in your instance folder. Currently only the call count is measured. Method names have the syntax of `<canonical class name>.<method name>`, like `some.package.SomeClass.method`.").getString();
         frameProfilerHooks = config.get("Misc", "frameProfilerHooks", false, "Insert hooks that lets the frame profiler profile various parts of frame rendering. Highly recommended if you are using the frame profiler.").getBoolean();
         cloudHeightCheck = CloudHeightCheck.valueOf(config.get("Tweaks", "cloudHeightCheck", CloudHeightCheck.VARIABLE_CORRECTED.toString(),
         		"Lets you tweak the condition used to decide whether to render opaque or transparent clouds.\n" + 
