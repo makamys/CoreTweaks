@@ -131,10 +131,4 @@ public class CoreTweaks
             System.out.println("#@?@# Game crashed! Crash report could not be saved. #@?@#");
         }
     }
-
-    public static void preFastcraftA() {
-        if(isStitching) {
-            assert GL11.glGetInteger(GL11.GL_TEXTURE_BINDING_2D) == CoreTweaks.boundTexture;
-        }
-    }
 }
