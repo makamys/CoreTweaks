@@ -73,6 +73,7 @@ public class MixinConfigPlugin implements IMixinConfigPlugin {
             if(Config.fcOptimizeTextureUpload) {
                 String fcVersion = (String)Launch.blackboard.get("fcVersion");
                 if(fcVersion != null) {
+                    boolean ok = true;
                     switch(fcVersion) {
                     case "1.23":
                         mixins.add("optimization.fastcrafttextureload.MixinFastcraft1_23TextureUtil");
@@ -82,10 +83,14 @@ public class MixinConfigPlugin implements IMixinConfigPlugin {
                         break;
                     default:
                         LOGGER.warn("Unsupported FastCraft version: " + fcVersion + ". fcOptimizeTextureUpload won't work.");
+                        ok = false;
+                        break;
                     }
                     
-                    mixins.add("optimization.fastcrafttextureload.MixinTextureUtil");
-                    mixins.add("optimization.fastcrafttextureload.MixinTextureMap");
+                    if(ok) {
+                        mixins.add("optimization.fastcrafttextureload.MixinTextureUtil");
+                        mixins.add("optimization.fastcrafttextureload.MixinTextureMap");
+                    }
                 }
             }
             if(Config.threadedTextureLoader) {
