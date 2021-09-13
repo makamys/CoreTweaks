@@ -51,7 +51,7 @@ public class Config {
         Configuration config = new Configuration(new File(Launch.minecraftHome, "config/coretweaks.cfg"));
         
         config.load();
-        crashHandler = config.getBoolean("crashHandler", "Tweaks", false, "Lets you survive crashes without the game exiting, usually. May cause graphical glitches after the crash, so I only recommend enabling it in test/dev sessions.");
+        crashHandler = config.getBoolean("crashHandler", "Tweaks", false, "(Experimental) Lets you survive crashes without the game exiting, usually. May cause bizarre graphical artifacts after the crash, so I only recommend enabling it in test/dev sessions.");
         forceUncapFramerate = config.getBoolean("forceUncapFramerate", "Tweaks", false, "Uncaps framerate even when framelimiter is enabled. The framerate limit will only be used to decide how much time to spend updating chunks each frame. Vanilla Beta 1.7.3 behavior. It seems to make things worse though, at least with OptiFine.");
         restoreTravelSound = config.getBoolean("restoreTravelSound", "Tweaks", true, "Restore interdimensional travel sound (travel.ogg). Fixes MC-233, fixed in 1.9");
         fixSmallEntitySwim = config.getBoolean("fixSmallEntitySwim", "Tweaks", true, "Fixes bug in entity swimming code resulting in small entities (ones with hitboxes less than 0.8 units tall, such as DMod's foxes) being prone to drowning.");
@@ -78,9 +78,9 @@ public class Config {
         frameProfilerHooks = config.getBoolean("frameProfilerHooks", "Diagnostics", false, "Insert hooks that lets the frame profiler profile various parts of frame rendering. Highly recommended if you are using the frame profiler.");
         
         threadedTextureLoader = config.getBoolean("threadedTextureLoader", "Optimizations", false,
-                "Use multi-threaded texture loading when stitching textures?");
+                "Use multi-threaded texture loading when stitching textures? Placebo.");
         cacheTransformer = config.getBoolean("cacheTransformer", "Optimizations", false, 
-                "Use caching class transformer?");
+                "(Experimental) Use caching class transformer? Reduces startup time when it works, which is not all the time.");
         folderTexturePackOptimization = config.getBoolean("folderTexturePack", "Optimizations", true, 
                 "Use the optimization that speeds up loading folder resource packs?");
         
