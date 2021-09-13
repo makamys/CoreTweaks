@@ -1,4 +1,4 @@
-package makamys.coretweaks.mixin.optimization.fastcraft_texture_load;
+package makamys.coretweaks.mixin.optimization.fastcrafttextureload;
 
 import org.lwjgl.opengl.GL11;
 import org.spongepowered.asm.mixin.Mixin;

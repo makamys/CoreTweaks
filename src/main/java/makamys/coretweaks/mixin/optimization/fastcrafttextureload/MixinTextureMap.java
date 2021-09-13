@@ -1,4 +1,4 @@
-package makamys.coretweaks.mixin.optimization.fastcraft_texture_load;
+package makamys.coretweaks.mixin.optimization.fastcrafttextureload;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;

@@ -69,9 +69,9 @@ public class MixinConfigPlugin implements IMixinConfigPlugin {
                                                                         "MixinMinecraft_FrameProfiler"));
             if(Config.fixSmallEntitySwim) mixins.add("MixinEntity");
             if(Config.fcOptimizeTextureUpload) {
-                mixins.add("optimization.fastcraft_texture_load.MixinFastcraftTextureUtil");
-                mixins.add("optimization.fastcraft_texture_load.MixinTextureUtil");
-                mixins.add("optimization.fastcraft_texture_load.MixinTextureMap");
+                mixins.add("optimization.fastcrafttextureload.MixinFastcraftTextureUtil");
+                mixins.add("optimization.fastcrafttextureload.MixinTextureUtil");
+                mixins.add("optimization.fastcrafttextureload.MixinTextureMap");
             }
             if(Config.threadedTextureLoader) {
                 mixins.add("optimization.threadedtextureloader.ITextureMap");
