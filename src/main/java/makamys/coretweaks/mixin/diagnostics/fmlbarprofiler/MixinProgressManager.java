@@ -10,7 +10,7 @@ import cpw.mods.fml.common.ProgressManager;
 import cpw.mods.fml.common.ProgressManager.ProgressBar;
 import makamys.coretweaks.diagnostics.FMLBarProfiler;
 
-@Mixin(ProgressManager.class)
+@Mixin(value = ProgressManager.class, remap = false)
 abstract class MixinProgressManager {
     
     @Inject(method = "push(Ljava/lang/String;IZ)Lcpw/mods/fml/common/ProgressManager$ProgressBar;", at = @At(value = "RETURN"))

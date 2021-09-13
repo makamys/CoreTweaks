@@ -6,6 +6,7 @@ import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import makamys.coretweaks.diagnostics.FMLBarProfiler;
 import makamys.coretweaks.optimization.CacheTransformer;
 import makamys.coretweaks.optimization.ThreadedTextureLoader;
 import net.minecraft.launchwrapper.Launch;
@@ -35,6 +36,10 @@ public class CoreTweaks {
         
         if(Config.cacheTransformer) {
             cacheTransformer = CacheTransformer.register();
+        }
+        
+        if(FMLBarProfiler.isActive()) {
+            FMLBarProfiler.instance().init();
         }
         
         Persistence.lastVersion = CoreTweaks.VERSION;
