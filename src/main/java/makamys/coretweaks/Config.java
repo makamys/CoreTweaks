@@ -28,8 +28,6 @@ public class Config {
     public static boolean coreTweaksCommand;
     public static String methodsToProfile;
     
-    public static int spikeThreshold;
-    
     
     public static enum CloudHeightCheck {
     	UNCHANGED,
@@ -65,8 +63,7 @@ public class Config {
         fcOptimizeTextureUpload = config.get("Optimizations", "fcOptimizeTextureUpload", true, "Removes the call to GL11#getInteger in FastCraft's texture upload handler during texture stitching and uses a cached value instead. Fixes the slowness of texture stitching that happens when OptiFine and FastCraft are both present.").getBoolean();
         
         coreTweaksCommand = config.get("Diagnostics", "coreTweaksCommand", true).getBoolean();
-        spikeThreshold = config.get("Diagnostics", "spikeThreshold", 30).getInt();
-        methodsToProfile = config.get("Diagnostics", "methodsToProfile", "Comma-separated list of methods to profile. The results will be written to profiler-<timestamp>.json in your instance folder. Currently only the call count is measured. Method names have the syntax of `<canonical class name>.<method name>`, like `some.package.SomeClass.method`.").getString();
+        methodsToProfile = config.get("Diagnostics", "methodsToProfile", "", "Comma-separated list of methods to profile. The results will be written to profiler-<timestamp>.json in your instance folder. Currently only the call count is measured. Method names have the syntax of `<canonical class name>.<method name>`, like `some.package.SomeClass.method`.").getString();
         frameProfilerHooks = config.get("Diagnostics", "frameProfilerHooks", false, "Insert hooks that lets the frame profiler profile various parts of frame rendering. Highly recommended if you are using the frame profiler.").getBoolean();
         
         if(config.hasChanged()) {
