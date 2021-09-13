@@ -1,0 +1,17 @@
+dependencies {
+	embed "com.esotericsoftware:kryo:5.1.1"
+	compile files('gradlelibs/fastcraft-dummy.jar') // A jar with empty classes, just to avoid errors during build
+}
+
+jar {
+    manifest {
+        attributes (
+            'MixinConfigs': 'coretweaks.mixin.json,coretweaks-init.mixin.json',
+            
+            // If these two are not set, Forge will not detect the mod, it will only run the mixins
+            'FMLCorePluginContainsFMLMod': 'true',
+            'ForceLoadAsMod': 'true',
+			'FMLCorePlugin': 'makamys.coretweaks.CoreTweaksPlugin'
+        )
+    }
+}
