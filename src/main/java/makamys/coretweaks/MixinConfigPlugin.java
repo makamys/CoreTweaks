@@ -63,6 +63,7 @@ public class MixinConfigPlugin implements IMixinConfigPlugin {
                 mixins.add("diagnostics.fmlbarprofiler.MixinProgressManager");
                 mixins.add("diagnostics.fmlbarprofiler.MixinProgressBar");
             }
+            if(Config.fixSmallEntitySwim) mixins.add("MixinEntity");
         } else if(phase == Phase.DEFAULT) {
             if(Config.clientChunkMap) mixins.add("MixinChunkProviderClient");
             if(Config.crashHandler) mixins.add("MixinMinecraft_CrashHandler");
@@ -74,7 +75,6 @@ public class MixinConfigPlugin implements IMixinConfigPlugin {
             if(Config.cloudHeightCheck != Config.CloudHeightCheck.UNCHANGED) mixins.add("MixinEntityRenderer_Clouds");
             if(Config.frameProfilerHooks) mixins.addAll(Arrays.asList("MixinEntityRenderer_FrameProfiler",
                                                                         "MixinMinecraft_FrameProfiler"));
-            if(Config.fixSmallEntitySwim) mixins.add("MixinEntity");
             if(Config.fcOptimizeTextureUpload) {
                 String fcVersion = (String)Launch.blackboard.get("fcVersion");
                 if(fcVersion != null) {
