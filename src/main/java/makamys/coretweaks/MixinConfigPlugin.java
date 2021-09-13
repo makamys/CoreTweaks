@@ -72,19 +72,21 @@ public class MixinConfigPlugin implements IMixinConfigPlugin {
             if(Config.fixSmallEntitySwim) mixins.add("MixinEntity");
             if(Config.fcOptimizeTextureUpload) {
                 String fcVersion = (String)Launch.blackboard.get("fcVersion");
-                switch(fcVersion) {
-                case "1.23":
-                    mixins.add("optimization.fastcrafttextureload.MixinFastcraft1_23TextureUtil");
-                    break;
-                case "1.25":
-                    mixins.add("optimization.fastcrafttextureload.MixinFastcraft1_25TextureUtil");
-                    break;
-                default:
-                    LOGGER.warn("Unsupported FastCraft version: " + fcVersion + ". fcOptimizeTextureUpload won't work.");
+                if(fcVersion != null) {
+                    switch(fcVersion) {
+                    case "1.23":
+                        mixins.add("optimization.fastcrafttextureload.MixinFastcraft1_23TextureUtil");
+                        break;
+                    case "1.25":
+                        mixins.add("optimization.fastcrafttextureload.MixinFastcraft1_25TextureUtil");
+                        break;
+                    default:
+                        LOGGER.warn("Unsupported FastCraft version: " + fcVersion + ". fcOptimizeTextureUpload won't work.");
+                    }
+                    
+                    mixins.add("optimization.fastcrafttextureload.MixinTextureUtil");
+                    mixins.add("optimization.fastcrafttextureload.MixinTextureMap");
                 }
-                
-                mixins.add("optimization.fastcrafttextureload.MixinTextureUtil");
-                mixins.add("optimization.fastcrafttextureload.MixinTextureMap");
             }
             if(Config.threadedTextureLoader) {
                 mixins.add("optimization.threadedtextureloader.ITextureMap");
