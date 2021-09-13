@@ -73,6 +73,14 @@ public class MixinConfigPlugin implements IMixinConfigPlugin {
                 mixins.add("optimization.fastcraft_texture_load.MixinTextureUtil");
                 mixins.add("optimization.fastcraft_texture_load.MixinTextureMap");
             }
+            if(Config.threadedTextureLoader) {
+                mixins.add("optimization.threadedtextureloader.ITextureMap");
+                mixins.add("optimization.threadedtextureloader.MixinTextureMap");
+            }
+            if(Config.folderTexturePackOptimization) {
+                mixins.add("optimization.foldertexturepack.MixinFolderResourcePack");
+                mixins.add("optimization.foldertexturepack.MixinDefaultResourcePack");
+            }
         }
         return mixins;
     }

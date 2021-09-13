@@ -10,11 +10,12 @@ public class CoreTweaksPlugin implements IFMLLoadingPlugin {
 
 	public CoreTweaksPlugin() {
 		System.out.println("Instantiating CoreTweaksPlugin");
+		Config.reload();
+		CoreTweaks.init();
 	}
 	
 	@Override
 	public String[] getASMTransformerClass() {
-		Config.reload();
 		List<String> transformerClasses = new ArrayList<>();
 		if(JarDiscovererCache.isActive()) {
 			transformerClasses.add("makamys.coretweaks.ASMModParserTransformer");
@@ -33,7 +34,6 @@ public class CoreTweaksPlugin implements IFMLLoadingPlugin {
 
 	@Override
 	public String getSetupClass() {
-		Config.reload();
 		if(JarDiscovererCache.isActive()) {
 			JarDiscovererCache.load();
 		}
