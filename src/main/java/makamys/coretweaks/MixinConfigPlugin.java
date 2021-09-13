@@ -20,9 +20,10 @@ public class MixinConfigPlugin implements IMixinConfigPlugin {
     
     @Override
     public void onLoad(String mixinPackage) {
+        Config.reload();
         //JarDiscovererCache.load();
         //Launch.classLoader.registerTransformer(ASMModParserTransformer.class.getName());
-        if(MixinEnvironment.getCurrentEnvironment() == MixinEnvironment.getDefaultEnvironment()) {
+        if(Config.fcOptimizeTextureUpload && MixinEnvironment.getCurrentEnvironment() == MixinEnvironment.getDefaultEnvironment()) {
             Set<String> transformerExceptions = (Set<String>)ObfuscationReflectionHelper.getPrivateValue(LaunchClassLoader.class, Launch.classLoader, "transformerExceptions");
             transformerExceptions.remove("fastcraft");
         }
@@ -47,8 +48,6 @@ public class MixinConfigPlugin implements IMixinConfigPlugin {
 
     @Override
     public List<String> getMixins() {
-        Config.reload();
-        
         List<String> mixins = new ArrayList<>();
         
         Phase phase = MixinEnvironment.getCurrentEnvironment().getPhase();
@@ -69,9 +68,11 @@ public class MixinConfigPlugin implements IMixinConfigPlugin {
             if(Config.frameProfilerHooks) mixins.addAll(Arrays.asList("MixinEntityRenderer_FrameProfiler",
                                                                         "MixinMinecraft_FrameProfiler"));
             if(Config.fixSmallEntitySwim) mixins.add("MixinEntity");
-            mixins.add("optimization.fastcraft_texture_load.MixinFastcraftTextureUtil");
-            mixins.add("optimization.fastcraft_texture_load.MixinTextureUtil");
-            mixins.add("optimization.fastcraft_texture_load.MixinTextureMap");
+            if(Config.fcOptimizeTextureUpload) {
+                mixins.add("optimization.fastcraft_texture_load.MixinFastcraftTextureUtil");
+                mixins.add("optimization.fastcraft_texture_load.MixinTextureUtil");
+                mixins.add("optimization.fastcraft_texture_load.MixinTextureMap");
+            }
         }
         return mixins;
     }

@@ -7,7 +7,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import makamys.coretweaks.CoreTweaks;
 import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.client.renderer.texture.TextureUtil;
 
 @Mixin(TextureMap.class)
 abstract class MixinTextureMap {

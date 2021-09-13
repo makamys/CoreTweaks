@@ -12,7 +12,7 @@ import net.minecraft.client.renderer.texture.TextureUtil;
 abstract class MixinTextureUtil {
     
     @Inject(method = "bindTexture", at = @At(value = "HEAD"))
-    private static void preUploadTextures(int texture, CallbackInfo ci) {
+    private static void onBindTexture(int texture, CallbackInfo ci) {
         CoreTweaks.boundTexture = texture;
     }
 }
