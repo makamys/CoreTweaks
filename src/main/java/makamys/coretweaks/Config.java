@@ -77,7 +77,7 @@ public class Config {
         coreTweaksCommand = config.getBoolean("coreTweaksCommand", "Diagnostics", true, "Enables /coretweaks command");
         methodsToProfile = config.getString("methodsToProfile", "Diagnostics", "", "Comma-separated list of methods to profile. The results will be written to profiler-<timestamp>.json in your instance folder. Currently only the call count is measured. Method names have the syntax of `<canonical class name>.<method name>`, like `some.package.SomeClass.method`.");
         frameProfilerHooks = config.getBoolean("frameProfilerHooks", "Diagnostics", false, "Insert hooks that lets the frame profiler profile various parts of frame rendering. Highly recommended if you are using the frame profiler.");
-        fmlBarProfiler = config.getBoolean("fmlBarProfiler", "Diagnostics", false, "Creates a report of how long each step of startup loading took in fmlbarprofiler.csv in your instance folder.");
+        fmlBarProfiler = config.getBoolean("fmlBarProfiler", "Diagnostics", false, "Creates a report of how long each step of startup loading took in fml_bar_profiler.csv in your instance folder.");
         
         threadedTextureLoader = config.getBoolean("threadedTextureLoader", "Optimizations", false,
                 "Use multi-threaded texture loading when stitching textures? Placebo.");

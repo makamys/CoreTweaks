@@ -66,7 +66,7 @@ public class FMLBarProfiler {
     
     private void onFinished() {
         head.finishTime = System.nanoTime();
-        writeToFile(new File(Launch.minecraftHome, "fmlbarprofiler.csv"));
+        writeToFile(new File(Launch.minecraftHome, "fml_bar_profiler.csv"));
     }
     
     private void writeToFile(File file) {
