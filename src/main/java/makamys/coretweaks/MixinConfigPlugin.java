@@ -13,6 +13,7 @@ import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
 
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.ObfuscationReflectionHelper;
+import makamys.coretweaks.diagnostics.FMLBarProfiler;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.launchwrapper.LaunchClassLoader;
 
@@ -101,6 +102,11 @@ public class MixinConfigPlugin implements IMixinConfigPlugin {
                 mixins.add("optimization.foldertexturepack.MixinFolderResourcePack");
                 mixins.add("optimization.foldertexturepack.MixinDefaultResourcePack");
             }
+            if(FMLBarProfiler.isActive()) {
+                mixins.add("diagnostics.fmlbarprofiler.MixinProgressManager");
+                mixins.add("diagnostics.fmlbarprofiler.MixinProgressBar");
+            }
+            
         }
         return mixins;
     }

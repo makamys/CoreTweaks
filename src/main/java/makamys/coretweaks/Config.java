@@ -39,6 +39,7 @@ public class Config {
     public static String modFilesToIgnore;
     public static int recentCacheSize;
     public static int verbosity;
+    public static boolean fmlBarProfiler;
     
     public static enum CloudHeightCheck {
     	UNCHANGED,
@@ -76,6 +77,7 @@ public class Config {
         coreTweaksCommand = config.getBoolean("coreTweaksCommand", "Diagnostics", true, "Enables /coretweaks command");
         methodsToProfile = config.getString("methodsToProfile", "Diagnostics", "", "Comma-separated list of methods to profile. The results will be written to profiler-<timestamp>.json in your instance folder. Currently only the call count is measured. Method names have the syntax of `<canonical class name>.<method name>`, like `some.package.SomeClass.method`.");
         frameProfilerHooks = config.getBoolean("frameProfilerHooks", "Diagnostics", false, "Insert hooks that lets the frame profiler profile various parts of frame rendering. Highly recommended if you are using the frame profiler.");
+        fmlBarProfiler = config.getBoolean("fmlBarProfiler", "Diagnostics", false, "");
         
         threadedTextureLoader = config.getBoolean("threadedTextureLoader", "Optimizations", false,
                 "Use multi-threaded texture loading when stitching textures? Placebo.");
