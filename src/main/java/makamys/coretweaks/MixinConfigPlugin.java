@@ -59,6 +59,10 @@ public class MixinConfigPlugin implements IMixinConfigPlugin {
             if(Config.jarDiscovererCache) mixins.add("MixinJarDiscoverer");
             if(Config.fastProgressBar) mixins.add("MixinProgressBar");
             if(Config.fastStepMessageStrip) mixins.add("MixinFMLClientHandler");
+            if(FMLBarProfiler.isActive()) {
+                mixins.add("diagnostics.fmlbarprofiler.MixinProgressManager");
+                mixins.add("diagnostics.fmlbarprofiler.MixinProgressBar");
+            }
         } else if(phase == Phase.DEFAULT) {
             if(Config.clientChunkMap) mixins.add("MixinChunkProviderClient");
             if(Config.crashHandler) mixins.add("MixinMinecraft_CrashHandler");
@@ -101,10 +105,6 @@ public class MixinConfigPlugin implements IMixinConfigPlugin {
             if(Config.folderTexturePackOptimization) {
                 mixins.add("optimization.foldertexturepack.MixinFolderResourcePack");
                 mixins.add("optimization.foldertexturepack.MixinDefaultResourcePack");
-            }
-            if(FMLBarProfiler.isActive()) {
-                mixins.add("diagnostics.fmlbarprofiler.MixinProgressManager");
-                mixins.add("diagnostics.fmlbarprofiler.MixinProgressBar");
             }
             
         }
