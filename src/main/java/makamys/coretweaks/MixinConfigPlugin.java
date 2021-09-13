@@ -16,6 +16,8 @@ import cpw.mods.fml.common.ObfuscationReflectionHelper;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.launchwrapper.LaunchClassLoader;
 
+import static makamys.coretweaks.CoreTweaks.LOGGER;
+
 public class MixinConfigPlugin implements IMixinConfigPlugin {
     
     @Override
@@ -69,7 +71,18 @@ public class MixinConfigPlugin implements IMixinConfigPlugin {
                                                                         "MixinMinecraft_FrameProfiler"));
             if(Config.fixSmallEntitySwim) mixins.add("MixinEntity");
             if(Config.fcOptimizeTextureUpload) {
-                mixins.add("optimization.fastcrafttextureload.MixinFastcraftTextureUtil");
+                String fcVersion = (String)Launch.blackboard.get("fcVersion");
+                switch(fcVersion) {
+                case "1.23":
+                    mixins.add("optimization.fastcrafttextureload.MixinFastcraft1_23TextureUtil");
+                    break;
+                case "1.25":
+                    mixins.add("optimization.fastcrafttextureload.MixinFastcraft1_25TextureUtil");
+                    break;
+                default:
+                    LOGGER.warn("Unsupported FastCraft version: " + fcVersion + ". fcOptimizeTextureUpload won't work.");
+                }
+                
                 mixins.add("optimization.fastcrafttextureload.MixinTextureUtil");
                 mixins.add("optimization.fastcrafttextureload.MixinTextureMap");
             }

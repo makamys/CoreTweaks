@@ -49,6 +49,8 @@ dependencies {
     embed 'org.spongepowered:mixin:0.7+'
 	
 	embed "com.esotericsoftware:kryo:5.1.1"
+	
+	compile files('gradlelibs/fastcraft-dummy.jar') // A jar with empty classes, just to avoid errors during build
     
     /* Mixin 0.8 breaks with 1.7.10, but can be made to work by embedding these. However,
 	   doing so overrides the libraries provided by Forge, which will likely result in other mods breaking. */ 
