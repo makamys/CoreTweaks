@@ -1,4 +1,4 @@
-package makamys.coretweaks;
+package makamys.coretweaks.util;
 
 import java.io.File;
 import java.io.FileWriter;

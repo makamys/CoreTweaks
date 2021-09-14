@@ -5,7 +5,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Coerce;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
-import makamys.coretweaks.Util;
+import makamys.coretweaks.util.Util;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.WorldRenderer;
 

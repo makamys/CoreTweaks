@@ -4,7 +4,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.ModifyConstant;
 
 import makamys.coretweaks.Config;
-import makamys.coretweaks.Util;
+import makamys.coretweaks.util.Util;
 
 import org.spongepowered.asm.mixin.injection.Constant;
 

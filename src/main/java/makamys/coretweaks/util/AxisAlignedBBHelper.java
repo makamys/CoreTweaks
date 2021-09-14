@@ -1,4 +1,4 @@
-package makamys.coretweaks;
+package makamys.coretweaks.util;
 
 import net.minecraft.util.AxisAlignedBB;
 

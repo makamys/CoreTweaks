@@ -4,7 +4,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
-import makamys.coretweaks.AxisAlignedBBHelper;
+import makamys.coretweaks.util.AxisAlignedBBHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.AxisAlignedBB;
 
