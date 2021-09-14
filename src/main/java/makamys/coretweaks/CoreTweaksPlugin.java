@@ -6,6 +6,7 @@ import java.util.Map;
 
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
 
+@IFMLLoadingPlugin.SortingIndex(1001) // Run after deobf (FMLDeobfTweaker has an index of 1000)
 public class CoreTweaksPlugin implements IFMLLoadingPlugin {
 
 	public CoreTweaksPlugin() {

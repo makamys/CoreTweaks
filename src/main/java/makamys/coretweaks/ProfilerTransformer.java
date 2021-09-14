@@ -72,10 +72,9 @@ public class ProfilerTransformer implements IClassTransformer {
 			ClassReader classReader = new ClassReader(bytes);
 			classReader.accept(classNode, 0);
 			for(MethodNode m : classNode.methods) {
-				// map from obf to searge if we're in a production environment
-				String className = FMLDeobfuscatingRemapper.INSTANCE.map(classNode.name);
-				String methodName = FMLDeobfuscatingRemapper.INSTANCE.mapMethodName(classNode.name, m.name, m.desc);
-				String methodDesc = FMLDeobfuscatingRemapper.INSTANCE.mapMethodDesc(m.desc);
+				String className = classNode.name;
+				String methodName = m.name;
+				String methodDesc = m.desc;
 				if(classTargets.contains(methodName)) {
 					System.out.println("Instrumenting method " + methodName + " in class " + className);
 					
