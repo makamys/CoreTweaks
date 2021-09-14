@@ -29,7 +29,7 @@ public class Config {
     public static String methodsToProfile;
     
     public static boolean threadedTextureLoader;
-    public static boolean cacheTransformer;
+    public static boolean transformerCache;
     public static boolean folderTexturePackOptimization;
 
     public static int textureLoaderThreadCount;
@@ -81,7 +81,7 @@ public class Config {
         
         threadedTextureLoader = config.getBoolean("threadedTextureLoader", "Optimizations", false,
                 "Use multi-threaded texture loading when stitching textures? Placebo.");
-        cacheTransformer = config.getBoolean("cacheTransformer", "Optimizations", false, 
+        transformerCache = config.getBoolean("cachingTransformer", "Optimizations", false, 
                 "(Experimental) Use caching class transformer? Reduces startup time when it works, which is not all the time.");
         folderTexturePackOptimization = config.getBoolean("folderTexturePack", "Optimizations", true, 
                 "Use the optimization that speeds up loading folder resource packs?");
@@ -89,9 +89,9 @@ public class Config {
         textureLoaderThreadCount = config.getInt("threadedTextureLoaderThreadCount", "Optimizations", 0, 0, Integer.MAX_VALUE,
                 "How many threads to use for loading textures? (0: auto (all cores))");
         
-        config.setCategoryComment("cacheTransformer", 
+        config.setCategoryComment("transformerCache", 
                 "Options for the caching class transformer. (only appliable if it's enabled)");
-        badTransformers = config.getString("badTransformers", "cacheTransformer",
+        badTransformers = config.getString("badTransformers", "transformerCache",
                 "org.spongepowered.asm.mixin.transformer.Proxy,appeng.transformer.asm.ApiRepairer,com.mumfrey.liteloader.transformers.ClassOverlayTransformer+",
                 "Comma-separated list of transformers for which the view of the transformer chain should be restored.\n" + 
                 "\n" + 
@@ -103,18 +103,18 @@ public class Config {
                 "How to find bad transformers? If you see another transformer's name in your crash log,\n" +
                 "or see its name in one of the iterator stack traces printed in debug mode,\n" +
                 "adding it to this list may solve the problem.\n");
-        badClasses = config.getString("badClasses", "cacheTransformer", "net.eq2online.macros.permissions.MacroModPermissions", 
+        badClasses = config.getString("badClasses", "transformerCache", "net.eq2online.macros.permissions.MacroModPermissions", 
                 "Sometimes caching classes can cause problems. Classes in this list will not be cached.\n");
-        modFilesToIgnore = config.getString("modFilesToIgnore", "cacheTransformer", "CMD files.jar", 
+        modFilesToIgnore = config.getString("modFilesToIgnore", "transformerCache", "CMD files.jar", 
                 "Comma-separated list of mod files to ignore modifications of when deciding if a cache rebuild\n" +
                 "should be triggered.\n" +
                 "If your cache keeps getting rebuilt even though you haven't changed any mods, look for deranged\n" +
                 "mod files and add them to this list.");
-        recentCacheSize = config.getInt("recentCacheSize", "cacheTransformer", 512, -1, Integer.MAX_VALUE, 
+        recentCacheSize = config.getInt("recentCacheSize", "transformerCache", 512, -1, Integer.MAX_VALUE, 
                 "Cached class bytecode is removed from memory after being used, but the most recent N are kept around\n" +
                 "because the same class is often transformed more than once. This option sets the value of that N.\n" +
                 "(Set to -1 to keep class bytecode in RAM forever)");
-        verbosity = config.getInt("verbosity", "cacheTransformer", 1, 0, 2,
+        verbosity = config.getInt("verbosity", "transformerCache", 1, 0, 2,
                 "0: Only print the essential messages.\n" +
                 "1: Print when the cache gets saved.\n" +
                 "2: Debug mode. Turn this on to log a bunch of stuff that can help find the cause of a crash.");

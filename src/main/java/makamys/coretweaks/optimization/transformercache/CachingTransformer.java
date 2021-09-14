@@ -1,4 +1,4 @@
-package makamys.coretweaks.optimization;
+package makamys.coretweaks.optimization.transformercache;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -54,17 +54,17 @@ import static makamys.coretweaks.CoreTweaks.LOGGER;
  * 
  * It works by replacing the LaunchClassLoader's transformer list with a {@link WrappedTransformerList}. 
  */
-public class CacheTransformer implements IClassTransformer, MapAddListener<String, Class<?>> {
+public class CachingTransformer implements IClassTransformer, MapAddListener<String, Class<?>> {
 	
 	// TODO can't this be compressed into a lambda?
 	
 	static class SaveThread extends Thread {
 		
-		private CacheTransformer cacheTransformer;
+		private CachingTransformer cacheTransformer;
 		
 		private int saveInterval = 10000;
 		
-		public SaveThread(CacheTransformer ct) {
+		public SaveThread(CachingTransformer ct) {
 			this.cacheTransformer = ct;
 			setName("CacheTransformer save thread");
 			setDaemon(false);
@@ -105,7 +105,7 @@ public class CacheTransformer implements IClassTransformer, MapAddListener<Strin
 	private int lastSaveSize = 0;
 	private BlockingQueue<String> dirtyClasses = new LinkedBlockingQueue<String>();
 	
-	public CacheTransformer(List<IClassTransformer> transformers, WrappedTransformerList<IClassTransformer> wrappedTransformers, WrappedAddListenableMap<String, Class<?>> wrappedCachedClasses) {
+	public CachingTransformer(List<IClassTransformer> transformers, WrappedTransformerList<IClassTransformer> wrappedTransformers, WrappedAddListenableMap<String, Class<?>> wrappedCachedClasses) {
 		LOGGER.info("Initializing cache transformer");
 		
 		this.wrappedTransformers = wrappedTransformers;
@@ -348,8 +348,8 @@ public class CacheTransformer implements IClassTransformer, MapAddListener<Strin
 	    }
 	}
 	
-	public static CacheTransformer register() {
-		CacheTransformer cacheTransformer = null;
+	public static CachingTransformer register() {
+		CachingTransformer cacheTransformer = null;
     	try {
             LaunchClassLoader lcl = (LaunchClassLoader)Launch.classLoader;
             
@@ -373,7 +373,7 @@ public class CacheTransformer implements IClassTransformer, MapAddListener<Strin
             cachedClassesField.set(lcl, wrappedCachedClasses);
             
             
-            cacheTransformer = new CacheTransformer(transformers, wrappedTransformers, wrappedCachedClasses);
+            cacheTransformer = new CachingTransformer(transformers, wrappedTransformers, wrappedCachedClasses);
             
             wrappedTransformers.alt = cacheTransformer;
             
