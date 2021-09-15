@@ -1,6 +1,8 @@
 package makamys.coretweaks.optimization.transformercache.light;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import cpw.mods.fml.common.asm.transformers.DeobfuscationTransformer;
 import cpw.mods.fml.relauncher.ReflectionHelper;
@@ -10,7 +12,17 @@ import net.minecraft.launchwrapper.LaunchClassLoader;
 
 public class TransformerCache {
     
+    public static TransformerCache instance;
+    
     public static void init() {
+        instance = new TransformerCache();
+    }
+    
+    public TransformerCache() {
+        hookClassLoader();
+    }
+
+    private void hookClassLoader() {
         LaunchClassLoader lcl = (LaunchClassLoader)Launch.classLoader;
         List<IClassTransformer> transformers = (List<IClassTransformer>)ReflectionHelper.getPrivateValue(LaunchClassLoader.class, lcl, "transformers");
         for(int i = 0; i < transformers.size(); i++) {
@@ -21,19 +33,18 @@ public class TransformerCache {
         }
     }
 
-    public static byte[] getCached(IClassTransformer transformer, String name, String transformedName, byte[] basicClass) {
+    public byte[] getCached(IClassTransformer transformer, String name, String transformedName, byte[] basicClass) {
         // TODO Auto-generated method stub
         return null;
     }
 
-    public static void prePutCached(IClassTransformer transformer, String name, String transformedName, byte[] basicClass) {
+    public void prePutCached(IClassTransformer transformer, String name, String transformedName, byte[] basicClass) {
         // TODO Auto-generated method stub
         
     }
 
-    public static void putCached(IClassTransformer transformer, String name, String transformedName, byte[] result) {
+    public void putCached(IClassTransformer transformer, String name, String transformedName, byte[] result) {
         // TODO Auto-generated method stub
         
     }
-    
 }
