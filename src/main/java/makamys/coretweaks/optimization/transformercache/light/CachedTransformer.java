@@ -12,11 +12,11 @@ public class CachedTransformer implements IClassTransformer {
     
     @Override
     public byte[] transform(String name, String transformedName, byte[] basicClass) {
-        byte[] result = TransformerCache.instance.getCached(this, name, transformedName, basicClass);
+        byte[] result = TransformerCache.instance.getCached(original, name, transformedName, basicClass);
         if(result == null) {
-            TransformerCache.instance.prePutCached(this, name, transformedName, basicClass);
+            TransformerCache.instance.prePutCached(original, name, transformedName, basicClass);
             result = original.transform(name, transformedName, basicClass);
-            TransformerCache.instance.putCached(this, name, transformedName, result);
+            TransformerCache.instance.putCached(original, name, transformedName, result);
         }
         return result;
     }

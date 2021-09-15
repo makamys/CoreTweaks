@@ -28,18 +28,21 @@ import net.minecraftforge.classloading.FluidIdTransformer;
 
 public class TransformerCache {
     
-    public static TransformerCache instance;
+    public static TransformerCache instance = new TransformerCache();
     
     private Map<String, TransformerData> transformerMap = new HashMap<>();
     
-    private final File file = CoreTweaks.getDataFile("transformerCache.dat");
+    private final File file = CoreTweaks.getDataFile("transformerCache.dat", false);
     private final Kryo kryo = new Kryo();
     
-    public static void init() {
-        instance = new TransformerCache();
-    }
+    private boolean inited = false;
     
-    public TransformerCache() {
+    public void init() {
+        if(inited) return;
+        
+        // We get a ClassCircularityError if we don't add this
+        Launch.classLoader.addTransformerExclusion("makamys.coretweaks.optimization.transformercache.light");
+        
         hookClassLoader();
         loadData();
         
@@ -90,9 +93,11 @@ public class TransformerCache {
         TransformerData transData = transformerMap.get(transName);
         if(transData != null) {
             CachedTransformation trans = transData.transformationMap.get(transformedName);
-            int preHash = calculateHash(basicClass);
-            if(preHash == trans.preHash) {
-                return trans.newClass;
+            if(trans != null) {
+                int preHash = calculateHash(basicClass);
+                if(preHash == trans.preHash) {
+                    return trans.newClass;
+                }
             }
         }
         return null;
@@ -112,7 +117,7 @@ public class TransformerCache {
     
     /** MUST be preceded with a call to prePutCached. */
     public void putCached(IClassTransformer transformer, String name, String transformedName, byte[] result) {
-        transformerMap.get(transformer).transformationMap.get(transformedName).newClass = result;
+        transformerMap.get(transformer.getClass().getCanonicalName()).transformationMap.get(transformedName).newClass = result;
     }
     
     private int calculateHash(byte[] data) {

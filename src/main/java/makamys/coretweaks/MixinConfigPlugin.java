@@ -56,7 +56,7 @@ public class MixinConfigPlugin implements IMixinConfigPlugin {
         
         Phase phase = MixinEnvironment.getCurrentEnvironment().getPhase();
         if(phase == Phase.INIT) {
-            TransformerCache.init();
+            TransformerCache.instance.init();
             
             if(Config.modDiscovererSkipKnownLibraries) mixins.add("MixinModDiscoverer");
             if(Config.jarDiscovererCache) mixins.add("MixinJarDiscoverer");
