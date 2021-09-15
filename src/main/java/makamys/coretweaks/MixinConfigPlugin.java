@@ -56,8 +56,6 @@ public class MixinConfigPlugin implements IMixinConfigPlugin {
         
         Phase phase = MixinEnvironment.getCurrentEnvironment().getPhase();
         if(phase == Phase.INIT) {
-            TransformerCache.instance.init();
-            
             if(Config.modDiscovererSkipKnownLibraries) mixins.add("MixinModDiscoverer");
             if(Config.jarDiscovererCache) mixins.add("MixinJarDiscoverer");
             if(Config.fastProgressBar) mixins.add("MixinProgressBar");
@@ -68,6 +66,9 @@ public class MixinConfigPlugin implements IMixinConfigPlugin {
             }
             if(Config.fixSmallEntitySwim) mixins.add("MixinEntity");
         } else if(phase == Phase.DEFAULT) {
+            // At this point the transformer chain is complete, so we can go hook it.
+            TransformerCache.instance.init();
+            
             if(Config.clientChunkMap) mixins.add("MixinChunkProviderClient");
             if(Config.crashHandler) mixins.add("MixinMinecraft_CrashHandler");
             if(Config.forceUncapFramerate) mixins.add("MixinMinecraft_SyncTweak");
