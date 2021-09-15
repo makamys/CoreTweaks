@@ -81,7 +81,7 @@ public class TransformerCache {
         
         if(file.exists()) {
             try(Input is = new UnsafeInput(new BufferedInputStream(new FileInputStream(file)))) {
-                transformerMap = kryo.readObject(is, Map.class);
+                transformerMap = kryo.readObject(is, HashMap.class);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -132,10 +132,14 @@ public class TransformerCache {
             this.transformerClassName = transformerClassName;
         }
         
+        public TransformerData() {}
+        
         public static class CachedTransformation {
             String targetClassName;
             int preHash;
             byte[] newClass;
+            
+            public CachedTransformation() {}
             
             public CachedTransformation(String targetClassName, int preHash) {
                 this.targetClassName = targetClassName;
