@@ -61,9 +61,11 @@ public class TransformerCache {
             public void run() {
                 shutdown();
             }}, "CoreTweaks transformer cache shutdown thread"));
+        
+        hookClassLoader();
     }
 
-    public void hookClassLoader() {
+    private void hookClassLoader() {
         LaunchClassLoader lcl = (LaunchClassLoader)Launch.classLoader;
         List<IClassTransformer> transformers = (List<IClassTransformer>)ReflectionHelper.getPrivateValue(LaunchClassLoader.class, lcl, "transformers");
         for(int i = 0; i < transformers.size(); i++) {

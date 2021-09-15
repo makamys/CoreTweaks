@@ -65,15 +65,10 @@ public class MixinConfigPlugin implements IMixinConfigPlugin {
                 mixins.add("diagnostics.fmlbarprofiler.MixinProgressBar");
             }
             if(Config.fixSmallEntitySwim) mixins.add("MixinEntity");
-            
-            if(Config.transformerCache == Config.TransformerCache.LITE) {
-                TransformerCache.instance.init();
-                TransformerCache.instance.hookClassLoader();
-            }
         } else if(phase == Phase.DEFAULT) {
             if(Config.transformerCache == Config.TransformerCache.LITE) {
-                // At this point the transformer chain is complete, so we go hook anything we missed earlier.
-                TransformerCache.instance.hookClassLoader();
+                // At this point the transformer chain is complete, so we can go hook it.
+                TransformerCache.instance.init();
             }
             
             if(Config.clientChunkMap) mixins.add("MixinChunkProviderClient");
