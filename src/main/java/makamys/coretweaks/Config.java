@@ -1,6 +1,7 @@
 package makamys.coretweaks;
 
 import java.io.File;
+import java.util.Map;
 
 import org.apache.commons.lang3.EnumUtils;
 
@@ -29,7 +30,7 @@ public class Config {
     public static String methodsToProfile;
     
     public static boolean threadedTextureLoader;
-    public static boolean transformerCache;
+    public static TransformerCache transformerCache;
     public static boolean folderTexturePackOptimization;
 
     public static int textureLoaderThreadCount;
@@ -41,11 +42,19 @@ public class Config {
     public static int verbosity;
     public static boolean fmlBarProfiler;
     
+    public static String[] transformersToCache;
+    
     public static enum CloudHeightCheck {
     	UNCHANGED,
     	VARIABLE_CORRECTED,
     	ALWAYS_TRANSPARENT,
     	ALWAYS_OPAQUE
+    }
+    
+    public static enum TransformerCache {
+        NONE,
+        LIGHT,
+        FULL
     }
     
     public static void reload() {
@@ -81,17 +90,19 @@ public class Config {
         
         threadedTextureLoader = config.getBoolean("threadedTextureLoader", "Optimizations", false,
                 "Use multi-threaded texture loading when stitching textures? Placebo.");
-        transformerCache = config.getBoolean("cachingTransformer", "Optimizations", false, 
-                "(Experimental) Use caching class transformer? Reduces startup time when it works, which is not all the time.");
+        transformerCache = getEnum(config, "transformerCache", "Optimizations", TransformerCache.NONE, "The type of transformer caching to use.\n"
+                + "NONE: None\n"
+                + "LIGHT: Cache select transformers. Reduces startup time. Relatively safe.\n"
+                + "FULL: Cache the entire transformer chain. Reduces startup time further, but breaks with many things.");
         folderTexturePackOptimization = config.getBoolean("folderTexturePack", "Optimizations", true, 
                 "Use the optimization that speeds up loading folder resource packs?");
         
         textureLoaderThreadCount = config.getInt("threadedTextureLoaderThreadCount", "Optimizations", 0, 0, Integer.MAX_VALUE,
                 "How many threads to use for loading textures? (0: auto (all cores))");
         
-        config.setCategoryComment("transformerCache", 
-                "Options for the caching class transformer. (only appliable if it's enabled)");
-        badTransformers = config.getString("badTransformers", "transformerCache",
+        config.setCategoryComment("transformer_cache_full", 
+                "Options for the full caching class transformer. (only appliable if it's enabled)");
+        badTransformers = config.getString("badTransformers", "transformer_cache_full",
                 "org.spongepowered.asm.mixin.transformer.Proxy,appeng.transformer.asm.ApiRepairer,com.mumfrey.liteloader.transformers.ClassOverlayTransformer+",
                 "Comma-separated list of transformers for which the view of the transformer chain should be restored.\n" + 
                 "\n" + 
@@ -103,25 +114,40 @@ public class Config {
                 "How to find bad transformers? If you see another transformer's name in your crash log,\n" +
                 "or see its name in one of the iterator stack traces printed in debug mode,\n" +
                 "adding it to this list may solve the problem.\n");
-        badClasses = config.getString("badClasses", "transformerCache", "net.eq2online.macros.permissions.MacroModPermissions", 
+        badClasses = config.getString("badClasses", "transformer_cache_full", "net.eq2online.macros.permissions.MacroModPermissions", 
                 "Sometimes caching classes can cause problems. Classes in this list will not be cached.\n");
-        modFilesToIgnore = config.getString("modFilesToIgnore", "transformerCache", "CMD files.jar", 
+        modFilesToIgnore = config.getString("modFilesToIgnore", "transformer_cache_full", "CMD files.jar", 
                 "Comma-separated list of mod files to ignore modifications of when deciding if a cache rebuild\n" +
                 "should be triggered.\n" +
                 "If your cache keeps getting rebuilt even though you haven't changed any mods, look for deranged\n" +
                 "mod files and add them to this list.");
-        recentCacheSize = config.getInt("recentCacheSize", "transformerCache", 512, -1, Integer.MAX_VALUE, 
+        recentCacheSize = config.getInt("recentCacheSize", "transformer_cache_full", 512, -1, Integer.MAX_VALUE, 
                 "Cached class bytecode is removed from memory after being used, but the most recent N are kept around\n" +
                 "because the same class is often transformed more than once. This option sets the value of that N.\n" +
                 "(Set to -1 to keep class bytecode in RAM forever)");
-        verbosity = config.getInt("verbosity", "transformerCache", 1, 0, 2,
+        verbosity = config.getInt("verbosity", "transformer_cache_full", 1, 0, 2,
                 "0: Only print the essential messages.\n" +
                 "1: Print when the cache gets saved.\n" +
                 "2: Debug mode. Turn this on to log a bunch of stuff that can help find the cause of a crash.");
         
+        transformersToCache = config.getStringList("transformersToCache", "transformer_cache_light", new String[]{"cpw.mods.fml.common.asm.transformers.DeobfuscationTransformer", "net.minecraftforge.classloading.FluidIdTransformer"}, "Canonical class names of the transformers that should be cached.");
+        
         if(config.hasChanged()) {
             config.save();
         }
+    }
+    
+    // TODO move this to MCLib
+    private static <E extends Enum> E getEnum(Configuration config, String propName, String propCat, E propDefault, String propComment) {
+        return getEnum(config, propName, propCat, propDefault, propComment, false);
+    }
+    
+    private static <E extends Enum> E getEnum(Configuration config, String propName, String propCat, E propDefault, String propComment, boolean lowerCase) {
+        Map enumMap = EnumUtils.getEnumMap(propDefault.getClass());
+        String[] valuesStr = (String[])enumMap.keySet().toArray(new String[]{});
+        String defaultString = propDefault.toString();
+        if(lowerCase) defaultString = defaultString.toLowerCase();
+        return (E)enumMap.get(config.getString(propName, propCat, defaultString, propComment, valuesStr).toUpperCase());
     }
     
 }

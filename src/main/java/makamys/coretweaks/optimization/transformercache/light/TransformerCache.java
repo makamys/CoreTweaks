@@ -6,9 +6,14 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
@@ -16,15 +21,14 @@ import com.esotericsoftware.kryo.unsafe.UnsafeInput;
 import com.esotericsoftware.kryo.unsafe.UnsafeOutput;
 import com.google.common.hash.Hashing;
 
-import cpw.mods.fml.common.asm.transformers.DeobfuscationTransformer;
 import cpw.mods.fml.relauncher.ReflectionHelper;
+import makamys.coretweaks.Config;
 import makamys.coretweaks.CoreTweaks;
 import makamys.coretweaks.optimization.transformercache.light.TransformerCache.TransformerData.CachedTransformation;
 import net.minecraft.launchwrapper.IClassNameTransformer;
 import net.minecraft.launchwrapper.IClassTransformer;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.launchwrapper.LaunchClassLoader;
-import net.minecraftforge.classloading.FluidIdTransformer;
 
 public class TransformerCache {
     
@@ -35,10 +39,14 @@ public class TransformerCache {
     private final File file = CoreTweaks.getDataFile("transformerCache.dat", false);
     private final Kryo kryo = new Kryo();
     
+    private Set<String> transformersToCache = new HashSet<>();
+    
     private boolean inited = false;
     
     public void init() {
         if(inited) return;
+        
+        transformersToCache = Arrays.stream(Config.transformersToCache).collect(Collectors.toSet());
         
         // We get a ClassCircularityError if we don't add this
         Launch.classLoader.addTransformerExclusion("makamys.coretweaks.optimization.transformercache.light");
@@ -68,7 +76,7 @@ public class TransformerCache {
         List<IClassTransformer> transformers = (List<IClassTransformer>)ReflectionHelper.getPrivateValue(LaunchClassLoader.class, lcl, "transformers");
         for(int i = 0; i < transformers.size(); i++) {
             IClassTransformer transformer = transformers.get(i);
-            if(transformer instanceof FluidIdTransformer) {
+            if(transformersToCache.contains(transformer.getClass().getCanonicalName())) {
                 System.out.println("Replacing " + transformer.getClass().getCanonicalName() + " with cached one");
                 transformers.set(i, transformer instanceof IClassNameTransformer
                         ? new CachedNameTransformer(transformer) : new CachedTransformer(transformer));
