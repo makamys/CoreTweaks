@@ -3,23 +3,10 @@ package makamys.coretweaks.optimization.transformercache.light;
 import net.minecraft.launchwrapper.IClassNameTransformer;
 import net.minecraft.launchwrapper.IClassTransformer;
 
-public class CachedNameTransformer implements IClassTransformer, IClassNameTransformer {
-
-    private IClassTransformer original;
+public class CachedNameTransformer extends CachedTransformer implements IClassTransformer, IClassNameTransformer {
     
     public CachedNameTransformer(IClassTransformer original) {
-        this.original = original;
-    }
-    
-    @Override
-    public byte[] transform(String name, String transformedName, byte[] basicClass) {
-        byte[] result = TransformerCache.instance.getCached(this, name, transformedName, basicClass);
-        if(result == null) {
-            TransformerCache.instance.prePutCached(this, name, transformedName, basicClass);
-            result = original.transform(name, transformedName, basicClass);
-            TransformerCache.instance.putCached(this, name, transformedName, result);
-        }
-        return result;
+        super(original);
     }
 
     @Override

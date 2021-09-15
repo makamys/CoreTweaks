@@ -20,9 +20,11 @@ import cpw.mods.fml.common.asm.transformers.DeobfuscationTransformer;
 import cpw.mods.fml.relauncher.ReflectionHelper;
 import makamys.coretweaks.CoreTweaks;
 import makamys.coretweaks.optimization.transformercache.light.TransformerCache.TransformerData.CachedTransformation;
+import net.minecraft.launchwrapper.IClassNameTransformer;
 import net.minecraft.launchwrapper.IClassTransformer;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.launchwrapper.LaunchClassLoader;
+import net.minecraftforge.classloading.FluidIdTransformer;
 
 public class TransformerCache {
     
@@ -62,9 +64,11 @@ public class TransformerCache {
         LaunchClassLoader lcl = (LaunchClassLoader)Launch.classLoader;
         List<IClassTransformer> transformers = (List<IClassTransformer>)ReflectionHelper.getPrivateValue(LaunchClassLoader.class, lcl, "transformers");
         for(int i = 0; i < transformers.size(); i++) {
-            if(transformers.get(i) instanceof DeobfuscationTransformer) {
-                System.out.println("Found deobfuscation transformer, hooking it with cached one");
-                transformers.set(i, new CachedNameTransformer((DeobfuscationTransformer)transformers.get(i)));
+            IClassTransformer transformer = transformers.get(i);
+            if(transformer instanceof FluidIdTransformer) {
+                System.out.println("Replacing " + transformer.getClass().getCanonicalName() + " with cached one");
+                transformers.set(i, transformer instanceof IClassNameTransformer
+                        ? new CachedNameTransformer(transformer) : new CachedTransformer(transformer));
             }
         }
     }
