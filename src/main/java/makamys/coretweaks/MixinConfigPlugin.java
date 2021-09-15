@@ -66,8 +66,10 @@ public class MixinConfigPlugin implements IMixinConfigPlugin {
             }
             if(Config.fixSmallEntitySwim) mixins.add("MixinEntity");
         } else if(phase == Phase.DEFAULT) {
-            // At this point the transformer chain is complete, so we can go hook it.
-            TransformerCache.instance.init();
+            if(Config.transformerCache == Config.TransformerCache.LIGHT) {
+                // At this point the transformer chain is complete, so we can go hook it.
+                TransformerCache.instance.init();
+            }
             
             if(Config.clientChunkMap) mixins.add("MixinChunkProviderClient");
             if(Config.crashHandler) mixins.add("MixinMinecraft_CrashHandler");
