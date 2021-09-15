@@ -5,7 +5,9 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -34,6 +36,7 @@ public class TransformerCache {
     
     public static TransformerCache instance = new TransformerCache();
     
+    private List<IClassTransformer> myTransformers = new ArrayList<>();
     private Map<String, TransformerData> transformerMap = new HashMap<>();
     
     private final File file = CoreTweaks.getDataFile("transformerCache.dat", false);
@@ -56,19 +59,8 @@ public class TransformerCache {
         Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
             @Override
             public void run() {
-                try {
-                    if(!file.exists()) {
-                        file.getParentFile().mkdirs();
-                        file.createNewFile();
-                    }
-                    System.out.println("Saving transformer cache");
-                    try(Output output = new UnsafeOutput(new BufferedOutputStream(new FileOutputStream(file, true)))) {
-                        kryo.writeObject(output, transformerMap);
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }}, "CoreTweaks transformer cache save thread"));
+                shutdown();
+            }}, "CoreTweaks transformer cache shutdown thread"));
         
         hookClassLoader();
     }
@@ -80,8 +72,12 @@ public class TransformerCache {
             IClassTransformer transformer = transformers.get(i);
             if(transformersToCache.contains(transformer.getClass().getCanonicalName())) {
                 System.out.println("Replacing " + transformer.getClass().getCanonicalName() + " with cached one");
-                transformers.set(i, transformer instanceof IClassNameTransformer
-                        ? new CachedNameTransformerProxy(transformer) : new CachedTransformerProxy(transformer));
+                
+                IClassTransformer newTransformer = transformer instanceof IClassNameTransformer
+                        ? new CachedNameTransformerProxy(transformer) : new CachedTransformerProxy(transformer);
+
+                myTransformers.add(newTransformer);
+                transformers.set(i, newTransformer);
             }
         }
     }
@@ -94,6 +90,44 @@ public class TransformerCache {
                 transformerMap = kryo.readObject(is, HashMap.class);
             } catch (IOException e) {
                 e.printStackTrace();
+            }
+        }
+    }
+    
+    private void shutdown() {
+        try {
+            saveTransformerCache();
+            saveProfilingResults();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    private void saveTransformerCache() throws IOException {
+        if(!file.exists()) {
+            file.getParentFile().mkdirs();
+            file.createNewFile();
+        }
+        System.out.println("Saving transformer cache");
+        try(Output output = new UnsafeOutput(new BufferedOutputStream(new FileOutputStream(file, true)))) {
+            kryo.writeObject(output, transformerMap);
+        }
+    }
+    
+    private void saveProfilingResults() throws IOException {
+        try(FileWriter fw = new FileWriter(new File(Launch.minecraftHome, "transformercache_profiler.csv"))){
+            fw.write("class,name,runs,misses\n");
+            for(IClassTransformer transformer : myTransformers) {
+                String className = transformer.getClass().getCanonicalName();
+                String name = transformer.toString();
+                int runs = 0;
+                int misses = 0;
+                if(transformer instanceof CachedTransformerProxy) {
+                    CachedTransformerProxy proxy = (CachedTransformerProxy)transformer;
+                    runs = proxy.runs;
+                    misses = proxy.misses;
+                }
+                fw.write(className + "," + name + "," + runs + "," + misses + "\n");
             }
         }
     }
