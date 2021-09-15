@@ -130,7 +130,7 @@ public class Config {
                 "1: Print when the cache gets saved.\n" +
                 "2: Debug mode. Turn this on to log a bunch of stuff that can help find the cause of a crash.");
         
-        transformersToCache = config.getStringList("transformersToCache", "transformer_cache_light", new String[]{"cpw.mods.fml.common.asm.transformers.DeobfuscationTransformer", "net.minecraftforge.classloading.FluidIdTransformer"}, "Canonical class names of the transformers that should be cached.");
+        transformersToCache = config.getStringList("transformersToCache", "transformer_cache_light", new String[]{"cpw.mods.fml.common.asm.transformers.DeobfuscationTransformer", "codechicken.core.asm.MCPDeobfuscationTransformer", "net.minecraftforge.classloading.FluidIdTransformer", "cpw.mods.fml.common.asm.transformers.SideTransformer", "cpw.mods.fml.common.asm.transformers.TerminalTransformer"}, "Canonical class names of the transformers that should be cached.");
         
         if(config.hasChanged()) {
             config.save();
