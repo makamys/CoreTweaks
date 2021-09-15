@@ -46,6 +46,12 @@ public class TransformerCache {
     
     private boolean inited = false;
     
+    private static byte[] memoizedHashData;
+    private static int memoizedHashValue;
+    
+    private Class<?> memoizedClass;
+    private String memoizedClassCanonicalName;
+    
     public void init() {
         if(inited) return;
         
@@ -118,7 +124,7 @@ public class TransformerCache {
         try(FileWriter fw = new FileWriter(new File(Launch.minecraftHome, "transformercache_profiler.csv"))){
             fw.write("class,name,runs,misses\n");
             for(IClassTransformer transformer : myTransformers) {
-                String className = transformer.getClass().getCanonicalName();
+                String className = getCanonicalClassName(transformer.getClass());
                 String name = transformer.toString();
                 int runs = 0;
                 int misses = 0;
@@ -133,7 +139,7 @@ public class TransformerCache {
     }
 
     public byte[] getCached(IClassTransformer transformer, String name, String transformedName, byte[] basicClass) {
-        String transName = transformer.getClass().getCanonicalName();
+        String transName = getCanonicalClassName(transformer.getClass());
         TransformerData transData = transformerMap.get(transName);
         if(transData != null) {
             CachedTransformation trans = transData.transformationMap.get(transformedName);
@@ -148,7 +154,7 @@ public class TransformerCache {
     }
 
     public void prePutCached(IClassTransformer transformer, String name, String transformedName, byte[] basicClass) {
-        String transName = transformer.getClass().getCanonicalName();
+        String transName = getCanonicalClassName(transformer.getClass());
         TransformerData data = transformerMap.get(transName);
         if(data == null) {
             transformerMap.put(transName, data = new TransformerData(transName));
@@ -164,8 +170,22 @@ public class TransformerCache {
         transformerMap.get(transformer.getClass().getCanonicalName()).transformationMap.get(transformedName).putClass(result);
     }
     
+    private String getCanonicalClassName(Class<?> clazz) {
+        if(memoizedClass == clazz) {
+            return memoizedClassCanonicalName;
+        }
+        memoizedClass = clazz;
+        memoizedClassCanonicalName = clazz.getCanonicalName();
+        return memoizedClassCanonicalName;
+    }
+    
     public static int calculateHash(byte[] data) {
-        return Hashing.adler32().hashBytes(data).asInt();
+        if(data == memoizedHashData) {
+            return memoizedHashValue;
+        }
+        memoizedHashData = data;
+        memoizedHashValue = Hashing.adler32().hashBytes(data).asInt();
+        return memoizedHashValue;
     }
     
     public static class TransformerData {
