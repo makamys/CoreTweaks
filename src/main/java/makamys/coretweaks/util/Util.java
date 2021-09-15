@@ -1,5 +1,6 @@
 package makamys.coretweaks.util;
 
+import java.io.File;
 import java.lang.reflect.Field;
 
 import net.minecraft.client.Minecraft;
@@ -44,6 +45,11 @@ public class Util {
 	
 	public static boolean isOptifinePresent() {
 		return ofCloudsHeight_F != null;
+	}
+	
+	public static File childFile(File parent, String childName) {
+	    parent.mkdirs();
+	    return new File(parent, childName);
 	}
 	
 }

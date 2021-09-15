@@ -25,6 +25,10 @@ public class CoreTweaks {
     
     public static final Logger LOGGER = LogManager.getLogger("coretweaks");
     
+    public static final File MY_DIR = new File(Launch.minecraftHome, "coretweaks");
+    public static final File OUT_DIR = new File(MY_DIR, "out");
+    public static final File CACHE_DIR = new File(MY_DIR, "cache");
+    
     public static void init(){
         Persistence.loadIfNotLoadedAlready();
         
@@ -44,27 +48,5 @@ public class CoreTweaks {
         
         Persistence.lastVersion = CoreTweaks.VERSION;
         Persistence.save();
-    }
-    
-    public static File getDataFile(String name) {
-        return getDataFile(name, true);
-    }
-    
-    public static File getDataFile(String name, boolean createIfNotExists) {
-        File myDir = new File(Launch.minecraftHome, "coretweaks");
-        if(!myDir.exists()) {
-            myDir.mkdir();
-        }
-        File dataFile = new File(myDir, name);
-        
-        if(createIfNotExists) {
-            try {
-                dataFile.createNewFile();
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-        }
-        return dataFile;
     }
 }

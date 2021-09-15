@@ -26,12 +26,15 @@ import org.apache.logging.log4j.Logger;
 
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.relauncher.ModListHelper;
+import makamys.coretweaks.util.Util;
 import net.minecraft.launchwrapper.Launch;
 
 import static makamys.coretweaks.CoreTweaks.LOGGER;
 
 public class Persistence {
 	
+    private static final File PERSISTENCE_TXT = Util.childFile(CoreTweaks.MY_DIR, "persistence.txt");
+    
 	public static class Log {
 		
 		private File file;
@@ -40,7 +43,7 @@ public class Persistence {
 		boolean failed = false;
 		
 		public Log(String path) {
-			file = CoreTweaks.getDataFile(path, false);
+			file = Util.childFile(CoreTweaks.OUT_DIR, path);
 		}
 		
 		public void write(String msg) {
@@ -91,15 +94,15 @@ public class Persistence {
 	public static String lastMods;
 	public static String lastVersion;
 	
-	public static Log erroredClassesLog = new Log("errored-classes.txt");
-	public static Log debugLog = new Log("debug.txt");
+	public static Log erroredClassesLog = new Log("out/errored-classes.txt");
+	public static Log debugLog = new Log("out/debug.txt");
 	
 	public static void loadIfNotLoadedAlready() {
 		if(props != null) return;
 		
 		props = new Properties();
 		try {
-			props.load(new BufferedInputStream(new FileInputStream(CoreTweaks.getDataFile("persistence.txt"))));
+			props.load(new BufferedInputStream(new FileInputStream(PERSISTENCE_TXT)));
 		} catch (IOException e) {
 			LOGGER.warn("Failed to load persistence file");
 			e.printStackTrace();
@@ -119,7 +122,7 @@ public class Persistence {
 			props.setProperty("lastMods", lastMods);
 			props.setProperty("lastVersion", lastVersion);
 			
-			props.store(new BufferedOutputStream(new FileOutputStream(CoreTweaks.getDataFile("persistence.txt"))),
+			props.store(new BufferedOutputStream(new FileOutputStream(PERSISTENCE_TXT)),
 					"This file is used by CoreTweaks to store data. You probably shouldn't edit it.");
 		} catch (IOException e) {
 			LOGGER.warn("Failed to save persistence file");

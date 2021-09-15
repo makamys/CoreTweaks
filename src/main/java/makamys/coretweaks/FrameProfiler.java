@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.IOException;
 
 import makamys.coretweaks.util.TableBuilder;
+import makamys.coretweaks.util.Util;
 
 public class FrameProfiler {
     
@@ -92,7 +93,7 @@ public class FrameProfiler {
     
     private boolean dumpProfilingResults() {
     	try {
-    		tb.writeToCSV(new File("frameprofiler-" + System.currentTimeMillis() + ".csv"));
+    		tb.writeToCSV(Util.childFile(CoreTweaks.OUT_DIR, "frameprofiler-" + System.currentTimeMillis() + ".csv"));
     		return true;
     	} catch(IOException e) {
     		return false;

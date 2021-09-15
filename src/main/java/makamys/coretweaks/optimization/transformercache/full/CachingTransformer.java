@@ -38,6 +38,7 @@ import cpw.mods.fml.relauncher.ModListHelper;
 import makamys.coretweaks.Config;
 import makamys.coretweaks.CoreTweaks;
 import makamys.coretweaks.Persistence;
+import makamys.coretweaks.util.Util;
 import makamys.coretweaks.util.WrappedAddListenableMap;
 import makamys.coretweaks.util.WrappedAddListenableMap.MapAddListener;
 import net.minecraft.launchwrapper.IClassTransformer;
@@ -104,6 +105,9 @@ public class CachingTransformer implements IClassTransformer, MapAddListener<Str
 	private int lastSaveSize = 0;
 	private BlockingQueue<String> dirtyClasses = new LinkedBlockingQueue<String>();
 	
+	private static final File CLASS_CACHE_DAT = Util.childFile(CoreTweaks.CACHE_DIR, "classCache.dat");
+	private static final File CLASS_CACHE_DAT_TMP = Util.childFile(CoreTweaks.CACHE_DIR, "classCache.dat~");
+	
 	public CachingTransformer(List<IClassTransformer> transformers, WrappedTransformerList<IClassTransformer> wrappedTransformers, WrappedAddListenableMap<String, Class<?>> wrappedCachedClasses) {
 		LOGGER.info("Initializing cache transformer");
 		
@@ -129,7 +133,7 @@ public class CachingTransformer implements IClassTransformer, MapAddListener<Str
 	
 	private void clearCache(String reason) {
 		LOGGER.info("Rebuilding class cache, because " + reason);
-		CoreTweaks.getDataFile("classCache.dat").delete();
+		CLASS_CACHE_DAT.delete();
 		Persistence.erroredClassesLog.clear();
 	}
 	
@@ -140,7 +144,7 @@ public class CachingTransformer implements IClassTransformer, MapAddListener<Str
 	}
 	
 	private void loadCache() {
-		File inFile = CoreTweaks.getDataFile("classCache.dat");
+		File inFile = CLASS_CACHE_DAT;
 		
 		if(inFile.exists()) {
 			LOGGER.info("Loading class cache.");
@@ -184,8 +188,8 @@ public class CachingTransformer implements IClassTransformer, MapAddListener<Str
 	}
 	
 	private void saveCacheFully() {
-		File outFile = CoreTweaks.getDataFile("classCache.dat");
-		File outFileTmp = CoreTweaks.getDataFile("classCache.dat~");
+		File outFile = CLASS_CACHE_DAT;
+		File outFileTmp = CLASS_CACHE_DAT_TMP;
 		
 		LOGGER.info("Performing full save of class cache (size: " + cache.size() + ")");
 		saveCacheChunk(cache.keySet(), outFileTmp, false);
@@ -203,7 +207,7 @@ public class CachingTransformer implements IClassTransformer, MapAddListener<Str
 			return; // don't save if the cache hasn't changed
 		}
 		
-		File outFile = CoreTweaks.getDataFile("classCache.dat");
+		File outFile = CLASS_CACHE_DAT;
 		try {
             outFile.createNewFile();
         } catch (IOException e1) {

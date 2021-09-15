@@ -12,11 +12,14 @@ import java.util.stream.Collectors;
 
 import cpw.mods.fml.common.ProgressManager.ProgressBar;
 import makamys.coretweaks.Config;
+import makamys.coretweaks.CoreTweaks;
+import makamys.coretweaks.util.Util;
 import net.minecraft.launchwrapper.Launch;
 
 public class FMLBarProfiler {
     
     private static FMLBarProfiler instance;
+    private static final File FML_BAR_PROFILER_CSV = Util.childFile(CoreTweaks.OUT_DIR, "fml_bar_profiler.csv");
     
     private Node root;
     private Node head;
@@ -66,7 +69,7 @@ public class FMLBarProfiler {
     
     private void onFinished() {
         head.finishTime = System.nanoTime();
-        writeToFile(new File(Launch.minecraftHome, "fml_bar_profiler.csv"));
+        writeToFile(FML_BAR_PROFILER_CSV);
     }
     
     private void writeToFile(File file) {

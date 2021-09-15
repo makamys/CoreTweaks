@@ -27,6 +27,7 @@ import cpw.mods.fml.relauncher.ReflectionHelper;
 import makamys.coretweaks.Config;
 import makamys.coretweaks.CoreTweaks;
 import makamys.coretweaks.optimization.transformercache.lite.TransformerCache.TransformerData.CachedTransformation;
+import makamys.coretweaks.util.Util;
 import net.minecraft.launchwrapper.IClassNameTransformer;
 import net.minecraft.launchwrapper.IClassTransformer;
 import net.minecraft.launchwrapper.Launch;
@@ -39,7 +40,8 @@ public class TransformerCache {
     private List<IClassTransformer> myTransformers = new ArrayList<>();
     private Map<String, TransformerData> transformerMap = new HashMap<>();
     
-    private final File file = CoreTweaks.getDataFile("transformerCache.dat", false);
+    private static final File TRANSFORMERCACHE_DAT = Util.childFile(CoreTweaks.CACHE_DIR, "transformerCache.dat");
+    private static final File TRANSFORMERCACHE_PROFILER_CSV = Util.childFile(CoreTweaks.OUT_DIR, "transformercache_profiler.csv");
     private final Kryo kryo = new Kryo();
     
     private Set<String> transformersToCache = new HashSet<>();
@@ -91,8 +93,8 @@ public class TransformerCache {
     private void loadData() {
         kryo.setRegistrationRequired(false);
         
-        if(file.exists()) {
-            try(Input is = new UnsafeInput(new BufferedInputStream(new FileInputStream(file)))) {
+        if(TRANSFORMERCACHE_DAT.exists()) {
+            try(Input is = new UnsafeInput(new BufferedInputStream(new FileInputStream(TRANSFORMERCACHE_DAT)))) {
                 transformerMap = kryo.readObject(is, HashMap.class);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -110,18 +112,18 @@ public class TransformerCache {
     }
     
     private void saveTransformerCache() throws IOException {
-        if(!file.exists()) {
-            file.getParentFile().mkdirs();
-            file.createNewFile();
+        if(!TRANSFORMERCACHE_DAT.exists()) {
+            TRANSFORMERCACHE_DAT.getParentFile().mkdirs();
+            TRANSFORMERCACHE_DAT.createNewFile();
         }
         System.out.println("Saving transformer cache");
-        try(Output output = new UnsafeOutput(new BufferedOutputStream(new FileOutputStream(file, true)))) {
+        try(Output output = new UnsafeOutput(new BufferedOutputStream(new FileOutputStream(TRANSFORMERCACHE_DAT, true)))) {
             kryo.writeObject(output, transformerMap);
         }
     }
     
     private void saveProfilingResults() throws IOException {
-        try(FileWriter fw = new FileWriter(new File(Launch.minecraftHome, "transformercache_profiler.csv"))){
+        try(FileWriter fw = new FileWriter(TRANSFORMERCACHE_PROFILER_CSV)){
             fw.write("class,name,runs,misses\n");
             for(IClassTransformer transformer : myTransformers) {
                 String className = getCanonicalClassName(transformer.getClass());
