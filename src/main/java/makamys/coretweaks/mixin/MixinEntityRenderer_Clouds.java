@@ -4,7 +4,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.ModifyConstant;
 
 import makamys.coretweaks.Config;
-import makamys.coretweaks.util.Util;
+import makamys.coretweaks.util.MCUtil;
 
 import org.spongepowered.asm.mixin.injection.Constant;
 
@@ -30,7 +30,7 @@ abstract class MixinEntityRenderer_Clouds {
 		case VARIABLE_CORRECTED:
 			// OptiFine has a bug where it only adds ofCloudsHeight*128 to the second height check.
 			// To fix this, we add it to the first one here.
-			return Minecraft.getMinecraft().theWorld.provider.getCloudHeight() + (addOF ? Util.getOfCloudsHeight() * 128f : 0);
+			return Minecraft.getMinecraft().theWorld.provider.getCloudHeight() + (addOF ? MCUtil.getOfCloudsHeight() * 128f : 0);
 		case ALWAYS_TRANSPARENT:
 			return Double.NEGATIVE_INFINITY;
 		case ALWAYS_OPAQUE:

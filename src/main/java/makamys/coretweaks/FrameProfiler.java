@@ -5,8 +5,8 @@ import static makamys.coretweaks.FrameProfiler.Entry.*;
 import java.io.File;
 import java.io.IOException;
 
-import makamys.coretweaks.util.TableBuilder;
 import makamys.coretweaks.util.Util;
+import makamys.coretweaks.util.TableBuilder;
 
 public class FrameProfiler {
     

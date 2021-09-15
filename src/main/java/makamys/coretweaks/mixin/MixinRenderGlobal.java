@@ -3,7 +3,7 @@ package makamys.coretweaks.mixin;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import makamys.coretweaks.util.Util;
+import makamys.coretweaks.util.MCUtil;
 
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -16,7 +16,7 @@ abstract class MixinRenderGlobal {
 
     @Inject(method = "updateRenderers", at = @At("RETURN"), cancellable = true)
     public void postUpdateRenderers(EntityLivingBase elb, boolean bool, CallbackInfoReturnable<Boolean> cir) {
-    	if(Util.isOptifinePresent()) {
+    	if(MCUtil.isOptifinePresent()) {
     		// OptiFine has it backwards for some reason
     		cir.setReturnValue(!cir.getReturnValueZ());
     	}
