@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.ObfuscationReflectionHelper;
 import makamys.coretweaks.diagnostics.FMLBarProfiler;
-import makamys.coretweaks.optimization.transformercache.light.DeobfCache;
+import makamys.coretweaks.optimization.transformercache.light.TransformerCache;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.launchwrapper.LaunchClassLoader;
 
@@ -56,7 +56,7 @@ public class MixinConfigPlugin implements IMixinConfigPlugin {
         
         Phase phase = MixinEnvironment.getCurrentEnvironment().getPhase();
         if(phase == Phase.INIT) {
-            DeobfCache.init();
+            TransformerCache.init();
             
             if(Config.modDiscovererSkipKnownLibraries) mixins.add("MixinModDiscoverer");
             if(Config.jarDiscovererCache) mixins.add("MixinJarDiscoverer");
