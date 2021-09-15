@@ -51,7 +51,6 @@ public class TransformerCache {
         // We get a ClassCircularityError if we don't add this
         Launch.classLoader.addTransformerExclusion("makamys.coretweaks.optimization.transformercache.light");
         
-        hookClassLoader();
         loadData();
         
         Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
@@ -69,6 +68,8 @@ public class TransformerCache {
                     e.printStackTrace();
                 }
             }}, "CoreTweaks transformer cache save thread"));
+        
+        hookClassLoader();
     }
 
     private void hookClassLoader() {
