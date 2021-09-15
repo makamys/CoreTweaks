@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.ObfuscationReflectionHelper;
 import makamys.coretweaks.diagnostics.FMLBarProfiler;
-import makamys.coretweaks.optimization.transformercache.DeobfCache;
+import makamys.coretweaks.optimization.transformercache.light.DeobfCache;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.launchwrapper.LaunchClassLoader;
 

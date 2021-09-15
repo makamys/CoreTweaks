@@ -1,4 +1,4 @@
-package makamys.coretweaks.optimization.transformercache;
+package makamys.coretweaks.optimization.transformercache.light;
 
 import cpw.mods.fml.common.asm.transformers.DeobfuscationTransformer;
 import net.minecraft.launchwrapper.IClassNameTransformer;

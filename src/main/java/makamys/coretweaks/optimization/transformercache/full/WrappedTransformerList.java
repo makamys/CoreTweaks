@@ -1,4 +1,4 @@
-package makamys.coretweaks.util;
+package makamys.coretweaks.optimization.transformercache.full;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.stream.Collectors;
 
-import makamys.coretweaks.optimization.transformercache.CachingTransformer;
 import net.minecraft.launchwrapper.LaunchClassLoader;
 
 /**

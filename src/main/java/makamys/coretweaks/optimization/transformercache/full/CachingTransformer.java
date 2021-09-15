@@ -1,4 +1,4 @@
-package makamys.coretweaks.optimization.transformercache;
+package makamys.coretweaks.optimization.transformercache.full;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -39,7 +39,6 @@ import makamys.coretweaks.Config;
 import makamys.coretweaks.CoreTweaks;
 import makamys.coretweaks.Persistence;
 import makamys.coretweaks.util.WrappedAddListenableMap;
-import makamys.coretweaks.util.WrappedTransformerList;
 import makamys.coretweaks.util.WrappedAddListenableMap.MapAddListener;
 import net.minecraft.launchwrapper.IClassTransformer;
 import net.minecraft.launchwrapper.Launch;

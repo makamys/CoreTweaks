@@ -1,4 +1,4 @@
-package makamys.coretweaks.optimization.transformercache;
+package makamys.coretweaks.optimization.transformercache.light;
 
 import java.util.List;
 

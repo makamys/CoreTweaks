@@ -24,7 +24,7 @@ import cpw.mods.fml.common.gameevent.TickEvent.ClientTickEvent;
 import makamys.coretweaks.command.CoreTweaksCommand;
 import makamys.coretweaks.ducks.IChunkProviderClient;
 import makamys.coretweaks.optimization.ThreadedTextureLoader;
-import makamys.coretweaks.optimization.transformercache.CachingTransformer;
+import makamys.coretweaks.optimization.transformercache.full.CachingTransformer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiMemoryErrorScreen;
 import net.minecraft.client.multiplayer.ChunkProviderClient;
