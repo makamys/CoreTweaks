@@ -1,4 +1,4 @@
-package makamys.coretweaks.optimization.transformercache.light;
+package makamys.coretweaks.optimization.transformercache.lite;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -24,7 +24,7 @@ import com.google.common.hash.Hashing;
 import cpw.mods.fml.relauncher.ReflectionHelper;
 import makamys.coretweaks.Config;
 import makamys.coretweaks.CoreTweaks;
-import makamys.coretweaks.optimization.transformercache.light.TransformerCache.TransformerData.CachedTransformation;
+import makamys.coretweaks.optimization.transformercache.lite.TransformerCache.TransformerData.CachedTransformation;
 import net.minecraft.launchwrapper.IClassNameTransformer;
 import net.minecraft.launchwrapper.IClassTransformer;
 import net.minecraft.launchwrapper.Launch;
@@ -49,7 +49,7 @@ public class TransformerCache {
         transformersToCache = Arrays.stream(Config.transformersToCache).collect(Collectors.toSet());
         
         // We get a ClassCircularityError if we don't add this
-        Launch.classLoader.addTransformerExclusion("makamys.coretweaks.optimization.transformercache.light");
+        Launch.classLoader.addTransformerExclusion("makamys.coretweaks.optimization.transformercache.lite");
         
         loadData();
         
@@ -81,7 +81,7 @@ public class TransformerCache {
             if(transformersToCache.contains(transformer.getClass().getCanonicalName())) {
                 System.out.println("Replacing " + transformer.getClass().getCanonicalName() + " with cached one");
                 transformers.set(i, transformer instanceof IClassNameTransformer
-                        ? new CachedNameTransformer(transformer) : new CachedTransformer(transformer));
+                        ? new CachedNameTransformerProxy(transformer) : new CachedTransformerProxy(transformer));
             }
         }
     }

@@ -1,12 +1,12 @@
-package makamys.coretweaks.optimization.transformercache.light;
+package makamys.coretweaks.optimization.transformercache.lite;
 
 import net.minecraft.launchwrapper.IClassTransformer;
 
-public class CachedTransformer implements IClassTransformer {
+public class CachedTransformerProxy implements IClassTransformer {
 
     protected IClassTransformer original;
     
-    public CachedTransformer(IClassTransformer original) {
+    public CachedTransformerProxy(IClassTransformer original) {
         this.original = original;
     }
     

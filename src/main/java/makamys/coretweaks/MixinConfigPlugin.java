@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.ObfuscationReflectionHelper;
 import makamys.coretweaks.diagnostics.FMLBarProfiler;
-import makamys.coretweaks.optimization.transformercache.light.TransformerCache;
+import makamys.coretweaks.optimization.transformercache.lite.TransformerCache;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.launchwrapper.LaunchClassLoader;
 
@@ -66,7 +66,7 @@ public class MixinConfigPlugin implements IMixinConfigPlugin {
             }
             if(Config.fixSmallEntitySwim) mixins.add("MixinEntity");
         } else if(phase == Phase.DEFAULT) {
-            if(Config.transformerCache == Config.TransformerCache.LIGHT) {
+            if(Config.transformerCache == Config.TransformerCache.LITE) {
                 // At this point the transformer chain is complete, so we can go hook it.
                 TransformerCache.instance.init();
             }
