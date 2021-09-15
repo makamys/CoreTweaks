@@ -61,6 +61,7 @@ public class TransformerCache {
                         file.getParentFile().mkdirs();
                         file.createNewFile();
                     }
+                    System.out.println("Saving transformer cache");
                     try(Output output = new UnsafeOutput(new BufferedOutputStream(new FileOutputStream(file, true)))) {
                         kryo.writeObject(output, transformerMap);
                     }
@@ -105,7 +106,7 @@ public class TransformerCache {
             if(trans != null) {
                 int preHash = calculateHash(basicClass);
                 if(preHash == trans.preHash) {
-                    return trans.newClass;
+                    return trans.postHash == trans.preHash ? basicClass : trans.newClass;
                 }
             }
         }
@@ -126,10 +127,10 @@ public class TransformerCache {
     
     /** MUST be preceded with a call to prePutCached. */
     public void putCached(IClassTransformer transformer, String name, String transformedName, byte[] result) {
-        transformerMap.get(transformer.getClass().getCanonicalName()).transformationMap.get(transformedName).newClass = result;
+        transformerMap.get(transformer.getClass().getCanonicalName()).transformationMap.get(transformedName).putClass(result);
     }
     
-    private int calculateHash(byte[] data) {
+    public static int calculateHash(byte[] data) {
         return Hashing.adler32().hashBytes(data).asInt();
     }
     
@@ -146,6 +147,7 @@ public class TransformerCache {
         public static class CachedTransformation {
             String targetClassName;
             int preHash;
+            int postHash;
             byte[] newClass;
             
             public CachedTransformation() {}
@@ -153,6 +155,13 @@ public class TransformerCache {
             public CachedTransformation(String targetClassName, int preHash) {
                 this.targetClassName = targetClassName;
                 this.preHash = preHash;
+            }
+            
+            public void putClass(byte[] result) {
+                postHash = calculateHash(result);
+                if(preHash != postHash) {
+                    newClass = result;
+                }
             }
         }
     }
