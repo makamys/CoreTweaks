@@ -35,6 +35,8 @@ import cpw.mods.fml.common.discovery.asm.ASMModParser;
 import cpw.mods.fml.common.discovery.asm.ModAnnotation;
 import cpw.mods.fml.common.discovery.asm.ModAnnotation.EnumHolder;
 import makamys.coretweaks.Config;
+import makamys.coretweaks.CoreTweaks;
+import makamys.coretweaks.util.Util;
 import net.minecraft.launchwrapper.Launch;
 
 public class JarDiscovererCache {
@@ -42,7 +44,7 @@ public class JarDiscovererCache {
 	private static Map<String, CachedModInfo> cache = new HashMap<>();
 	private static Map<String, CachedModInfo> dirtyCache = new HashMap<>();
 	
-	private static final File file = new File(new File(Launch.minecraftHome, "coretweaks"), "jarDiscovererCache.dat");
+	private static final File DAT = Util.childFile(CoreTweaks.CACHE_DIR, "jarDiscovererCache.dat");
 	
 	private static final Kryo kryo = new Kryo();
 	
@@ -54,8 +56,8 @@ public class JarDiscovererCache {
 		kryo.setRegistrationRequired(false);
 		
 		
-		if(file.exists()) {
-			try(Input is = new UnsafeInput(new BufferedInputStream(new FileInputStream(file)))) {
+		if(DAT.exists()) {
+			try(Input is = new UnsafeInput(new BufferedInputStream(new FileInputStream(DAT)))) {
 				try {
 					while(true) {
 						String k = kryo.readObject(is, String.class);
@@ -88,11 +90,11 @@ public class JarDiscovererCache {
 				@Override
 				public void run() {
 					try {
-						if(!file.exists()) {
-							file.getParentFile().mkdirs();
-							file.createNewFile();
+						if(!DAT.exists()) {
+							DAT.getParentFile().mkdirs();
+							DAT.createNewFile();
 						}
-						try(Output output = new UnsafeOutput(new BufferedOutputStream(new FileOutputStream(file, true)))) {
+						try(Output output = new UnsafeOutput(new BufferedOutputStream(new FileOutputStream(DAT, true)))) {
 							for(Entry<String, CachedModInfo> e : dirtyCache.entrySet()) {
 								System.out.println("Writing CachedModInfo " + e.getKey());
 								kryo.writeObject(output, e.getKey());
