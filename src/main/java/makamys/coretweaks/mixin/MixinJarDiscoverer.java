@@ -57,7 +57,11 @@ abstract class MixinJarDiscoverer implements INetHandlerPlayClient {
     public ASMModParser redirectNewASMModParser(InputStream stream, ModCandidate candidate, ASMDataTable table) throws IOException {
 		ASMModParser parser = lastCMI.getCachedParser(lastZipEntry);
 		if(parser == null) {
-			parser = new ASMModParser(stream);
+		    try {
+		        parser = new ASMModParser(stream);
+		    } finally {
+		        stream.close();
+		    }
 			lastCMI.putParser(lastZipEntry, parser);
 		}
 		return parser;
