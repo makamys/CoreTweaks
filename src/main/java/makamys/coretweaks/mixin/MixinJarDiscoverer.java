@@ -27,7 +27,7 @@ import net.minecraft.network.play.INetHandlerPlayClient;
 
 import static makamys.coretweaks.CoreTweaks.LOGGER;
 
-@Mixin(JarDiscoverer.class)
+@Mixin(value = JarDiscoverer.class, remap = false)
 abstract class MixinJarDiscoverer implements INetHandlerPlayClient {
     
 	private ZipEntry lastZipEntry;
@@ -35,7 +35,7 @@ abstract class MixinJarDiscoverer implements INetHandlerPlayClient {
 	String lastHash;
 	CachedModInfo lastCMI;
 	
-    @Inject(method = "discover", at = @At("HEAD"), remap = false)
+    @Inject(method = "discover", at = @At("HEAD"))
     public void preDiscover(ModCandidate candidate, ASMDataTable table, CallbackInfoReturnable cir) {
 		String hash = null;
 	    File file = candidate.getModContainer();
@@ -47,13 +47,13 @@ abstract class MixinJarDiscoverer implements INetHandlerPlayClient {
     	LOGGER.debug("preDiscover " + candidate.getModContainer() + "(hash " + lastHash + ")");
     }
 	
-	@Redirect(method = "discover", at = @At(value = "INVOKE", target = "Ljava/util/jar/JarFile;getInputStream(Ljava/util/zip/ZipEntry;)Ljava/io/InputStream;"), remap = false)
+	@Redirect(method = "discover", at = @At(value = "INVOKE", target = "Ljava/util/jar/JarFile;getInputStream(Ljava/util/zip/ZipEntry;)Ljava/io/InputStream;"))
     public InputStream redirectGetInputStream(JarFile jf, ZipEntry ze) throws IOException {
         lastZipEntry = ze;
         return jf.getInputStream(ze);
     }
 	
-	@Redirect(method = "discover", at = @At(value = "NEW", target = "cpw/mods/fml/common/discovery/asm/ASMModParser"), remap = false)
+	@Redirect(method = "discover", at = @At(value = "NEW", target = "cpw/mods/fml/common/discovery/asm/ASMModParser"))
     public ASMModParser redirectNewASMModParser(InputStream stream, ModCandidate candidate, ASMDataTable table) throws IOException {
 		ASMModParser parser = lastCMI.getCachedParser(lastZipEntry);
 		if(parser == null) {
@@ -67,7 +67,7 @@ abstract class MixinJarDiscoverer implements INetHandlerPlayClient {
 		return parser;
     }
 	
-	@Redirect(method = "discover", at = @At(value = "INVOKE", target = "Lcpw/mods/fml/common/ModContainerFactory;build(Lcpw/mods/fml/common/discovery/asm/ASMModParser;Ljava/io/File;Lcpw/mods/fml/common/discovery/ModCandidate;)Lcpw/mods/fml/common/ModContainer;"), remap = false)
+	@Redirect(method = "discover", at = @At(value = "INVOKE", target = "Lcpw/mods/fml/common/ModContainerFactory;build(Lcpw/mods/fml/common/discovery/asm/ASMModParser;Ljava/io/File;Lcpw/mods/fml/common/discovery/ModCandidate;)Lcpw/mods/fml/common/ModContainer;"))
     public ModContainer redirectBuild(ModContainerFactory factory, ASMModParser modParser, File modSource, ModCandidate container, ModCandidate candidate, ASMDataTable table) {
 		int isModClass = lastCMI.getCachedIsModClass(lastZipEntry);
 		ModContainer mc = null;
