@@ -12,9 +12,9 @@ import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
 
-import codechicken.lib.asm.ASMReader;
 import net.minecraft.launchwrapper.IClassTransformer;
 
+/** Adds an empty constructor to ASMModParser so it can be serialized by JarDiscovererCache. */
 public class ASMModParserTransformer implements IClassTransformer {
 
 	@Override
@@ -26,7 +26,7 @@ public class ASMModParserTransformer implements IClassTransformer {
 	}
 
 	private static byte[] doTransform(byte[] bytes) {
-		System.out.println("Transforming ASMModParser");
+		System.out.println("Transforming ASMModParser to add empty constructor");
 		
 		ClassWriter writer = null;
 		try {
