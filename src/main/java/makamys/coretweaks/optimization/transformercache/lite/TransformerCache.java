@@ -40,7 +40,7 @@ public class TransformerCache {
     private List<IClassTransformer> myTransformers = new ArrayList<>();
     private Map<String, TransformerData> transformerMap = new HashMap<>();
     
-    private static final File TRANSFORMERCACHE_DAT = Util.childFile(CoreTweaks.CACHE_DIR, "transformerCache.dat");
+    private static final File DAT = Util.childFile(CoreTweaks.CACHE_DIR, "transformerCache.dat");
     private static final File TRANSFORMERCACHE_PROFILER_CSV = Util.childFile(CoreTweaks.OUT_DIR, "transformercache_profiler.csv");
     private final Kryo kryo = new Kryo();
     
@@ -93,8 +93,8 @@ public class TransformerCache {
     private void loadData() {
         kryo.setRegistrationRequired(false);
         
-        if(TRANSFORMERCACHE_DAT.exists()) {
-            try(Input is = new UnsafeInput(new BufferedInputStream(new FileInputStream(TRANSFORMERCACHE_DAT)))) {
+        if(DAT.exists()) {
+            try(Input is = new UnsafeInput(new BufferedInputStream(new FileInputStream(DAT)))) {
                 transformerMap = kryo.readObject(is, HashMap.class);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -112,12 +112,12 @@ public class TransformerCache {
     }
     
     private void saveTransformerCache() throws IOException {
-        if(!TRANSFORMERCACHE_DAT.exists()) {
-            TRANSFORMERCACHE_DAT.getParentFile().mkdirs();
-            TRANSFORMERCACHE_DAT.createNewFile();
+        if(!DAT.exists()) {
+            DAT.getParentFile().mkdirs();
+            DAT.createNewFile();
         }
         System.out.println("Saving transformer cache");
-        try(Output output = new UnsafeOutput(new BufferedOutputStream(new FileOutputStream(TRANSFORMERCACHE_DAT, true)))) {
+        try(Output output = new UnsafeOutput(new BufferedOutputStream(new FileOutputStream(DAT, true)))) {
             kryo.writeObject(output, transformerMap);
         }
     }
