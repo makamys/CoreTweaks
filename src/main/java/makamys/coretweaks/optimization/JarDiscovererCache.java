@@ -39,6 +39,8 @@ import makamys.coretweaks.CoreTweaks;
 import makamys.coretweaks.util.Util;
 import net.minecraft.launchwrapper.Launch;
 
+import static makamys.coretweaks.CoreTweaks.LOGGER;
+
 public class JarDiscovererCache {
 	
 	private static Map<String, CachedModInfo> cache = new HashMap<>();
@@ -49,7 +51,7 @@ public class JarDiscovererCache {
 	private static final Kryo kryo = new Kryo();
 	
 	public static void load() {
-		System.out.println("Loading JarDiscovererCache");
+		LOGGER.info("Loading JarDiscovererCache");
 		kryo.register(Type.class, new TypeSerializer());
 		kryo.register(ModAnnotation.class, new ModAnnotationSerializer());
 		kryo.register(EnumHolder.class, new EnumHolderSerializer());
@@ -62,7 +64,7 @@ public class JarDiscovererCache {
 					while(true) {
 						String k = kryo.readObject(is, String.class);
 						CachedModInfo v = kryo.readObject(is, CachedModInfo.class);
-						System.out.println("Read CachedModInfo " + k);
+						LOGGER.trace("Read CachedModInfo " + k);
 						cache.put(k, v);
 					}
 					
@@ -96,7 +98,7 @@ public class JarDiscovererCache {
 						}
 						try(Output output = new UnsafeOutput(new BufferedOutputStream(new FileOutputStream(DAT, true)))) {
 							for(Entry<String, CachedModInfo> e : dirtyCache.entrySet()) {
-								System.out.println("Writing CachedModInfo " + e.getKey());
+								LOGGER.trace("Writing CachedModInfo " + e.getKey());
 								kryo.writeObject(output, e.getKey());
 								kryo.writeObject(output, e.getValue());
 							}

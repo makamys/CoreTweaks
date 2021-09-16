@@ -25,6 +25,8 @@ import makamys.coretweaks.optimization.JarDiscovererCache;
 import makamys.coretweaks.optimization.JarDiscovererCache.CachedModInfo;
 import net.minecraft.network.play.INetHandlerPlayClient;
 
+import static makamys.coretweaks.CoreTweaks.LOGGER;
+
 @Mixin(JarDiscoverer.class)
 abstract class MixinJarDiscoverer implements INetHandlerPlayClient {
     
@@ -42,7 +44,7 @@ abstract class MixinJarDiscoverer implements INetHandlerPlayClient {
 		lastHash = hash;
     	lastCMI = JarDiscovererCache.getCachedModInfo(lastHash);
     	
-    	System.out.println("preDiscover " + candidate.getModContainer() + "(hash " + lastHash + ")");
+    	LOGGER.debug("preDiscover " + candidate.getModContainer() + "(hash " + lastHash + ")");
     }
 	
 	@Redirect(method = "discover", at = @At(value = "INVOKE", target = "Ljava/util/jar/JarFile;getInputStream(Ljava/util/zip/ZipEntry;)Ljava/io/InputStream;"), remap = false)
