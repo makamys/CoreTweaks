@@ -79,7 +79,7 @@ public class TransformerCache {
         for(int i = 0; i < transformers.size(); i++) {
             IClassTransformer transformer = transformers.get(i);
             if(transformersToCache.contains(transformer.getClass().getCanonicalName())) {
-                System.out.println("Replacing " + transformer.getClass().getCanonicalName() + " with cached one");
+                System.out.println("Replacing " + transformer.getClass().getCanonicalName() + " with cached proxy");
                 
                 IClassTransformer newTransformer = transformer instanceof IClassNameTransformer
                         ? new CachedNameTransformerProxy(transformer) : new CachedTransformerProxy(transformer);
