@@ -1,4 +1,4 @@
-package makamys.coretweaks;
+package makamys.coretweaks.asm;
 
 import static org.objectweb.asm.Opcodes.*;
 

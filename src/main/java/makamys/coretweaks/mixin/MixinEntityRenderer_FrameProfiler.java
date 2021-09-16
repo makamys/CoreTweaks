@@ -6,7 +6,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import makamys.coretweaks.FrameProfiler;
+import makamys.coretweaks.diagnostics.FrameProfiler;
 import net.minecraft.client.renderer.EntityRenderer;
 import net.minecraft.profiler.Profiler;
 

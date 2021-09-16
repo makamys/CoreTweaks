@@ -1,6 +1,6 @@
 package makamys.coretweaks.command;
 
-import makamys.coretweaks.FrameProfiler;
+import makamys.coretweaks.diagnostics.FrameProfiler;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;

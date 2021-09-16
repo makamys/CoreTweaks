@@ -21,8 +21,8 @@ import cpw.mods.fml.common.discovery.ASMDataTable;
 import cpw.mods.fml.common.discovery.JarDiscoverer;
 import cpw.mods.fml.common.discovery.ModCandidate;
 import cpw.mods.fml.common.discovery.asm.ASMModParser;
-import makamys.coretweaks.JarDiscovererCache;
-import makamys.coretweaks.JarDiscovererCache.CachedModInfo;
+import makamys.coretweaks.optimization.JarDiscovererCache;
+import makamys.coretweaks.optimization.JarDiscovererCache.CachedModInfo;
 import net.minecraft.network.play.INetHandlerPlayClient;
 
 @Mixin(JarDiscoverer.class)

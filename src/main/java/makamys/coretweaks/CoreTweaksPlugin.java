@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
+import makamys.coretweaks.asm.ProfilerTransformer;
+import makamys.coretweaks.optimization.JarDiscovererCache;
 
 @IFMLLoadingPlugin.SortingIndex(1001) // Run after deobf (FMLDeobfTweaker has an index of 1000)
 public class CoreTweaksPlugin implements IFMLLoadingPlugin {
@@ -19,10 +21,10 @@ public class CoreTweaksPlugin implements IFMLLoadingPlugin {
 	public String[] getASMTransformerClass() {
 		List<String> transformerClasses = new ArrayList<>();
 		if(JarDiscovererCache.isActive()) {
-			transformerClasses.add("makamys.coretweaks.ASMModParserTransformer");
+			transformerClasses.add("makamys.coretweaks.asm.ASMModParserTransformer");
 		}
 		if(ProfilerTransformer.isActive()) {
-			transformerClasses.add("makamys.coretweaks.ProfilerTransformer");
+			transformerClasses.add("makamys.coretweaks.asm.ProfilerTransformer");
 		}
 		return transformerClasses.toArray(new String[] {});
 	}

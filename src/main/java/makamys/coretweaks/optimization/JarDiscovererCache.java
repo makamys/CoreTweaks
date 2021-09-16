@@ -1,4 +1,4 @@
-package makamys.coretweaks;
+package makamys.coretweaks.optimization;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -34,6 +34,7 @@ import com.esotericsoftware.kryo.unsafe.UnsafeOutput;
 import cpw.mods.fml.common.discovery.asm.ASMModParser;
 import cpw.mods.fml.common.discovery.asm.ModAnnotation;
 import cpw.mods.fml.common.discovery.asm.ModAnnotation.EnumHolder;
+import makamys.coretweaks.Config;
 import net.minecraft.launchwrapper.Launch;
 
 public class JarDiscovererCache {

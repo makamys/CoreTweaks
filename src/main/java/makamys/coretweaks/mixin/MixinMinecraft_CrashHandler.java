@@ -4,8 +4,8 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
-import makamys.coretweaks.GuiFatalErrorScreen;
 import makamys.coretweaks.CoreTweaksMod;
+import makamys.coretweaks.tweaks.GuiFatalErrorScreen;
 
 import org.spongepowered.asm.mixin.injection.At;
 

@@ -1,4 +1,4 @@
-package makamys.coretweaks;
+package makamys.coretweaks.asm;
 
 import static org.objectweb.asm.Opcodes.*;
 
@@ -18,14 +18,17 @@ import org.objectweb.asm.tree.IntInsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 
+import makamys.coretweaks.Config;
 import net.minecraft.launchwrapper.IClassTransformer;
+
+/** Instruments classes so the profiler can profile them. */
 
 public class ProfilerTransformer implements IClassTransformer {
 	
 	private static Map<String, List<String>> targets = new HashMap<>();
 	private static List<MethodInstrumentationData> methodInstrumentationDatas = new ArrayList<>();
 	
-	static void init() {
+	public static void init() {
 		if(Config.methodsToProfile.isEmpty()) return;
 		
 		for(String methodStr : Config.methodsToProfile.split(",")) {

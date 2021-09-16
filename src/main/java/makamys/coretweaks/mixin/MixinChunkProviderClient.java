@@ -3,8 +3,8 @@ package makamys.coretweaks.mixin;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
-import makamys.coretweaks.ClientChunkMap;
 import makamys.coretweaks.ducks.IChunkProviderClient;
+import makamys.coretweaks.optimization.ClientChunkMap;
 
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;

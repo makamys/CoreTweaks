@@ -1,4 +1,4 @@
-package makamys.coretweaks;
+package makamys.coretweaks.optimization;
 
 import java.util.HashMap;
 import java.util.Map;

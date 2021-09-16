@@ -8,8 +8,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import cpw.mods.fml.common.discovery.asm.ASMModParser;
-import makamys.coretweaks.ClientChunkMap;
 import makamys.coretweaks.ducks.IChunkProviderClient;
+import makamys.coretweaks.optimization.ClientChunkMap;
 import net.minecraft.client.multiplayer.ChunkProviderClient;
 import net.minecraft.world.World;
 

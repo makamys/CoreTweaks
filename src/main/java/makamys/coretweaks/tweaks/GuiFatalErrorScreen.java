@@ -1,4 +1,4 @@
-package makamys.coretweaks;
+package makamys.coretweaks.tweaks;
 
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiMainMenu;
