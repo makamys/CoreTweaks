@@ -36,13 +36,10 @@ abstract class MixinJarDiscoverer implements INetHandlerPlayClient {
     @Inject(method = "discover", at = @At("HEAD"), remap = false)
     public void preDiscover(ModCandidate candidate, ASMDataTable table, CallbackInfoReturnable cir) {
 		String hash = null;
-    	try {
-    		hash = DigestUtils.md5Hex(new BufferedInputStream(new FileInputStream(candidate.getModContainer())));
-    	} catch(IOException e) {
-    		// TODO Auto-generated catch block
-			e.printStackTrace();
-    	}
-    	lastHash = hash;
+	    File file = candidate.getModContainer();
+		hash = file.getPath() + "@" + file.lastModified();
+    	
+		lastHash = hash;
     	lastCMI = JarDiscovererCache.getCachedModInfo(lastHash);
     	
     	System.out.println("preDiscover " + candidate.getModContainer() + "(hash " + lastHash + ")");
