@@ -5,6 +5,8 @@ import org.lwjgl.opengl.GL11;
 
 import java.nio.ByteBuffer;
 
+import static makamys.coretweaks.CoreTweaks.LOGGER;
+
 /**
  * User: The Grey Ghost
  * Date: 9/02/14
@@ -293,7 +295,7 @@ public class OpenGLDebugging
   public static void dumpOpenGLState()
   {
       for (int i = 0; i < instance.propertyList.length; ++i) {
-            System.out.println(instance.propertyList[i].name + ":" + getPropertyAsString(i) + " (" + instance.propertyList[i].description + ")");
+            LOGGER.debug(instance.propertyList[i].name + ":" + getPropertyAsString(i) + " (" + instance.propertyList[i].description + ")");
         }
   }
 

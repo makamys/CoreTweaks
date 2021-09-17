@@ -164,12 +164,8 @@ public class CoreTweaksMod
     }
     
     public static void handleCrash(Throwable t, CrashReport crashReporter) {
-        boolean isDrawing = ReflectionHelper.getPrivateValue(Tessellator.class, Tessellator.instance, "isDrawing");
+        resetState();
         
-        if(isDrawing) {
-            Tessellator.instance.draw();
-        }
-        GLUtil.resetState();
         if(t != null) {
             System.out.println("Caught exception:");
             t.printStackTrace();
@@ -202,6 +198,16 @@ public class CoreTweaksMod
         
         // Throw OOME to trigger the crash handler screen
         throw new OutOfMemoryError();
+    }
+    
+    private static void resetState() {
+        boolean isDrawing = ReflectionHelper.getPrivateValue(Tessellator.class, Tessellator.instance, "isDrawing");
+        if(isDrawing) {
+            Tessellator.instance.draw();
+        }
+        
+        GLUtil.resetState();
+        Tessellator.instance.setTranslation(0.0D, 0.0D, 0.0D);
     }
     
     public static void createCrashReport(CrashReport crashReporter) {

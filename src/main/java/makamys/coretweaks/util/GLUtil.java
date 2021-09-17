@@ -6,13 +6,15 @@ package makamys.coretweaks.util;
 
 import static org.lwjgl.opengl.GL11.*;
 
-import net.minecraft.client.renderer.Tessellator;
+import static makamys.coretweaks.CoreTweaks.LOGGER;
 
 public class GLUtil {
     
     public static void resetState() {
-        System.out.println("Attempting to reset GL state.");
+        LOGGER.debug("Attempting to reset GL state.");
+        LOGGER.debug("GL state before restore:");
         OpenGLDebugging.dumpOpenGLState();
+        
         glMatrixMode(GL_MODELVIEW);
         for(int i = 0; i < glGetInteger(GL_MODELVIEW_STACK_DEPTH) - 1; i++) {
             glPopMatrix();
@@ -20,7 +22,10 @@ public class GLUtil {
         if(glGetInteger(GL_LIST_INDEX) != 0) {
             glEndList();
         }
-        Tessellator.instance.setTranslation(0.0D, 0.0D, 0.0D);
+        // TODO restore other stuff too, like attrib stack
+        
+        LOGGER.debug("GL state after restore:");
+        OpenGLDebugging.dumpOpenGLState();
     }
     
 }
