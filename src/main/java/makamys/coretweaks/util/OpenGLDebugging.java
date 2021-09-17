@@ -7,6 +7,7 @@ import java.nio.ByteBuffer;
 
 import static makamys.coretweaks.CoreTweaks.LOGGER;
 
+// Adapted from https://github.com/TheGreyGhost/MinecraftByExample/blob/1-8final/src/main/java/minecraftbyexample/usefultools/OpenGLdebugging.java
 /**
  * User: The Grey Ghost
  * Date: 9/02/14
