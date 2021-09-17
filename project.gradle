@@ -14,4 +14,11 @@ jar {
 			'FMLCorePlugin': 'makamys.coretweaks.CoreTweaksPlugin'
         )
     }
+	
+}
+
+if(!project.hasProperty("crashmod")){
+	jar {
+		sourceSets.main.java.exclude('makamys/coretweaks/tweaks/crashhandler/crashmod/**')
+	}
 }
