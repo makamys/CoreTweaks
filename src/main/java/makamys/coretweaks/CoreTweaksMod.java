@@ -103,6 +103,8 @@ public class CoreTweaksMod
         if(t != null) {
             System.out.println("Caught exception:");
             t.printStackTrace();
+        } else {
+            t = new RuntimeException("Exception on server thread");
         }
         if(!(t instanceof OutOfMemoryError)) {
         	if(crashReporter != null) {
