@@ -2,6 +2,8 @@ package makamys.coretweaks;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -43,7 +45,9 @@ import makamys.coretweaks.optimization.JarDiscovererCache;
 import makamys.coretweaks.optimization.ThreadedTextureLoader;
 import makamys.coretweaks.optimization.transformercache.full.CachingTransformer;
 import makamys.coretweaks.tweaks.crashhandler.Crasher;
+import makamys.coretweaks.util.GLUtil;
 import makamys.coretweaks.util.KeyboardUtil;
+import makamys.coretweaks.util.OpenGLDebugging;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiMemoryErrorScreen;
 import net.minecraft.client.multiplayer.ChunkProviderClient;
@@ -160,9 +164,12 @@ public class CoreTweaksMod
     }
     
     public static void handleCrash(Throwable t, CrashReport crashReporter) {
-        if(t instanceof IllegalStateException && t.getMessage().equals("Already tesselating!")) {
+        boolean isDrawing = ReflectionHelper.getPrivateValue(Tessellator.class, Tessellator.instance, "isDrawing");
+        
+        if(isDrawing) {
             Tessellator.instance.draw();
         }
+        GLUtil.resetState();
         if(t != null) {
             System.out.println("Caught exception:");
             t.printStackTrace();
