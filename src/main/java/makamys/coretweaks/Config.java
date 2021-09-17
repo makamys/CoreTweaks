@@ -97,7 +97,7 @@ public class Config {
                 "Use multi-threaded texture loading when stitching textures? Placebo.");
         transformerCache = getEnum(config, "transformerCache", "Optimizations", TransformerCache.NONE, "The type of transformer caching to use.\n"
                 + "NONE: None\n"
-                + "LITE: Cache select transformers. Reduces startup time. Relatively safe.\n"
+                + "LITE: Cache individual transformations of select transformers. Reduces startup time. Relatively safe.\n"
                 + "FULL: Cache the entire transformer chain. Reduces startup time further, but breaks with many things.");
         folderTexturePackOptimization = config.getBoolean("folderTexturePack", "Optimizations", true, 
                 "Use the optimization that speeds up loading folder resource packs?");
