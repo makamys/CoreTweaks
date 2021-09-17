@@ -38,6 +38,7 @@ abstract class MixinMinecraft_CrashHandler {
             CrashHandler.handleCrash(e, crashReporter);
         }
         if(hasCrashed) {
+            theError = null;
             hasCrashed = false;
             CrashHandler.handleCrash(null, crashReporter);
         }
