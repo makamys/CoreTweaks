@@ -25,6 +25,7 @@ public class Config {
     public static boolean fastStepMessageStrip;
     public static boolean frameProfilerHooks;
     public static CloudHeightCheck cloudHeightCheck;
+    public static boolean fixDisplayListDelete;
     
     public static boolean coreTweaksCommand;
     public static String methodsToProfile;
@@ -75,6 +76,7 @@ public class Config {
                 "ALWAYS_TRANSPARENT: Always render clouds as transparent (how it is in b1.7.3 and 1.15+)\n" + 
                 "ALWAYS_OPAQUE: Always render clouds as opaque",
                 EnumUtils.getEnumMap(CloudHeightCheck.class).keySet().toArray(new String[]{})).getString());
+        fixDisplayListDelete = config.getBoolean("fixDisplayListDelete", "Bugfixes", true, "Fixes graphical glitches that happen after recovering from a game crash, caused by world renderer display lists getting deleted but never reallocated. From 1.12.");
         
         getPendingBlockUpdates = config.getBoolean("getPendingBlockUpdates", "Optimizations", true, "Optimizes WorldServer#getPendingBlockUpdates. OptiFine also does this, but this won't have an effect when OF is present, so there's no conflict.");
         clientChunkMap = config.getBoolean("clientChunkMap", "Optimizations", false, "Faster implementation of ChunkProviderClient#chunkMapping. From 1.16 (I don't know when exactly it was added). Might be a little buggy (it should only cause client-side errors though).");
