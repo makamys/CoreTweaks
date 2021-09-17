@@ -27,6 +27,10 @@ import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerAboutToStartEvent;
+import cpw.mods.fml.common.event.FMLServerStartedEvent;
+import cpw.mods.fml.common.event.FMLServerStartingEvent;
+import cpw.mods.fml.common.event.FMLServerStoppedEvent;
+import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 import cpw.mods.fml.common.gameevent.TickEvent.ClientTickEvent;
@@ -39,6 +43,7 @@ import makamys.coretweaks.optimization.JarDiscovererCache;
 import makamys.coretweaks.optimization.ThreadedTextureLoader;
 import makamys.coretweaks.optimization.transformercache.full.CachingTransformer;
 import makamys.coretweaks.tweaks.crashhandler.Crasher;
+import makamys.coretweaks.util.KeyboardUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiMemoryErrorScreen;
 import net.minecraft.client.multiplayer.ChunkProviderClient;
@@ -71,8 +76,12 @@ public class CoreTweaksMod
     }
     
     @EventHandler
-    public void init(FMLInitializationEvent event)
-    {
+    public void preInit(FMLPreInitializationEvent event) {
+        listeners.forEach(l -> l.onPreInit(event));
+    }
+    
+    @EventHandler
+    public void init(FMLInitializationEvent event) {
         FMLCommonHandler.instance().bus().register(this);
         
         if(Config.coreTweaksCommand) {
@@ -81,17 +90,40 @@ public class CoreTweaksMod
         if(CoreTweaks.textureLoader != null) {
             FMLCommonHandler.instance().bus().register(CoreTweaks.textureLoader);
         }
+        
+        listeners.forEach(l -> l.onInit(event));
     }
     
     @EventHandler
-    public void postInit(FMLPostInitializationEvent event)
-    {
+    public void postInit(FMLPostInitializationEvent event) {
         JarDiscovererCache.finish();
+        
+        listeners.forEach(l -> l.onPostInit(event));
     }
     
     @EventHandler
     public void onServerAboutToStart(FMLServerAboutToStartEvent event) {
         listeners.forEach(l -> l.onServerAboutToStart(event));
+    }
+    
+    @EventHandler
+    public void onServerStarting(FMLServerStartingEvent event) {
+        listeners.forEach(l -> l.onServerStarting(event));
+    }
+    
+    @EventHandler
+    public void onServerStarted(FMLServerStartedEvent event) {
+        listeners.forEach(l -> l.onServerStarted(event));
+    }
+    
+    @EventHandler
+    public void onServerStopping(FMLServerStoppingEvent event) {
+        listeners.forEach(l -> l.onServerStopping(event));
+    }
+    
+    @EventHandler
+    public void onServerStopped(FMLServerStoppedEvent event) {
+        listeners.forEach(l -> l.onServerStopped(event));
     }
     
     @SubscribeEvent
@@ -110,6 +142,8 @@ public class CoreTweaksMod
                 }
             }
         }
+        
+        KeyboardUtil.tick();
     }
     
     @SubscribeEvent
