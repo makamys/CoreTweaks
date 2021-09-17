@@ -63,7 +63,7 @@ public class Config {
         Configuration config = new Configuration(new File(Launch.minecraftHome, "config/coretweaks.cfg"));
         
         config.load();
-        crashHandler = config.getBoolean("crashHandler", "Tweaks", false, "(Experimental) Lets you survive crashes without the game exiting, usually. May cause bizarre graphical artifacts after the crash, so I only recommend enabling it in test/dev sessions.");
+        crashHandler = config.getBoolean("crashHandler", "Tweaks", true, "Lets you survive crashes without the game exiting, usually. Not compatible with BetterCrashes.");
         forceUncapFramerate = config.getBoolean("forceUncapFramerate", "Tweaks", false, "Uncaps framerate even when framelimiter is enabled. The framerate limit will only be used to decide how much time to spend updating chunks each frame. Vanilla Beta 1.7.3 behavior. It seems to make things worse though, at least with OptiFine.");
         ofFixUpdateRenderersReturnValue = config.getBoolean("ofFixUpdateRenderersReturnValue", "Tweaks", true, "Fixes OptiFine's implementation of updateRenderers returning the opposite value of what it should (probably a bug). Only effective when framerate limiter is enabled. Speeds up chunk updates significantly, and increases framerate when there aren't many chunk updates. However, during heavy chunk updating (e.g. when loading a world) it decreases the framerate as a side effect of not being as lazy.");
         
@@ -81,7 +81,7 @@ public class Config {
         getPendingBlockUpdates = config.getBoolean("getPendingBlockUpdates", "Optimizations", true, "Optimizes WorldServer#getPendingBlockUpdates. OptiFine also does this, but this won't have an effect when OF is present, so there's no conflict.");
         clientChunkMap = config.getBoolean("clientChunkMap", "Optimizations", false, "Faster implementation of ChunkProviderClient#chunkMapping. From 1.16 (I don't know when exactly it was added). Might be a little buggy (it should only cause client-side errors though).");
         modDiscovererSkipKnownLibraries = config.getBoolean("modDiscovererSkipKnownLibraries", "Optimizations", true, "Skip over known libraries during Forge mod discovery. From Forge 1.12 (added in 1.9)");
-        jarDiscovererCache = config.getBoolean("jarDiscovererCache", "Optimizations", true, "Cache jar discoverer results");
+        jarDiscovererCache = config.getBoolean("jarDiscovererCache", "Optimizations", true, "Cache jar discoverer results. Not compatible with FoamFix's memory leak fix (which by the way is unnecessary since this doubles as that).");
         fastProgressBar = config.getBoolean("fastProgressBar", "Optimizations", true, "Don't update progress bar on steps");
         fastStepMessageStrip = config.getBoolean("fastStepMessageStrip", "Optimizations", true, "");
         ofOptimizeWorldRenderer = config.getBoolean("ofOptimizeWorldRenderer", "Optimizations", true, "Replaces the reflection OptiFine uses to access Forge methods in WorldRenderer#updateRenderer with direct calls to those methods. Small speedup during chunk updates.");
