@@ -1,4 +1,4 @@
-package makamys.coretweaks.tweaks.crashhandler;
+package makamys.coretweaks.tweak.crashhandler;
 
 import org.lwjgl.input.Keyboard;
 

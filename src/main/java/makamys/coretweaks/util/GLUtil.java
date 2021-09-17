@@ -1,5 +1,5 @@
 /*
- * Inspired by from VanillaFix's GlUtil (MIT License, Copyright (c) 2018 Dimensional Development)
+ * Inspired by VanillaFix's GlUtil (MIT License, Copyright (c) 2018 Dimensional Development)
  */
 
 package makamys.coretweaks.util;

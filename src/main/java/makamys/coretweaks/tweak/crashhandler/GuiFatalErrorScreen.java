@@ -1,4 +1,4 @@
-package makamys.coretweaks.tweaks;
+package makamys.coretweaks.tweak.crashhandler;
 
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiMainMenu;

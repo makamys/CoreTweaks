@@ -5,7 +5,8 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 import makamys.coretweaks.CoreTweaksMod;
-import makamys.coretweaks.tweaks.GuiFatalErrorScreen;
+import makamys.coretweaks.tweak.crashhandler.CrashHandler;
+import makamys.coretweaks.tweak.crashhandler.GuiFatalErrorScreen;
 
 import org.spongepowered.asm.mixin.injection.At;
 
@@ -34,11 +35,11 @@ abstract class MixinMinecraft_CrashHandler {
             runGameLoop();
         } catch(Throwable e) {
             theError = e;
-            CoreTweaksMod.handleCrash(e, crashReporter);
+            CrashHandler.handleCrash(e, crashReporter);
         }
         if(hasCrashed) {
             hasCrashed = false;
-            CoreTweaksMod.handleCrash(null, crashReporter);
+            CrashHandler.handleCrash(null, crashReporter);
         }
     }
     
