@@ -3,8 +3,10 @@ package makamys.coretweaks;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Properties;
 
 import org.apache.logging.log4j.LogManager;
@@ -13,15 +15,18 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
 import com.google.common.collect.Multimap;
+import com.google.common.eventbus.EventBus;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.LoadController;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
+import cpw.mods.fml.common.event.FMLConstructionEvent;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.event.FMLServerAboutToStartEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 import cpw.mods.fml.common.gameevent.TickEvent.ClientTickEvent;
@@ -33,6 +38,7 @@ import makamys.coretweaks.optimization.ClientChunkMap;
 import makamys.coretweaks.optimization.JarDiscovererCache;
 import makamys.coretweaks.optimization.ThreadedTextureLoader;
 import makamys.coretweaks.optimization.transformercache.full.CachingTransformer;
+import makamys.coretweaks.tweaks.crashhandler.Crasher;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiMemoryErrorScreen;
 import net.minecraft.client.multiplayer.ChunkProviderClient;
@@ -53,11 +59,20 @@ import net.minecraftforge.event.world.ChunkEvent;
 @Mod(modid = CoreTweaks.MODID, version = CoreTweaks.VERSION)
 public class CoreTweaksMod
 {
+    private static List<IModEventListener> listeners = new ArrayList<>();
+    
+    @EventHandler
+    public void onConstruction(FMLConstructionEvent event) {
+        Config.reload();
+        
+        if(Config.crasher) {
+            registerListener(Crasher.instance = new Crasher());
+        }
+    }
+    
     @EventHandler
     public void init(FMLInitializationEvent event)
     {
-        Config.reload();
-        
         FMLCommonHandler.instance().bus().register(this);
         
         if(Config.coreTweaksCommand) {
@@ -72,6 +87,11 @@ public class CoreTweaksMod
     public void postInit(FMLPostInitializationEvent event)
     {
         JarDiscovererCache.finish();
+    }
+    
+    @EventHandler
+    public void onServerAboutToStart(FMLServerAboutToStartEvent event) {
+        listeners.forEach(l -> l.onServerAboutToStart(event));
     }
     
     @SubscribeEvent
@@ -99,6 +119,10 @@ public class CoreTweaksMod
         } else if(event.phase == TickEvent.Phase.END) {
         	FrameProfiler.instance.onFrameEnd();
         }
+    }
+    
+    public void registerListener(IModEventListener listener) {
+        listeners.add(listener);
     }
     
     public static void handleCrash(Throwable t, CrashReport crashReporter) {
