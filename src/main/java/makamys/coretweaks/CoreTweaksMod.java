@@ -12,7 +12,11 @@ import org.apache.logging.log4j.Logger;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
+import com.google.common.collect.Multimap;
+
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.LoadController;
+import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
@@ -21,6 +25,7 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 import cpw.mods.fml.common.gameevent.TickEvent.ClientTickEvent;
+import cpw.mods.fml.relauncher.ReflectionHelper;
 import makamys.coretweaks.command.CoreTweaksCommand;
 import makamys.coretweaks.diagnostics.FrameProfiler;
 import makamys.coretweaks.ducks.IChunkProviderClient;
@@ -122,6 +127,13 @@ public class CoreTweaksMod
         		}
         	}
         }
+        
+        // When an exception happens in a mod event handler, FML adds it to the error map.
+        // It will refuse to restart the server if the errors map is not empty, and it never gets cleared.
+        // So we need to clear it ourselves.
+        LoadController modController = ReflectionHelper.getPrivateValue(Loader.class, Loader.instance(), "modController");
+        Multimap<String, Throwable> errors = ReflectionHelper.getPrivateValue(LoadController.class, modController, "errors");
+        errors.clear();
         
         // Throw OOME to trigger the crash handler screen
         throw new OutOfMemoryError();
