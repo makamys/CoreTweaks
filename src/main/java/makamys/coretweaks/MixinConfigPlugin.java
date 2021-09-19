@@ -74,6 +74,7 @@ public class MixinConfigPlugin implements IMixinConfigPlugin {
             if(Config.clientChunkMap) mixins.add("MixinChunkProviderClient");
             if(Config.crashHandler) mixins.add("MixinMinecraft_CrashHandler");
             if(Config.fixDisplayListDelete) mixins.add("bugfix.displaylistdelete.MixinRenderGlobal");
+            if(Config.fixHeightmapRange) mixins.add("bugfix.heightmaprange.MixinChunk");
             
             if(Config.forceUncapFramerate) mixins.add("MixinMinecraft_SyncTweak");
             if(Config.ofFixUpdateRenderersReturnValue) mixins.add("MixinRenderGlobal");
