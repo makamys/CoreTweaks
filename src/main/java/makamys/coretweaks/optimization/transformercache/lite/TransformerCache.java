@@ -117,7 +117,7 @@ public class TransformerCache {
             DAT.createNewFile();
         }
         System.out.println("Saving transformer cache");
-        try(Output output = new UnsafeOutput(new BufferedOutputStream(new FileOutputStream(DAT, true)))) {
+        try(Output output = new UnsafeOutput(new BufferedOutputStream(new FileOutputStream(DAT)))) {
             kryo.writeObject(output, transformerMap);
         }
     }
