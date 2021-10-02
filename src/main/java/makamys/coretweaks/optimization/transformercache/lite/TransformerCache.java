@@ -51,9 +51,6 @@ public class TransformerCache {
     private static byte[] memoizedHashData;
     private static int memoizedHashValue;
     
-    private Class<?> memoizedClass;
-    private String memoizedClassCanonicalName;
-    
     public void init() {
         if(inited) return;
         
@@ -126,7 +123,7 @@ public class TransformerCache {
         try(FileWriter fw = new FileWriter(TRANSFORMERCACHE_PROFILER_CSV)){
             fw.write("class,name,runs,misses\n");
             for(IClassTransformer transformer : myTransformers) {
-                String className = getCanonicalClassName(transformer.getClass());
+                String className = transformer.getClass().getCanonicalName();
                 String name = transformer.toString();
                 int runs = 0;
                 int misses = 0;
@@ -140,8 +137,7 @@ public class TransformerCache {
         }
     }
 
-    public byte[] getCached(IClassTransformer transformer, String name, String transformedName, byte[] basicClass) {
-        String transName = getCanonicalClassName(transformer.getClass());
+    public byte[] getCached(String transName, String name, String transformedName, byte[] basicClass) {
         TransformerData transData = transformerMap.get(transName);
         if(transData != null) {
             CachedTransformation trans = transData.transformationMap.get(transformedName);
@@ -155,8 +151,7 @@ public class TransformerCache {
         return null;
     }
 
-    public void prePutCached(IClassTransformer transformer, String name, String transformedName, byte[] basicClass) {
-        String transName = getCanonicalClassName(transformer.getClass());
+    public void prePutCached(String transName, String name, String transformedName, byte[] basicClass) {
         TransformerData data = transformerMap.get(transName);
         if(data == null) {
             transformerMap.put(transName, data = new TransformerData(transName));
@@ -168,17 +163,8 @@ public class TransformerCache {
     }
     
     /** MUST be preceded with a call to prePutCached. */
-    public void putCached(IClassTransformer transformer, String name, String transformedName, byte[] result) {
-        transformerMap.get(transformer.getClass().getCanonicalName()).transformationMap.get(transformedName).putClass(result);
-    }
-    
-    private String getCanonicalClassName(Class<?> clazz) {
-        if(memoizedClass == clazz) {
-            return memoizedClassCanonicalName;
-        }
-        memoizedClass = clazz;
-        memoizedClassCanonicalName = clazz.getCanonicalName();
-        return memoizedClassCanonicalName;
+    public void putCached(String transName, String name, String transformedName, byte[] result) {
+        transformerMap.get(transName).transformationMap.get(transformedName).putClass(result);
     }
     
     public static int calculateHash(byte[] data) {
