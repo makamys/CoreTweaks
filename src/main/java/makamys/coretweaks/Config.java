@@ -28,6 +28,7 @@ public class Config {
     public static CloudHeightCheck cloudHeightCheck;
     public static boolean fixDisplayListDelete;
     public static boolean fixHeightmapRange;
+    public static boolean fastDeobfuscationRemapper;
     
     public static boolean coreTweaksCommand;
     public static String methodsToProfile;
@@ -89,6 +90,7 @@ public class Config {
         jarDiscovererCache = config.getBoolean("jarDiscovererCache", "Optimizations", true, "Cache jar discoverer results. Not compatible with FoamFix's memory leak fix (which by the way is unnecessary since this doubles as that).");
         fastProgressBar = config.getBoolean("fastProgressBar", "Optimizations", true, "Don't update progress bar on steps");
         fastStepMessageStrip = config.getBoolean("fastStepMessageStrip", "Optimizations", true, "");
+        fastDeobfuscationRemapper = config.getBoolean("fastDeobfuscationRemapper", "Optimizations", true, "Reduces the unnecessary work FMLDeobfuscationRemapper does when we are in a deobfuscated (i.e. development) environment.");
         ofOptimizeWorldRenderer = config.getBoolean("ofOptimizeWorldRenderer", "Optimizations", true, "Replaces the reflection OptiFine uses to access Forge methods in WorldRenderer#updateRenderer with direct calls to those methods. Small speedup during chunk updates.");
         fcOptimizeTextureUpload = config.getBoolean("fcOptimizeTextureUpload", "Optimizations", true, "Removes the call to GL11#getInteger in FastCraft's texture upload handler during texture stitching and uses a cached value instead. Fixes the slowness of texture stitching that happens when OptiFine and FastCraft are both present, and mipmapping is enabled.");
         

@@ -7,6 +7,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import makamys.coretweaks.diagnostics.FMLBarProfiler;
+import makamys.coretweaks.optimization.FastDeobfuscationRemapper;
 import makamys.coretweaks.optimization.ThreadedTextureLoader;
 import makamys.coretweaks.optimization.transformercache.full.CachingTransformer;
 import net.minecraft.launchwrapper.Launch;
@@ -44,6 +45,10 @@ public class CoreTweaks {
         
         if(FMLBarProfiler.isActive()) {
             FMLBarProfiler.instance().init();
+        }
+        
+        if(FastDeobfuscationRemapper.isActive()) {
+            FastDeobfuscationRemapper.init();
         }
         
         Persistence.lastVersion = CoreTweaks.VERSION;
