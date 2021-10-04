@@ -45,6 +45,7 @@ public class Config {
     public static int verbosity;
     public static boolean fmlBarProfiler;
     public static boolean crasher;
+    public static boolean serverRunTimePrinter;
     
     public static String[] transformersToCache;
     
@@ -96,6 +97,7 @@ public class Config {
         frameProfilerHooks = config.getBoolean("frameProfilerHooks", "Diagnostics", false, "Insert hooks that lets the frame profiler profile various parts of frame rendering. Highly recommended if you are using the frame profiler.");
         fmlBarProfiler = config.getBoolean("fmlBarProfiler", "Diagnostics", false, "Creates a report of how long each step of startup loading took in ./coretweaks/out/fml_bar_profiler.csv.");
         crasher = config.getBoolean("crasher", "Diagnostics", false, "Enables debug feature that crashes the game when pressing certain key combinations.");
+        serverRunTimePrinter = config.getBoolean("serverRunTimePrinter", "Diagnostics", false, "Prints server run time.");
         
         threadedTextureLoader = config.getBoolean("threadedTextureLoader", "Optimizations", false,
                 "Use multi-threaded texture loading when stitching textures? Placebo.");

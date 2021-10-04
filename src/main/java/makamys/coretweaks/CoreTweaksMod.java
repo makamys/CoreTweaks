@@ -39,6 +39,7 @@ import cpw.mods.fml.common.gameevent.TickEvent.ClientTickEvent;
 import cpw.mods.fml.relauncher.ReflectionHelper;
 import makamys.coretweaks.command.CoreTweaksCommand;
 import makamys.coretweaks.diagnostics.FrameProfiler;
+import makamys.coretweaks.diagnostics.ServerRunTimePrinter;
 import makamys.coretweaks.ducks.IChunkProviderClient;
 import makamys.coretweaks.optimization.ClientChunkMap;
 import makamys.coretweaks.optimization.JarDiscovererCache;
@@ -76,6 +77,9 @@ public class CoreTweaksMod
         
         if(Config.crasher) {
             registerListener(Crasher.instance = new Crasher());
+        }
+        if(Config.serverRunTimePrinter) {
+            registerListener(ServerRunTimePrinter.instance = new ServerRunTimePrinter());
         }
     }
     
