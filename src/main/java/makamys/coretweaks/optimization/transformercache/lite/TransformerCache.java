@@ -142,8 +142,7 @@ public class TransformerCache {
         if(transData != null) {
             CachedTransformation trans = transData.transformationMap.get(transformedName);
             if(trans != null) {
-                int preHash = calculateHash(basicClass);
-                if(preHash == trans.preHash) {
+                if(basicClass.length == trans.preLength && calculateHash(basicClass) == trans.preHash) {
                     return trans.postHash == trans.preHash ? basicClass : trans.newClass;
                 }
             }
@@ -156,7 +155,7 @@ public class TransformerCache {
         if(data == null) {
             transformerMap.put(transName, data = new TransformerData(transName));
         }
-        data.transformationMap.put(transformedName, new CachedTransformation(transformedName, calculateHash(basicClass)));
+        data.transformationMap.put(transformedName, new CachedTransformation(transformedName, calculateHash(basicClass), basicClass.length));
     }
     
     /** MUST be preceded with a call to prePutCached. */
@@ -185,15 +184,17 @@ public class TransformerCache {
         
         public static class CachedTransformation {
             String targetClassName;
+            int preLength;
             int preHash;
             int postHash;
             byte[] newClass;
             
             public CachedTransformation() {}
             
-            public CachedTransformation(String targetClassName, int preHash) {
+            public CachedTransformation(String targetClassName, int preHash, int preLength) {
                 this.targetClassName = targetClassName;
                 this.preHash = preHash;
+                this.preLength = preLength;
             }
             
             public void putClass(byte[] result) {
