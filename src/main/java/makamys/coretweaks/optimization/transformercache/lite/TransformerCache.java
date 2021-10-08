@@ -156,10 +156,7 @@ public class TransformerCache {
         if(data == null) {
             transformerMap.put(transName, data = new TransformerData(transName));
         }
-        CachedTransformation trans = data.transformationMap.get(transformedName);
-        if(trans == null) {
-            data.transformationMap.put(transformedName, trans = new CachedTransformation(transformedName, calculateHash(basicClass)));
-        }
+        data.transformationMap.put(transformedName, new CachedTransformation(transformedName, calculateHash(basicClass)));
     }
     
     /** MUST be preceded with a call to prePutCached. */
