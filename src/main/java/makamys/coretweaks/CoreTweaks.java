@@ -15,7 +15,7 @@ import net.minecraft.launchwrapper.Launch;
 public class CoreTweaks {
     
     public static final String MODID = "coretweaks";
-    public static final String VERSION = "0.1";
+    public static final String VERSION = "@VERSION@";
     
     public static ThreadedTextureLoader textureLoader;
     
