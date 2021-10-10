@@ -3,7 +3,7 @@
 A Minecraft 1.7.10 coremod that contains various bug fixes, tweaks, optimizations (mainly to startup time) and performance diagnostics.
 
 ## Features
-* VanillaFix-like crash handling
+* [VanillaFix](https://www.curseforge.com/minecraft/mc-mods/vanillafix)-like crash handling
 * A class transformer cache that speeds up startup (one that's safer than [FastStart](https://github.com/makamys/FastStart)'s - FastStart's version is also included, though)
 * A startup profiler that logs how long each part of startup took
 * Many small fixes - check the [Config](https://github.com/makamys/CoreTweaks/wiki/Config) page on the wiki for the full list.
