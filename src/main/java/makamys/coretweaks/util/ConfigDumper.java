@@ -20,7 +20,7 @@ public class ConfigDumper {
                 ConfigCategory cat = config.getCategory(category);
                 fw.write("# " + cat.getName() + "\n\n");
                 for(Property prop : cat.getValues().values()) {
-                    fw.write("## " + prop.getName() + "\n" + prop.comment.replaceAll("\n", "\n\n") + "\n\n");
+                    fw.write("### " + prop.getName() + "\n" + prop.comment.replaceAll("\n", "\n\n") + "\n\n");
                 }
             }
         } catch(IOException e) {
