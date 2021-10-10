@@ -16,9 +16,3 @@ jar {
     }
 	
 }
-
-if(!project.hasProperty("crashmod")){
-	jar {
-		sourceSets.main.java.exclude('makamys/coretweaks/tweaks/crashhandler/crashmod/**')
-	}
-}
