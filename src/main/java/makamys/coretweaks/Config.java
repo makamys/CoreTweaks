@@ -20,31 +20,31 @@ public class Config {
     public static boolean clientChunkMap;
     public static boolean restoreTravelSound;
     public static boolean fixSmallEntitySwim;
-    public static boolean modDiscovererSkipKnownLibraries;
+    public static boolean forgeModDiscovererSkipKnownLibraries;
     public static boolean jarDiscovererCache;
-    public static boolean fastProgressBar;
-    public static boolean fastStepMessageStrip;
+    public static boolean forgeFastProgressBar;
+    public static boolean forgeFastStepMessageStrip;
     public static boolean frameProfilerHooks;
     public static CloudHeightCheck cloudHeightCheck;
     public static boolean fixDisplayListDelete;
     public static boolean fixHeightmapRange;
-    public static boolean fastDeobfuscationRemapper;
+    public static boolean forgeFastDeobfuscationRemapper;
     
     public static boolean coreTweaksCommand;
-    public static String methodsToProfile;
+    public static String frameProfilerMethods;
     
     public static boolean threadedTextureLoader;
     public static TransformerCache transformerCache;
-    public static boolean folderTexturePackOptimization;
+    public static boolean fastFolderTexturePack;
 
-    public static int textureLoaderThreadCount;
+    public static int threadedTextureLoaderThreadCount;
 
     public static String badTransformers;
     public static String badClasses;
     public static String modFilesToIgnore;
     public static int recentCacheSize;
     public static int verbosity;
-    public static boolean fmlBarProfiler;
+    public static boolean forgeBarProfiler;
     public static boolean crasher;
     public static boolean serverRunTimePrinter;
     
@@ -70,7 +70,7 @@ public class Config {
         crashHandler = config.getBoolean("crashHandler", "Tweaks", true, "Lets you survive crashes without the game exiting, usually. Not compatible with BetterCrashes.");
         lightFixStare = config.getBoolean("lightFixStare", "Tweaks", true, "Causes lighting updates around the block the player is looking at. A workaround for lighting errors that lets you fix them by staring at them. Useful in the Nether.");
         forceUncapFramerate = config.getBoolean("forceUncapFramerate", "Tweaks", false, "Uncaps framerate even when framelimiter is enabled. The framerate limit will only be used to decide how much time to spend updating chunks each frame. Vanilla Beta 1.7.3 behavior. It seems to make things worse though, at least with OptiFine.");
-        ofFixUpdateRenderersReturnValue = config.getBoolean("ofFixUpdateRenderersReturnValue", "Tweaks", true, "Fixes OptiFine's implementation of updateRenderers returning the opposite value of what it should (probably a bug). Only effective when framerate limiter is enabled. Speeds up chunk updates significantly, and increases framerate when there aren't many chunk updates. However, during heavy chunk updating (e.g. when loading a world) it decreases the framerate as a side effect of not being as lazy.");
+        ofFixUpdateRenderersReturnValue = config.getBoolean("ofFixUpdateRenderersReturnValue", "Tweaks", false, "Fixes OptiFine's implementation of updateRenderers returning the opposite value of what it should (probably a bug). Only effective when framerate limiter is enabled. Speeds up chunk updates significantly, and increases framerate when there aren't many chunk updates. However, during heavy chunk updating (e.g. when loading a world) it decreases the framerate as a side effect of not being as lazy.");
         
         restoreTravelSound = config.getBoolean("restoreTravelSound", "Bugfixes", true, "Restore interdimensional travel sound (travel.ogg). Fixes MC-233, fixed in 1.9");
         fixSmallEntitySwim = config.getBoolean("fixSmallEntitySwim", "Bugfixes", true, "Fixes bug in entity swimming code resulting in small entities (ones with hitboxes less than 0.8 units tall, such as DMod's foxes) being prone to drowning.");
@@ -86,31 +86,31 @@ public class Config {
         
         getPendingBlockUpdates = config.getBoolean("getPendingBlockUpdates", "Optimizations", true, "Optimizes WorldServer#getPendingBlockUpdates. OptiFine also does this, but this won't have an effect when OF is present, so there's no conflict.");
         clientChunkMap = config.getBoolean("clientChunkMap", "Optimizations", false, "Faster implementation of ChunkProviderClient#chunkMapping. From 1.16 (I don't know when exactly it was added). Might be a little buggy (it should only cause client-side errors though).");
-        modDiscovererSkipKnownLibraries = config.getBoolean("modDiscovererSkipKnownLibraries", "Optimizations", true, "Skip over known libraries during Forge mod discovery. From Forge 1.12 (added in 1.9)");
+        forgeModDiscovererSkipKnownLibraries = config.getBoolean("forgeModDiscovererSkipKnownLibraries", "Optimizations", true, "Skip over known libraries during Forge mod discovery. From Forge 1.12 (added in 1.9)");
         jarDiscovererCache = config.getBoolean("jarDiscovererCache", "Optimizations", true, "Cache jar discoverer results. Not compatible with FoamFix's memory leak fix (which by the way is unnecessary since this doubles as that).");
-        fastProgressBar = config.getBoolean("fastProgressBar", "Optimizations", true, "Don't update progress bar on steps");
-        fastStepMessageStrip = config.getBoolean("fastStepMessageStrip", "Optimizations", true, "");
-        fastDeobfuscationRemapper = config.getBoolean("fastDeobfuscationRemapper", "Optimizations", true, "Reduces the unnecessary work FMLDeobfuscationRemapper does when we are in a deobfuscated (i.e. development) environment.");
+        forgeFastProgressBar = config.getBoolean("forgeFastProgressBar", "Optimizations", true, "Don't update progress bar on steps");
+        forgeFastStepMessageStrip = config.getBoolean("forgeFastStepMessageStrip", "Optimizations", true, "");
+        forgeFastDeobfuscationRemapper = config.getBoolean("forgeFastDeobfuscationRemapper", "Optimizations", true, "Reduces the unnecessary work FMLDeobfuscationRemapper does when we are in a deobfuscated (i.e. development) environment.");
         ofOptimizeWorldRenderer = config.getBoolean("ofOptimizeWorldRenderer", "Optimizations", true, "Replaces the reflection OptiFine uses to access Forge methods in WorldRenderer#updateRenderer with direct calls to those methods. Small speedup during chunk updates.");
         fcOptimizeTextureUpload = config.getBoolean("fcOptimizeTextureUpload", "Optimizations", true, "Removes the call to GL11#getInteger in FastCraft's texture upload handler during texture stitching and uses a cached value instead. Fixes the slowness of texture stitching that happens when OptiFine and FastCraft are both present, and mipmapping is enabled.");
         
         coreTweaksCommand = config.getBoolean("coreTweaksCommand", "Diagnostics", true, "Enables /coretweaks command");
-        methodsToProfile = config.getString("methodsToProfile", "Diagnostics", "", "Comma-separated list of methods to profile. The results will be written to ./coretweaks/out/profiler-<timestamp>.json. Currently only the call count is measured. Method names have the syntax of `<canonical class name>.<method name>`, like `some.package.SomeClass.method`.");
+        frameProfilerMethods = config.getString("frameProfilerMethods", "Diagnostics", "", "Comma-separated list of methods to profile. The results will be written to ./coretweaks/out/frameprofiler-<timestamp>.csv. Currently only the call count is measured. Method names have the syntax of `<canonical class name>.<method name>`, like `some.package.SomeClass.method`.");
         frameProfilerHooks = config.getBoolean("frameProfilerHooks", "Diagnostics", false, "Insert hooks that lets the frame profiler profile various parts of frame rendering. Highly recommended if you are using the frame profiler.");
-        fmlBarProfiler = config.getBoolean("fmlBarProfiler", "Diagnostics", false, "Creates a report of how long each step of startup loading took in ./coretweaks/out/fml_bar_profiler.csv.");
+        forgeBarProfiler = config.getBoolean("forgeBarProfiler", "Diagnostics", false, "Creates a report of how long each step of startup loading took in ./coretweaks/out/fml_bar_profiler.csv.");
         crasher = config.getBoolean("crasher", "Diagnostics", false, "Enables debug feature that crashes the game when pressing certain key combinations.");
         serverRunTimePrinter = config.getBoolean("serverRunTimePrinter", "Diagnostics", false, "Prints server run time.");
         
         threadedTextureLoader = config.getBoolean("threadedTextureLoader", "Optimizations", false,
                 "Use multi-threaded texture loading when stitching textures? Placebo.");
-        transformerCache = getEnum(config, "transformerCache", "Optimizations", TransformerCache.NONE, "The type of transformer caching to use.\n"
+        transformerCache = getEnum(config, "transformerCache", "Optimizations", TransformerCache.LITE, "The type of transformer caching to use.\n"
                 + "NONE: None\n"
                 + "LITE: Cache individual transformations of select transformers. Reduces startup time. Relatively safe.\n"
                 + "FULL: Cache the entire transformer chain. Reduces startup time further, but breaks with many things.");
-        folderTexturePackOptimization = config.getBoolean("folderTexturePack", "Optimizations", true, 
+        fastFolderTexturePack = config.getBoolean("fastFolderTexturePack", "Optimizations", true, 
                 "Use the optimization that speeds up loading folder resource packs?");
         
-        textureLoaderThreadCount = config.getInt("threadedTextureLoaderThreadCount", "Optimizations", 0, 0, Integer.MAX_VALUE,
+        threadedTextureLoaderThreadCount = config.getInt("threadedTextureLoaderThreadCount", "Optimizations", 0, 0, Integer.MAX_VALUE,
                 "How many threads to use for loading textures? (0: auto (all cores))");
         
         config.setCategoryComment("transformer_cache_full", 
@@ -143,6 +143,8 @@ public class Config {
                 "1: Print when the cache gets saved.\n" +
                 "2: Debug mode. Turn this on to log a bunch of stuff that can help find the cause of a crash.");
         
+        config.setCategoryComment("transformer_cache_lite", 
+                "Options for the lite caching class transformer. (only appliable if it's enabled)");
         transformersToCache = config.getStringList("transformersToCache", "transformer_cache_lite", new String[]{"cpw.mods.fml.common.asm.transformers.DeobfuscationTransformer", "codechicken.core.asm.MCPDeobfuscationTransformer", "net.minecraftforge.classloading.FluidIdTransformer", "cpw.mods.fml.common.asm.transformers.SideTransformer", "cpw.mods.fml.common.asm.transformers.TerminalTransformer", "cpw.mods.fml.common.asm.transformers.EventSubscriptionTransformer"}, "Canonical class names of the transformers that should be cached.");
         
         if(config.hasChanged()) {

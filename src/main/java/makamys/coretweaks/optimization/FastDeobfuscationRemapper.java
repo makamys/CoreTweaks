@@ -31,7 +31,7 @@ public class FastDeobfuscationRemapper {
     }
 
     public static boolean isActive() {
-        return Config.fastDeobfuscationRemapper && isDeobfuscated();
+        return Config.forgeFastDeobfuscationRemapper && isDeobfuscated();
     }
 
     public static void init() {

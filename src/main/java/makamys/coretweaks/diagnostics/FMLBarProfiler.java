@@ -104,7 +104,7 @@ public class FMLBarProfiler {
     }
     
     public static boolean isActive() {
-        return Config.fmlBarProfiler;
+        return Config.forgeBarProfiler;
     }
     
     private static class Node {

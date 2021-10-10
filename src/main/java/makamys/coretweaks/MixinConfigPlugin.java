@@ -56,10 +56,10 @@ public class MixinConfigPlugin implements IMixinConfigPlugin {
         
         Phase phase = MixinEnvironment.getCurrentEnvironment().getPhase();
         if(phase == Phase.INIT) {
-            if(Config.modDiscovererSkipKnownLibraries) mixins.add("MixinModDiscoverer");
+            if(Config.forgeModDiscovererSkipKnownLibraries) mixins.add("MixinModDiscoverer");
             if(Config.jarDiscovererCache) mixins.add("MixinJarDiscoverer");
-            if(Config.fastProgressBar) mixins.add("MixinProgressBar");
-            if(Config.fastStepMessageStrip) mixins.add("MixinFMLClientHandler");
+            if(Config.forgeFastProgressBar) mixins.add("MixinProgressBar");
+            if(Config.forgeFastStepMessageStrip) mixins.add("MixinFMLClientHandler");
             if(FMLBarProfiler.isActive()) {
                 mixins.add("diagnostics.fmlbarprofiler.MixinProgressManager");
                 mixins.add("diagnostics.fmlbarprofiler.MixinProgressBar");
@@ -112,7 +112,7 @@ public class MixinConfigPlugin implements IMixinConfigPlugin {
                 mixins.add("optimization.threadedtextureloader.ITextureMap");
                 mixins.add("optimization.threadedtextureloader.MixinTextureMap");
             }
-            if(Config.folderTexturePackOptimization) {
+            if(Config.fastFolderTexturePack) {
                 mixins.add("optimization.foldertexturepack.MixinFolderResourcePack");
                 mixins.add("optimization.foldertexturepack.MixinDefaultResourcePack");
             }

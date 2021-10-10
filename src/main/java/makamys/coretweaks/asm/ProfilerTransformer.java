@@ -29,9 +29,9 @@ public class ProfilerTransformer implements IClassTransformer {
 	private static List<MethodInstrumentationData> methodInstrumentationDatas = new ArrayList<>();
 	
 	public static void init() {
-		if(Config.methodsToProfile.isEmpty()) return;
+		if(Config.frameProfilerMethods.isEmpty()) return;
 		
-		for(String methodStr : Config.methodsToProfile.split(",")) {
+		for(String methodStr : Config.frameProfilerMethods.split(",")) {
 			int lastDot = methodStr.lastIndexOf('.');
 			String clazz = methodStr.substring(0, lastDot);
 			String method = methodStr.substring(lastDot + 1);
@@ -100,7 +100,7 @@ public class ProfilerTransformer implements IClassTransformer {
 	}
 	
 	public static boolean isActive() {
-		return !Config.methodsToProfile.isEmpty();
+		return !Config.frameProfilerMethods.isEmpty();
 	}
 	
 	private static class MethodInstrumentationData {

@@ -35,7 +35,7 @@ public class CoreTweaks {
         
         if(Config.threadedTextureLoader) {
                 textureLoader = new ThreadedTextureLoader(
-                    Config.textureLoaderThreadCount != 0 ? Config.textureLoaderThreadCount
+                    Config.threadedTextureLoaderThreadCount != 0 ? Config.threadedTextureLoaderThreadCount
                             : Runtime.getRuntime().availableProcessors());
         }
         
