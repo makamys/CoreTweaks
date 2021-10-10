@@ -49,6 +49,8 @@ import makamys.coretweaks.tweak.crashhandler.Crasher;
 import makamys.coretweaks.util.GLUtil;
 import makamys.coretweaks.util.KeyboardUtil;
 import makamys.coretweaks.util.OpenGLDebugging;
+import makamys.mclib.core.MCLib;
+import makamys.mclib.core.MCLibModules;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiMemoryErrorScreen;
 import net.minecraft.client.multiplayer.ChunkProviderClient;
@@ -73,6 +75,8 @@ public class CoreTweaksMod
     
     @EventHandler
     public void onConstruction(FMLConstructionEvent event) {
+        MCLib.init();
+        
         Config.reload();
         
         if(Config.crasher) {
@@ -85,6 +89,8 @@ public class CoreTweaksMod
     
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
+        MCLibModules.updateCheckAPI.submitModTask(CoreTweaks.MODID, "@UPDATE_URL@");
+        
         listeners.forEach(l -> l.onPreInit(event));
     }
     
