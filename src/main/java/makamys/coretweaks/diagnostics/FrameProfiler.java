@@ -94,7 +94,7 @@ public class FrameProfiler {
     
     private boolean dumpProfilingResults() {
     	try {
-    		tb.writeToCSV(Util.childFile(CoreTweaks.OUT_DIR, "frameprofiler-" + System.currentTimeMillis() + ".csv"));
+    		tb.writeToCSV(Util.childFile(CoreTweaks.OUT_DIR, "frameprofiler.csv"));
     		return true;
     	} catch(IOException e) {
     		return false;
