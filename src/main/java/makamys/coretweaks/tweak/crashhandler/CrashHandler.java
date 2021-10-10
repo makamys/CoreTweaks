@@ -62,6 +62,8 @@ public class CrashHandler {
             Tessellator.instance.draw();
         }
         
+        ReflectionHelper.setPrivateValue(Minecraft.class, Minecraft.getMinecraft(), -1L, "field_83002_am");
+        
         GLUtil.resetState();
         Tessellator.instance.setTranslation(0.0D, 0.0D, 0.0D);
     }
