@@ -4,6 +4,7 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -103,6 +104,8 @@ public class Persistence {
 		props = new Properties();
 		try {
 			props.load(new BufferedInputStream(new FileInputStream(PERSISTENCE_TXT)));
+		} catch(FileNotFoundException e) {
+		  // no problem.
 		} catch (IOException e) {
 			LOGGER.warn("Failed to load persistence file");
 			e.printStackTrace();
