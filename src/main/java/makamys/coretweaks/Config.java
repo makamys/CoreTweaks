@@ -146,7 +146,7 @@ public class Config {
         
         config.setCategoryComment("transformer_cache_lite", 
                 "Options for the lite caching class transformer. (only appliable if it's enabled)");
-        transformersToCache = config.getStringList("transformersToCache", "transformer_cache_lite", new String[]{"cpw.mods.fml.common.asm.transformers.DeobfuscationTransformer", "codechicken.core.asm.MCPDeobfuscationTransformer", "net.minecraftforge.classloading.FluidIdTransformer", "cpw.mods.fml.common.asm.transformers.SideTransformer", "cpw.mods.fml.common.asm.transformers.TerminalTransformer", "cpw.mods.fml.common.asm.transformers.EventSubscriptionTransformer"}, "Canonical class names of the transformers that should be cached.");
+        transformersToCache = config.getStringList("transformersToCache", "transformer_cache_lite", new String[]{"cpw.mods.fml.common.asm.transformers.DeobfuscationTransformer", "codechicken.core.asm.MCPDeobfuscationTransformer", "net.minecraftforge.classloading.FluidIdTransformer", "cpw.mods.fml.common.asm.transformers.SideTransformer", "cpw.mods.fml.common.asm.transformers.TerminalTransformer"}, "Canonical class names of the transformers that should be cached.");
         
         if(ConfigDumper.ENABLED) {
             ConfigDumper.dumpConfig(config);
