@@ -142,12 +142,16 @@ public class TransformerCache {
         if(transData != null) {
             CachedTransformation trans = transData.transformationMap.get(transformedName);
             if(trans != null) {
-                if(basicClass.length == trans.preLength && calculateHash(basicClass) == trans.preHash) {
+                if(nullSafeLength(basicClass) == trans.preLength && calculateHash(basicClass) == trans.preHash) {
                     return trans.postHash == trans.preHash ? basicClass : trans.newClass;
                 }
             }
         }
         return null;
+    }
+    
+    private static int nullSafeLength(byte[] array) {
+        return array == null ? -1 : array.length;
     }
 
     public void prePutCached(String transName, String name, String transformedName, byte[] basicClass) {
@@ -155,7 +159,7 @@ public class TransformerCache {
         if(data == null) {
             transformerMap.put(transName, data = new TransformerData(transName));
         }
-        data.transformationMap.put(transformedName, new CachedTransformation(transformedName, calculateHash(basicClass), basicClass.length));
+        data.transformationMap.put(transformedName, new CachedTransformation(transformedName, calculateHash(basicClass), nullSafeLength(basicClass)));
     }
     
     /** MUST be preceded with a call to prePutCached. */
@@ -168,7 +172,7 @@ public class TransformerCache {
             return memoizedHashValue;
         }
         memoizedHashData = data;
-        memoizedHashValue = Hashing.adler32().hashBytes(data).asInt();
+        memoizedHashValue = data == null ? -1 : Hashing.adler32().hashBytes(data).asInt();
         return memoizedHashValue;
     }
     
