@@ -11,6 +11,7 @@ A Minecraft 1.7.10 coremod that contains various bug fixes, tweaks, optimization
 # Incompatibilities
 
 * [FoamFix](https://github.com/asiekierka/FoamFix17): `jarDiscovererMemoryLeakFix` has to be disabled when using CoreTweaks's `jarDiscovererCache` is enabled.
+* Various coremods will cause a crash on startup due to an incompatibility with Mixin. Use [Mixingasm](https://github.com/makamys/Mixingasm) to fix this.
 
 # License
 
