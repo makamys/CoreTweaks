@@ -57,7 +57,7 @@ public class CrashHandler {
     }
     
     private static void resetState() {
-        boolean isDrawing = ReflectionHelper.getPrivateValue(Tessellator.class, Tessellator.instance, "isDrawing");
+        boolean isDrawing = ReflectionHelper.getPrivateValue(Tessellator.class, Tessellator.instance, "isDrawing", "field_78415_z");
         if(isDrawing) {
             Tessellator.instance.draw();
         }
