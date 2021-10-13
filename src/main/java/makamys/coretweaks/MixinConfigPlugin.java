@@ -55,7 +55,7 @@ public class MixinConfigPlugin implements IMixinConfigPlugin {
         List<String> mixins = new ArrayList<>();
         
         Phase phase = MixinEnvironment.getCurrentEnvironment().getPhase();
-        if(phase == Phase.INIT) {
+        if(phase == Phase.PREINIT) {
             if(Config.forgeModDiscovererSkipKnownLibraries) mixins.add("MixinModDiscoverer");
             if(Config.jarDiscovererCache) mixins.add("MixinJarDiscoverer");
             if(Config.forgeFastProgressBar) mixins.add("MixinProgressBar");
@@ -64,6 +64,7 @@ public class MixinConfigPlugin implements IMixinConfigPlugin {
                 mixins.add("diagnostics.fmlbarprofiler.MixinProgressManager");
                 mixins.add("diagnostics.fmlbarprofiler.MixinProgressBar");
             }
+        } else if(phase == Phase.INIT) {
             if(Config.fixSmallEntitySwim) mixins.add("MixinEntity");
         } else if(phase == Phase.DEFAULT) {
             if(Config.transformerCache == Config.TransformerCache.LITE) {

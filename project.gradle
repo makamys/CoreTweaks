@@ -6,7 +6,7 @@ dependencies {
 jar {
     manifest {
         attributes (
-            'MixinConfigs': 'coretweaks.mixin.json,coretweaks-init.mixin.json',
+            'MixinConfigs': 'coretweaks.mixin.json,coretweaks-init.mixin.json,coretweaks-preinit.mixin.json',
             
             // If these two are not set, Forge will not detect the mod, it will only run the mixins
             'FMLCorePluginContainsFMLMod': 'true',

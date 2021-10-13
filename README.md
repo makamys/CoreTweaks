@@ -21,7 +21,7 @@ This mod is licensed under the [MIT License](https://github.com/makamys/CoreTwea
 
 When running in an IDE, add these program arguments
 ```
---tweakClass org.spongepowered.asm.launch.MixinTweaker --mixin coretweaks.mixin.json --mixin coretweaks-init.mixin.json
+--tweakClass org.spongepowered.asm.launch.MixinTweaker --mixin coretweaks.mixin.json --mixin coretweaks-init.mixin.json --mixin coretweaks-preinit.mixin.json
 ```
 and these VM arguments
 ```
