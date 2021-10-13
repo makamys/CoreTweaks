@@ -65,7 +65,7 @@ public class MixinConfigPlugin implements IMixinConfigPlugin {
                 mixins.add("diagnostics.fmlbarprofiler.MixinProgressBar");
             }
         } else if(phase == Phase.INIT) {
-            if(Config.fixSmallEntitySwim) mixins.add("MixinEntity");
+            
         } else if(phase == Phase.DEFAULT) {
             if(Config.transformerCache == Config.TransformerCache.LITE) {
                 // At this point the transformer chain is complete, so we can go hook it.
@@ -77,6 +77,7 @@ public class MixinConfigPlugin implements IMixinConfigPlugin {
             if(Config.lightFixStare) mixins.add("tweak.lightfixstare.MixinWorld");
             if(Config.fixDisplayListDelete) mixins.add("bugfix.displaylistdelete.MixinRenderGlobal");
             if(Config.fixHeightmapRange) mixins.add("bugfix.heightmaprange.MixinChunk");
+            if(Config.fixSmallEntitySwim) mixins.add("MixinEntity");
             
             if(Config.forceUncapFramerate) mixins.add("MixinMinecraft_SyncTweak");
             if(Config.ofFixUpdateRenderersReturnValue) mixins.add("MixinRenderGlobal");
