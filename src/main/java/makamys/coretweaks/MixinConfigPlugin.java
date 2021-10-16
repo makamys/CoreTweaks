@@ -1,8 +1,12 @@
 package makamys.coretweaks;
 
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Properties;
 import java.util.Set;
 
 import org.spongepowered.asm.lib.tree.ClassNode;
@@ -58,8 +62,10 @@ public class MixinConfigPlugin implements IMixinConfigPlugin {
         if(phase == Phase.PREINIT) {
             if(Config.forgeModDiscovererSkipKnownLibraries) mixins.add("MixinModDiscoverer");
             if(Config.jarDiscovererCache) mixins.add("MixinJarDiscoverer");
-            if(Config.forgeFastProgressBar) mixins.add("MixinProgressBar");
-            if(Config.forgeFastStepMessageStrip) mixins.add("MixinFMLClientHandler");
+            if(!isForgeSplashEnabled()) {
+                if(Config.forgeFastProgressBar) mixins.add("MixinProgressBar");
+                if(Config.forgeFastStepMessageStrip) mixins.add("MixinFMLClientHandler");
+            }
             if(FMLBarProfiler.isActive()) {
                 mixins.add("diagnostics.fmlbarprofiler.MixinProgressManager");
                 mixins.add("diagnostics.fmlbarprofiler.MixinProgressBar");
@@ -121,6 +127,22 @@ public class MixinConfigPlugin implements IMixinConfigPlugin {
             
         }
         return mixins;
+    }
+
+    private static boolean isForgeSplashEnabled() {
+        boolean enabled = true;
+        File configFile = new File(Launch.minecraftHome, "config/splash.properties");
+        if(configFile.exists()) {
+            Properties props = new Properties();
+            try {
+                props.load(new FileReader(configFile));
+                enabled = Boolean.parseBoolean((String)props.getOrDefault("enabled", "true"));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        
+        return enabled;
     }
 
     @Override
