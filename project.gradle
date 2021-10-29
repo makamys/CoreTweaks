@@ -1,6 +1,7 @@
 dependencies {
 	embed "com.esotericsoftware:kryo:5.1.1"
 	compile files('gradlelibs/fastcraft-dummy.jar') // A jar with empty classes, just to avoid errors during build
+	compile files('gradlelibs/optifine-dummy.jar') // A jar with empty classes, just to avoid errors during build
 }
 
 jar {

@@ -15,6 +15,7 @@ public class Config {
     public static boolean lightFixStare;
     public static boolean forceUncapFramerate;
     public static boolean ofFixUpdateRenderersReturnValue;
+    public static boolean ofUnlockCustomSkyMinRenderDistance;
     public static boolean ofOptimizeWorldRenderer;
     public static boolean fcOptimizeTextureUpload;
     public static boolean getPendingBlockUpdates;
@@ -30,6 +31,7 @@ public class Config {
     public static boolean fixDisplayListDelete;
     public static boolean fixHeightmapRange;
     public static boolean forgeFastDeobfuscationRemapper;
+    public static float minFarPlaneDistance;
     
     public static boolean coreTweaksCommand;
     public static String frameProfilerMethods;
@@ -72,6 +74,8 @@ public class Config {
         lightFixStare = config.getBoolean("lightFixStare", "Tweaks", true, "Causes lighting updates around the block the player is looking at. A workaround for lighting errors that lets you fix them by staring at them. Useful in the Nether.");
         forceUncapFramerate = config.getBoolean("forceUncapFramerate", "Tweaks", false, "Uncaps framerate even when framelimiter is enabled. The framerate limit will only be used to decide how much time to spend updating chunks each frame. Vanilla Beta 1.7.3 behavior. It seems to make things worse though, at least with OptiFine.");
         ofFixUpdateRenderersReturnValue = config.getBoolean("ofFixUpdateRenderersReturnValue", "Tweaks", false, "Fixes OptiFine's implementation of updateRenderers returning the opposite value of what it should (probably a bug). Only effective when framerate limiter is enabled. Speeds up chunk updates significantly, and increases framerate when there aren't many chunk updates. However, during heavy chunk updating (e.g. when loading a world) it decreases the framerate as a side effect of not being as lazy.");
+        ofUnlockCustomSkyMinRenderDistance = config.getBoolean("ofUnlockCustomSkyMinRenderDistance", "Tweaks", true, "Allows custom sky rendering in OptiFine D6 when using a render distance lower than 8.");
+        minFarPlaneDistance = config.getFloat("minFarPlaneDistance", "Tweaks", 180f, -1f, Float.MAX_VALUE, "The distance of the view fustrum's far plane will be clamped above this value. Setting this to 180 or higher fixes clipping in OptiFine's custom skybox that happens when using lower render distances. Set this to a negative value to disable this tweak.");
         
         restoreTravelSound = config.getBoolean("restoreTravelSound", "Bugfixes", true, "Restore interdimensional travel sound (travel.ogg). Fixes MC-233, fixed in 1.9");
         fixSmallEntitySwim = config.getBoolean("fixSmallEntitySwim", "Bugfixes", true, "Fixes bug in entity swimming code resulting in small entities (ones with hitboxes less than 0.8 units tall, such as DMod's foxes) being prone to drowning.");

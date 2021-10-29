@@ -84,6 +84,8 @@ public class MixinConfigPlugin implements IMixinConfigPlugin {
             if(Config.fixDisplayListDelete) mixins.add("bugfix.displaylistdelete.MixinRenderGlobal");
             if(Config.fixHeightmapRange) mixins.add("bugfix.heightmaprange.MixinChunk");
             if(Config.fixSmallEntitySwim) mixins.add("MixinEntity");
+            if(Config.minFarPlaneDistance >= 0f) mixins.add("tweak.farplane.MixinEntityRenderer");
+            if(Config.ofUnlockCustomSkyMinRenderDistance) mixins.add("tweak.ofcustomsky.MixinOFD6CustomSky");
             
             if(Config.forceUncapFramerate) mixins.add("MixinMinecraft_SyncTweak");
             if(Config.ofFixUpdateRenderersReturnValue) mixins.add("MixinRenderGlobal");
