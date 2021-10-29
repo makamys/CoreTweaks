@@ -1,6 +1,7 @@
 # CoreTweaks
 
 A Minecraft 1.7.10 coremod that contains various bug fixes, tweaks, optimizations (mainly to startup time) and performance diagnostics.
+
 Most of the mod's features target the **client** side. It does not work on servers at all at the moment.
 
 ## Features
