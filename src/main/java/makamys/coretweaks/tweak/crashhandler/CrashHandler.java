@@ -19,44 +19,7 @@ import net.minecraft.util.ReportedException;
 
 public class CrashHandler {
     
-    public static void handleCrash(Throwable t, CrashReport crashReporter) {
-        resetState();
-        
-        if(t != null) {
-            System.out.println("Caught exception:");
-            t.printStackTrace();
-        } else {
-            t = new RuntimeException("Exception on server thread");
-        }
-        if(!(t instanceof OutOfMemoryError)) {
-            if(crashReporter != null) {
-                createCrashReport(crashReporter);
-            } else if(t instanceof MinecraftError) {
-                // do nothing
-            } else {
-                if(t instanceof ReportedException) {
-                    ReportedException re = (ReportedException)t;
-                    Minecraft.getMinecraft().addGraphicsAndWorldToCrashReport(re.getCrashReport());
-                    createCrashReport(re.getCrashReport());
-                } else {
-                    CrashReport cr = Minecraft.getMinecraft().addGraphicsAndWorldToCrashReport(new CrashReport("Unexpected error", t));
-                    createCrashReport(cr);
-                }
-            }
-        }
-        
-        // When an exception happens in a mod event handler, FML adds it to the error map.
-        // It will refuse to restart the server if the errors map is not empty, and it never gets cleared.
-        // So we need to clear it ourselves.
-        LoadController modController = ReflectionHelper.getPrivateValue(Loader.class, Loader.instance(), "modController");
-        Multimap<String, Throwable> errors = ReflectionHelper.getPrivateValue(LoadController.class, modController, "errors");
-        errors.clear();
-        
-        // Throw OOME to trigger the crash handler screen
-        throw new OutOfMemoryError();
-    }
-    
-    private static void resetState() {
+    public static void resetState() {
         boolean isDrawing = ReflectionHelper.getPrivateValue(Tessellator.class, Tessellator.instance, "isDrawing", "field_78415_z");
         if(isDrawing) {
             Tessellator.instance.draw();
@@ -66,6 +29,13 @@ public class CrashHandler {
         
         GLUtil.resetState();
         Tessellator.instance.setTranslation(0.0D, 0.0D, 0.0D);
+        
+        // When an exception happens in a mod event handler, FML adds it to the error map.
+        // It will refuse to restart the server if the errors map is not empty, and it never gets cleared.
+        // So we need to clear it ourselves.
+        LoadController modController = ReflectionHelper.getPrivateValue(Loader.class, Loader.instance(), "modController");
+        Multimap<String, Throwable> errors = ReflectionHelper.getPrivateValue(LoadController.class, modController, "errors");
+        errors.clear();
     }
     
     public static void createCrashReport(CrashReport crashReporter) {

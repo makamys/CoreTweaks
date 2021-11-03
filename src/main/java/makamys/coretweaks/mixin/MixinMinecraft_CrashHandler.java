@@ -10,6 +10,7 @@ import makamys.coretweaks.tweak.crashhandler.CrashHandler;
 import makamys.coretweaks.tweak.crashhandler.GuiFatalErrorScreen;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiMemoryErrorScreen;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.crash.CrashReport;
 import net.minecraft.util.MinecraftError;
@@ -17,8 +18,6 @@ import net.minecraft.util.ReportedException;
 
 @Mixin(Minecraft.class)
 abstract class MixinMinecraft_CrashHandler {
-    
-    private Throwable theError;
     
     @Shadow
     volatile boolean running = true;
@@ -72,20 +71,35 @@ abstract class MixinMinecraft_CrashHandler {
                 while (this.running) {
                     if (!this.hasCrashed || this.crashReporter == null) {
                         try {
-                            try {
-                                runGameLoop();
-                            } catch (Throwable e) {
-                                theError = e;
-                                CrashHandler.handleCrash(e, crashReporter);
-                            }
+                            runGameLoop();
+                            
                             if (hasCrashed) {
-                                theError = null;
                                 hasCrashed = false;
-                                CrashHandler.handleCrash(null, crashReporter);
+                                throw new RuntimeException("Exception on server thread");
                             }
-                        } catch (OutOfMemoryError outofmemoryerror) {
+                        } catch (Throwable t) {
+                            if(!(t instanceof OutOfMemoryError)) {
+                                // Create crash report, mirroring logic in Minecraft#run
+                                // Note: addGraphicsAndWorldToCrashReport has to be called inside the same method as runGameLoop,
+                                // to preserve the assumption it makes about the call stack
+                                if(crashReporter != null) {
+                                    CrashHandler.createCrashReport(crashReporter);
+                                } else if(t instanceof MinecraftError) {
+                                    // do nothing
+                                } else if(t instanceof ReportedException) {
+                                    ReportedException re = (ReportedException)t;
+                                    Minecraft.getMinecraft().addGraphicsAndWorldToCrashReport(re.getCrashReport());
+                                    CrashHandler.createCrashReport(re.getCrashReport());
+                                } else {
+                                    CrashReport cr = Minecraft.getMinecraft().addGraphicsAndWorldToCrashReport(new CrashReport("Unexpected error", t));
+                                    CrashHandler.createCrashReport(cr);
+                                }
+                            }
+                            
+                            CrashHandler.resetState();
+                            
                             this.freeMemory();
-                            this.displayGuiScreen(new GuiFatalErrorScreen(theError));
+                            this.displayGuiScreen(t instanceof OutOfMemoryError ? new GuiMemoryErrorScreen() : new GuiFatalErrorScreen(t));
                             System.gc();
                         }
 
