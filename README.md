@@ -14,6 +14,7 @@ Most of the mod's features target the **client** side. It does not work on serve
 
 * [FoamFix](https://github.com/asiekierka/FoamFix17): `jarDiscovererMemoryLeakFix` has to be disabled when using CoreTweaks's `jarDiscovererCache` is enabled.
 * Various coremods will cause a crash on startup due to an incompatibility with Mixin. Use [Mixingasm](https://github.com/makamys/Mixingasm) to fix this.
+* [BetterCrashes](https://github.com/vfyjxf/BetterCrashes) will only work if CoreTweaks's `crashHandler` is disabled. Using it may be preferable in some cases, as it can catch some crashes CoreTweaks cannot. The opposite is also true, however.
 
 # License
 
