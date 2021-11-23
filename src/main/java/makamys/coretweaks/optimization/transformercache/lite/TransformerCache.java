@@ -41,6 +41,7 @@ public class TransformerCache {
     private Map<String, TransformerData> transformerMap = new HashMap<>();
     
     private static final File DAT = Util.childFile(CoreTweaks.CACHE_DIR, "transformerCache.dat");
+    private static final File DAT_ERRORED = Util.childFile(CoreTweaks.CACHE_DIR, "transformerCache.dat.errored");
     private static final File TRANSFORMERCACHE_PROFILER_CSV = Util.childFile(CoreTweaks.OUT_DIR, "transformercache_profiler.csv");
     private final Kryo kryo = new Kryo();
     
@@ -94,6 +95,10 @@ public class TransformerCache {
             try(Input is = new UnsafeInput(new BufferedInputStream(new FileInputStream(DAT)))) {
                 transformerMap = kryo.readObject(is, HashMap.class);
             } catch (IOException e) {
+                e.printStackTrace();
+            } catch(Exception e) {
+                CoreTweaks.LOGGER.error("There was an error reading the transformer cache. A new one will be created. The previous one has been saved as " + DAT_ERRORED.getName() + " for inspection.");
+                DAT.renameTo(DAT_ERRORED);
                 e.printStackTrace();
             }
         }
