@@ -37,6 +37,7 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 import cpw.mods.fml.common.gameevent.TickEvent.ClientTickEvent;
 import cpw.mods.fml.relauncher.ReflectionHelper;
+import makamys.coretweaks.bugfix.DoubleEatFixer;
 import makamys.coretweaks.command.CoreTweaksCommand;
 import makamys.coretweaks.diagnostics.FrameProfiler;
 import makamys.coretweaks.diagnostics.ServerRunTimePrinter;
@@ -103,6 +104,9 @@ public class CoreTweaksMod
         }
         if(CoreTweaks.textureLoader != null) {
             FMLCommonHandler.instance().bus().register(CoreTweaks.textureLoader);
+        }
+        if(Config.fixDoubleEat) {
+            FMLCommonHandler.instance().bus().register(new DoubleEatFixer());
         }
         
         listeners.forEach(l -> l.onInit(event));

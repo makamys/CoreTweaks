@@ -18,4 +18,8 @@ jar {
 	
 }
 
+jar.manifest.attributes (
+	'FMLAT': "${project.modid}_at.cfg",
+)
+
 apply from: "makalibs.gradle"

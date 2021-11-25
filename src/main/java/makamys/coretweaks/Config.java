@@ -30,6 +30,7 @@ public class Config {
     public static CloudHeightCheck cloudHeightCheck;
     public static boolean fixDisplayListDelete;
     public static boolean fixHeightmapRange;
+    public static boolean fixDoubleEat;
     public static boolean forgeFastDeobfuscationRemapper;
     public static float minFarPlaneDistance;
     
@@ -88,6 +89,7 @@ public class Config {
                 EnumUtils.getEnumMap(CloudHeightCheck.class).keySet().toArray(new String[]{})).getString());
         fixDisplayListDelete = config.getBoolean("fixDisplayListDelete", "Bugfixes", true, "Fixes graphical glitches that happen after recovering from a game crash, caused by world renderer display lists getting deleted but never reallocated. From 1.12.");
         fixHeightmapRange = config.getBoolean("fixHeightmapRange", "Bugfixes", true, "Fixes heightmap calculation not including the top layer of 16x16x16 regions, causing lighting errors (MC-7508)");
+        fixDoubleEat = config.getBoolean("fixDoubleEat", "Bugfixes", true, "Fixes an extra food item sometimes getting silently consumed (MC-849)");
         
         getPendingBlockUpdates = config.getBoolean("getPendingBlockUpdates", "Optimizations", true, "Optimizes WorldServer#getPendingBlockUpdates. OptiFine also does this, but this won't have an effect when OF is present, so there's no conflict.");
         clientChunkMap = config.getBoolean("clientChunkMap", "Optimizations", false, "Faster implementation of ChunkProviderClient#chunkMapping. From 1.16 (I don't know when exactly it was added). Might be a little buggy (it should only cause client-side errors though).");
