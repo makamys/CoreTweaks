@@ -17,7 +17,6 @@ import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
 
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.ObfuscationReflectionHelper;
-import makamys.coretweaks.diagnostics.FMLBarProfiler;
 import makamys.coretweaks.optimization.transformercache.lite.TransformerCache;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.launchwrapper.LaunchClassLoader;
@@ -64,10 +63,6 @@ public class MixinConfigPlugin implements IMixinConfigPlugin {
             if(!isForgeSplashEnabled()) {
                 if(Config.forgeFastProgressBar) mixins.add("MixinProgressBar");
                 if(Config.forgeFastStepMessageStrip) mixins.add("MixinFMLClientHandler");
-            }
-            if(FMLBarProfiler.isActive()) {
-                mixins.add("diagnostics.fmlbarprofiler.MixinProgressManager");
-                mixins.add("diagnostics.fmlbarprofiler.MixinProgressBar");
             }
         } else if(phase == Phase.INIT) {
             

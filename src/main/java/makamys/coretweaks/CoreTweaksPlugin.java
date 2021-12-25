@@ -6,6 +6,7 @@ import java.util.Map;
 
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
 import makamys.coretweaks.asm.ProfilerTransformer;
+import makamys.coretweaks.diagnostics.FMLBarProfiler;
 import makamys.coretweaks.optimization.JarDiscovererCache;
 
 @IFMLLoadingPlugin.SortingIndex(1001) // Run after deobf (FMLDeobfTweaker has an index of 1000)
@@ -28,6 +29,9 @@ public class CoreTweaksPlugin implements IFMLLoadingPlugin {
 		}
 		if(Config.forgeModDiscovererSkipKnownLibraries) {
 		    transformerClasses.add("makamys.coretweaks.asm.ModDiscovererTransformer");
+        }
+		if(FMLBarProfiler.isActive()) {
+		    transformerClasses.add("makamys.coretweaks.asm.FMLBarProfilerTransformer");
         }
 		return transformerClasses.toArray(new String[] {});
 	}
