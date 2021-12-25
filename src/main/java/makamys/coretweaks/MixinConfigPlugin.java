@@ -60,10 +60,6 @@ public class MixinConfigPlugin implements IMixinConfigPlugin {
         Phase phase = MixinEnvironment.getCurrentEnvironment().getPhase();
         if(phase == Phase.PREINIT) {
             if(Config.jarDiscovererCache) mixins.add("MixinJarDiscoverer");
-            if(!isForgeSplashEnabled()) {
-                if(Config.forgeFastProgressBar) mixins.add("MixinProgressBar");
-                if(Config.forgeFastStepMessageStrip) mixins.add("MixinFMLClientHandler");
-            }
         } else if(phase == Phase.INIT) {
             
         } else if(phase == Phase.DEFAULT) {
@@ -123,22 +119,6 @@ public class MixinConfigPlugin implements IMixinConfigPlugin {
             
         }
         return mixins;
-    }
-
-    private static boolean isForgeSplashEnabled() {
-        boolean enabled = true;
-        File configFile = new File(Launch.minecraftHome, "config/splash.properties");
-        if(configFile.exists()) {
-            Properties props = new Properties();
-            try {
-                props.load(new FileReader(configFile));
-                enabled = Boolean.parseBoolean((String)props.getOrDefault("enabled", "true"));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        
-        return enabled;
     }
 
     @Override
