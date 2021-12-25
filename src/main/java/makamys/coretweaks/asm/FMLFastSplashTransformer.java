@@ -7,51 +7,21 @@ import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
-import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
-import org.objectweb.asm.tree.VarInsnNode;
-
 import net.minecraft.launchwrapper.IClassTransformer;
 
 public class FMLFastSplashTransformer implements IClassTransformer {
     
     @Override
     public byte[] transform(String name, String transformedName, byte[] basicClass) {
-        if(name.equals("cpw.mods.fml.client.FMLClientHandler")) {
-            basicClass = doTransformClientHandler(basicClass);
-        } else if(name.equals("cpw.mods.fml.common.ProgressManager$ProgressBar")) {
+        if(name.equals("cpw.mods.fml.common.ProgressManager$ProgressBar")) {
             basicClass = doTransformProgressBar(basicClass);
         }
         return basicClass;
     }
-
-    private static byte[] doTransformClientHandler(byte[] bytes) {
-        System.out.println("FMLFastSplashTransformer: Transforming FMLClientHandler");
-        
-        try {
-            ClassNode classNode = new ClassNode();
-            ClassReader classReader = new ClassReader(bytes);
-            classReader.accept(classNode, 0);
-            for(MethodNode m : classNode.methods) {
-                if(m.name.equals("stripSpecialChars")) {
-                    InsnList list = new InsnList();
-                    list.add(new VarInsnNode(ALOAD, 1));
-                    list.add(new InsnNode(ARETURN));
-                    m.instructions = list;
-                }
-            }
-            ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
-            classNode.accept(writer);
-            return writer.toByteArray();
-        } catch(Exception e) {
-            e.printStackTrace();
-        }
-        
-        return bytes;
-    }
-    
+ 
     private static byte[] doTransformProgressBar(byte[] bytes) {
         System.out.println("FMLFastSplashTransformer: Transforming ProgressManager$ProgressBar");
         

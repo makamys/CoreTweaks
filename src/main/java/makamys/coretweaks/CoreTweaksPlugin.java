@@ -38,28 +38,14 @@ public class CoreTweaksPlugin implements IFMLLoadingPlugin {
 		if(FMLBarProfiler.isActive()) {
 		    transformerClasses.add("makamys.coretweaks.asm.FMLBarProfilerTransformer");
         }
-		if(!isForgeSplashEnabled()) {
-		    transformerClasses.add("makamys.coretweaks.asm.FMLFastSplashTransformer");
+		if(!MixinConfigPlugin.isForgeSplashEnabled()) {
+		    if(Config.forgeFastProgressBar) {
+		        transformerClasses.add("makamys.coretweaks.asm.FMLFastSplashTransformer");
+		    }
         }
 		
 		return transformerClasses.toArray(new String[] {});
 	}
-	
-    private static boolean isForgeSplashEnabled() {
-        boolean enabled = true;
-        File configFile = new File(Launch.minecraftHome, "config/splash.properties");
-        if(configFile.exists()) {
-            Properties props = new Properties();
-            try {
-                props.load(new FileReader(configFile));
-                enabled = Boolean.parseBoolean((String)props.getOrDefault("enabled", "true"));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        
-        return enabled;
-    }
 
 	@Override
 	public String getModContainerClass() {
