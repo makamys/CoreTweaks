@@ -8,7 +8,7 @@ repositories {
 }
 
 dependencies {
-	embed('org.spongepowered:mixin:0.7+'){
+	embed('org.spongepowered:mixin:0.7.11-SNAPSHOT'){
 		setTransitive false
 	}
 }
