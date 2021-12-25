@@ -28,7 +28,6 @@ public class ASMModParserTransformer implements IClassTransformer {
 	private static byte[] doTransform(byte[] bytes) {
 		System.out.println("Transforming ASMModParser to add empty constructor");
 		
-		ClassWriter writer = null;
 		try {
 			ClassNode classNode = new ClassNode();
 			ClassReader classReader = new ClassReader(bytes);
@@ -44,11 +43,12 @@ public class ASMModParserTransformer implements IClassTransformer {
 			
 			classNode.methods.add(emptyConstructor);
 			
-			writer = new ClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
+			ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
 			classNode.accept(writer);
+			return writer.toByteArray();
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
-		return writer.toByteArray();
+		return bytes;
 	}
 }

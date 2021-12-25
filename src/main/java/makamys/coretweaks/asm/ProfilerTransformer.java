@@ -68,7 +68,6 @@ public class ProfilerTransformer implements IClassTransformer {
 
 	private static byte[] doTransform(byte[] bytes, List<String> classTargets) {
 		
-		ClassWriter writer = null;
 		try {
 			ClassNode classNode = new ClassNode();
 			ClassReader classReader = new ClassReader(bytes);
@@ -86,12 +85,13 @@ public class ProfilerTransformer implements IClassTransformer {
 				}
 			}
 			
-			writer = new ClassWriter(0);
+			ClassWriter writer = new ClassWriter(0);
 			classNode.accept(writer);
+			return writer.toByteArray();
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
-		return writer.toByteArray();
+		return bytes;
 	}
 	
 	public static void preTargetCalled(int id) {
