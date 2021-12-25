@@ -26,6 +26,9 @@ public class CoreTweaksPlugin implements IFMLLoadingPlugin {
 		if(ProfilerTransformer.isActive()) {
 			transformerClasses.add("makamys.coretweaks.asm.ProfilerTransformer");
 		}
+		if(Config.forgeModDiscovererSkipKnownLibraries) {
+		    transformerClasses.add("makamys.coretweaks.asm.ModDiscovererTransformer");
+        }
 		return transformerClasses.toArray(new String[] {});
 	}
 
