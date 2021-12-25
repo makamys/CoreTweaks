@@ -80,7 +80,7 @@ public class ProfilerTransformer implements IClassTransformer {
 				if(classTargets.contains(methodName)) {
 					System.out.println("Instrumenting method " + methodName + " in class " + className);
 					
-					m.instructions.insert(new MethodInsnNode(INVOKESTATIC, "makamys/coretweaks/ProfilerTransformer", "preTargetCalled", "(I)V", false));
+					m.instructions.insert(new MethodInsnNode(INVOKESTATIC, "makamys/coretweaks/asm/ProfilerTransformer", "preTargetCalled", "(I)V", false));
 					m.instructions.insert(new IntInsnNode(SIPUSH, methodInstrumentationDatas.size()));
 					methodInstrumentationDatas.add(new MethodInstrumentationData(className, methodName, methodDesc));
 				}
