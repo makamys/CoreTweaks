@@ -19,6 +19,8 @@ import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 
 import makamys.coretweaks.Config;
+import makamys.coretweaks.CoreTweaks;
+import makamys.coretweaks.util.Util;
 import net.minecraft.launchwrapper.IClassTransformer;
 
 /** Instruments classes so the profiler can profile them. */
@@ -29,9 +31,9 @@ public class ProfilerTransformer implements IClassTransformer {
 	private static List<MethodInstrumentationData> methodInstrumentationDatas = new ArrayList<>();
 	
 	public static void init() {
-		if(Config.frameProfilerMethods.isEmpty()) return;
+		if(Config.profilerMethods.isEmpty()) return;
 		
-		for(String methodStr : Config.frameProfilerMethods.split(",")) {
+		for(String methodStr : Config.profilerMethods.split(",")) {
 			int lastDot = methodStr.lastIndexOf('.');
 			String clazz = methodStr.substring(0, lastDot);
 			String method = methodStr.substring(lastDot + 1);
@@ -100,7 +102,7 @@ public class ProfilerTransformer implements IClassTransformer {
 	}
 	
 	public static boolean isActive() {
-		return !Config.frameProfilerMethods.isEmpty();
+		return !Config.profilerMethods.isEmpty();
 	}
 	
 	private static class MethodInstrumentationData {

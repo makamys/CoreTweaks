@@ -35,7 +35,7 @@ public class Config {
     public static float minFarPlaneDistance;
     
     public static boolean coreTweaksCommand;
-    public static String frameProfilerMethods;
+    public static String profilerMethods;
     
     public static boolean threadedTextureLoader;
     public static TransformerCache transformerCache;
@@ -102,7 +102,7 @@ public class Config {
         fcOptimizeTextureUpload = config.getBoolean("fcOptimizeTextureUpload", "Optimizations", true, "Removes the call to GL11#getInteger in FastCraft's texture upload handler during texture stitching and uses a cached value instead. Fixes the slowness of texture stitching that happens when OptiFine and FastCraft are both present, and mipmapping is enabled.");
         
         coreTweaksCommand = config.getBoolean("coreTweaksCommand", "Diagnostics", true, "Enables /coretweaks command");
-        frameProfilerMethods = config.getString("frameProfilerMethods", "Diagnostics", "", "Comma-separated list of methods to profile. The results will be written to ./coretweaks/out/frameprofiler.csv. Currently only the call count is measured. Method names have the syntax of `<canonical class name>.<method name>`, like `some.package.SomeClass.method`.");
+        profilerMethods = config.getString("profilerMethods", "Diagnostics", "", "Comma-separated list of methods to profile. The results will be written to ./coretweaks/out/profiler-<timestamp>.csv. Currently only the call count is measured. Method names have the syntax of `<canonical class name>.<method name>`, like `some.package.SomeClass.method`.");
         frameProfilerHooks = config.getBoolean("frameProfilerHooks", "Diagnostics", false, "Insert hooks that lets the frame profiler profile various parts of frame rendering. Highly recommended if you are using the frame profiler.");
         forgeBarProfiler = config.getBoolean("forgeBarProfiler", "Diagnostics", false, "Creates a report of how long each step of startup loading took in ./coretweaks/out/fml_bar_profiler.csv.");
         crasher = config.getBoolean("crasher", "Diagnostics", false, "Enables debug feature that crashes the game when pressing certain key combinations.");
