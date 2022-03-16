@@ -1,20 +1,36 @@
-.classpath
-.metadata
+# mac os
+.DS_Store
+
+# forge / gradle
 .gradle
-.project
-.settings
-bin/
 build/
-jars/
+out/
+classes/
 run/
-libs/
-*.iml
+
+# eclipse 
 *.launch
-/.nb-gradle/
+.settings
+.classpath
+.project
+.metadata
+eclipse
+*.launch
 
-/*Audio files*/
-*.ogg
-*.WAV
-
+# idea
+.idea/
+*.iml
 *.ipr
 *.iws
+
+# vscode
+.settings/
+.vscode/
+bin/
+.classpath
+
+# other
+bin/
+jars/
+/.nb-gradle/
+libs/

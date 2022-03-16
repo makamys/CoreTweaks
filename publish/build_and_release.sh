@@ -27,14 +27,14 @@ py prepare_publish.py
 ./gradlew githubRelease -PgithubToken=$GITHUB_TOKEN
 py update_updatejson.py
 
-if [ -n "$MODRINTH_KEY" ]
+if [ -n "$CURSEFORGE_TOKEN" ]
 then
 	./curseforge_all.sh -PcurseToken=$CURSEFORGE_TOKEN
 fi
 
 /dev/null > changelog.md
 
-if [ -n "$MODRINTH_KEY" ]
+if [ -n "$MODRINTH_TOKEN" ]
 then
 	./modrinth_all.sh -PmodrinthToken=$MODRINTH_TOKEN
 fi
