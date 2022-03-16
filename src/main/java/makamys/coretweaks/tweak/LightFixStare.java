@@ -11,13 +11,15 @@ public class LightFixStare {
             int var1 = world.rand.nextInt(world.playerEntities.size());
             EntityPlayer var2 = (EntityPlayer)world.playerEntities.get(var1);
             MovingObjectPosition hit = var2.rayTrace(1000, 0);
-            int posX = hit.blockX;
-            int posY = hit.blockY;
-            int posZ = hit.blockZ;
-            int var3 = posX + world.rand.nextInt(11) - 5;
-            int var4 = posY + world.rand.nextInt(11) - 5;
-            int var5 = posZ + world.rand.nextInt(11) - 5;
-            world.func_147451_t(var3, var4, var5);
+            if(hit != null) {
+                int posX = hit.blockX;
+                int posY = hit.blockY;
+                int posZ = hit.blockZ;
+                int var3 = posX + world.rand.nextInt(11) - 5;
+                int var4 = posY + world.rand.nextInt(11) - 5;
+                int var5 = posZ + world.rand.nextInt(11) - 5;
+                world.func_147451_t(var3, var4, var5);
+            }
         }
     }
     
