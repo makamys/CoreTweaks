@@ -15,6 +15,9 @@ then
 	exit 1
 fi
 
+# exit when any command fails
+set -e
+
 GITHUB_TOKEN=$1
 CURSEFORGE_TOKEN=$2
 MODRINTH_TOKEN=$3

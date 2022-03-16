@@ -149,7 +149,7 @@ project.gameVersions.collect({toBaseVersion(it)}).each { ver ->
 	def dir = getVersionProjectPath(ver)
 	task ("cleanBuild-$ver", type: Exec) {
 		workingDir dir
-		commandLine 'sh', '-c', "rm build/libs/* && ./gradlew build"
+		commandLine 'sh', '-c', "rm -f build/libs/* && ./gradlew build"
 	}
 }
 
