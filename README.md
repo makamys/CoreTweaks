@@ -6,14 +6,14 @@ Most of the mod's features target the **client** side. It does not work on serve
 
 ## Features
 * [VanillaFix](https://www.curseforge.com/minecraft/mc-mods/vanillafix)-like crash handling
-* A class transformer cache that speeds up startup (one that's safer than [FastStart](https://github.com/makamys/FastStart)'s - FastStart's version is also included, though)
+* A class transformer cache that speeds up startup (one that's safer than [FastStart](https://github.com/makamys/FastStart)'s - FastStart's version is also included as alternative)
 * A startup profiler that logs how long each part of startup took
 * Many small fixes - check the [Config](https://github.com/makamys/CoreTweaks/wiki/Config) page on the wiki for the full list.
 
 # Incompatibilities
 
 * [FoamFix](https://github.com/asiekierka/FoamFix17): `jarDiscovererMemoryLeakFix` has to be disabled when CoreTweaks's `jarDiscovererCache` is enabled.
-* [BetterCrashes](https://github.com/vfyjxf/BetterCrashes) will only work if CoreTweaks's `crashHandler` is disabled. Using it may be preferable in some cases, as it can catch some crashes CoreTweaks cannot. The opposite is also true, however.
+* Other crash handling mods (e.g. [BetterCrashes](https://github.com/vfyjxf/BetterCrashes), [CrashGuard](https://github.com/FalsePattern/CrashGuard)) will only work if CoreTweaks's `crashHandler` is disabled. Using them may be preferable in some cases, as they can catch some crashes CoreTweaks cannot. The opposite is also true, however.
 * Various coremods will cause a crash on startup due to an incompatibility with Mixin. Use [Mixingasm](https://github.com/makamys/Mixingasm) to fix this.
 
 # License
