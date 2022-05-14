@@ -6,6 +6,8 @@ import org.lwjgl.LWJGLException;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
+
+import makamys.coretweaks.CoreTweaks;
 import makamys.coretweaks.tweak.crashhandler.CrashHandler;
 import makamys.coretweaks.tweak.crashhandler.GuiFatalErrorScreen;
 
@@ -96,11 +98,17 @@ abstract class MixinMinecraft_CrashHandler {
                                 }
                             }
                             
-                            CrashHandler.resetState();
-                            
-                            this.freeMemory();
-                            this.displayGuiScreen(t instanceof OutOfMemoryError ? new GuiMemoryErrorScreen() : new GuiFatalErrorScreen(t));
-                            System.gc();
+                            GuiScreen screen = ((Minecraft)(Object)this).currentScreen;
+                            if(!(screen instanceof GuiMemoryErrorScreen || screen instanceof GuiFatalErrorScreen)) {
+                                CrashHandler.resetState();
+                                
+                                this.freeMemory();
+                                this.displayGuiScreen(t instanceof OutOfMemoryError ? new GuiMemoryErrorScreen() : new GuiFatalErrorScreen(t));
+                                System.gc();
+                            } else {
+                                CoreTweaks.LOGGER.warn("Got a crash on a crash error screen, quitting game to avoid infinite loop.");
+                                this.running = false;
+                            }
                         }
 
                         continue;
