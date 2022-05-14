@@ -15,6 +15,8 @@ public class Crasher implements IModEventListener {
     
     public static Crasher instance;
     
+    private static final boolean CRASH_EVERY_CLIENT_TICK = Boolean.parseBoolean(System.getProperty("coretweaks.crasher.crashEveryClientTick", "false"));
+    
     @Override
     public void onPreInit(FMLPreInitializationEvent event) {
         FMLCommonHandler.instance().bus().register(this);
@@ -32,6 +34,10 @@ public class Crasher implements IModEventListener {
         if(Keyboard.isKeyDown(Keyboard.KEY_F3) && Keyboard.isKeyDown(Keyboard.KEY_T) && !KeyboardUtil.wasKeyDown(Keyboard.KEY_T)) {
             Tessellator.instance.startDrawingQuads();
             throw new RuntimeException("Test exception during tessellation");
+        }
+        
+        if(CRASH_EVERY_CLIENT_TICK) {
+            throw new RuntimeException("Test exception in onClientTick");
         }
     }
     
