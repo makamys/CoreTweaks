@@ -6,7 +6,7 @@ Most of the mod's features target the **client** side. It does not work on serve
 
 ## Features
 * [VanillaFix](https://www.curseforge.com/minecraft/mc-mods/vanillafix)-like crash handling
-* A class transformer cache that speeds up startup (one that's safer than [FastStart](https://github.com/makamys/FastStart)'s - FastStart's version is also included as alternative)
+* A class transformer cache that speeds up startup (one that's safer than [FastStart](https://github.com/makamys/FastStart)'s - FastStart's version is also included as an alternative)
 * A startup profiler that logs how long each part of startup took
 * Many small fixes - check the [Config](https://github.com/makamys/CoreTweaks/wiki/Config) page on the wiki for the full list.
 
