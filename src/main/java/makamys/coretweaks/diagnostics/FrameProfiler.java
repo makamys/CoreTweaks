@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.IOException;
 
 import makamys.coretweaks.util.Util;
+import makamys.coretweaks.Config;
 import makamys.coretweaks.CoreTweaks;
 import makamys.coretweaks.util.TableBuilder;
 
@@ -41,11 +42,19 @@ public class FrameProfiler {
         if(started) {
             addEntry(FRAME_START);
         }
+        
+        if(Config.frameProfilerPrint) {
+            FrameTimePrinter.preRenderWorld();
+        }
     }
     
     public void onFrameEnd() {
         if(started) {
             addEntry(FRAME_END);
+        }
+        
+        if(Config.frameProfilerPrint) {
+            FrameTimePrinter.postRenderWorld();
         }
     }
     
