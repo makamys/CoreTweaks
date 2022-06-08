@@ -16,6 +16,7 @@ public class Config {
     public static boolean forceUncapFramerate;
     public static boolean ofFixUpdateRenderersReturnValue;
     public static boolean ofUnlockCustomSkyMinRenderDistance;
+    public static boolean disableFog;
     public static boolean ofOptimizeWorldRenderer;
     public static boolean fcOptimizeTextureUpload;
     public static boolean getPendingBlockUpdates;
@@ -79,6 +80,7 @@ public class Config {
         ofFixUpdateRenderersReturnValue = config.getBoolean("ofFixUpdateRenderersReturnValue", "Tweaks", false, "Fixes OptiFine's implementation of updateRenderers returning the opposite value of what it should (probably a bug). Only effective when framerate limiter is enabled. Speeds up chunk updates significantly, and increases framerate when there aren't many chunk updates. However, during heavy chunk updating (e.g. when loading a world) it decreases the framerate as a side effect of not being as lazy.");
         ofUnlockCustomSkyMinRenderDistance = config.getBoolean("ofUnlockCustomSkyMinRenderDistance", "Tweaks", true, "Allows custom sky rendering in OptiFine D6 when using a render distance lower than 8.");
         minFarPlaneDistance = config.getFloat("minFarPlaneDistance", "Tweaks", 180f, -1f, Float.MAX_VALUE, "The distance of the view fustrum's far plane will be clamped above this value. Setting this to 180 or higher fixes clipping in OptiFine's custom skybox that happens when using lower render distances. Set this to a negative value to disable this tweak.");
+        disableFog = config.getBoolean("disableFog", "Tweaks", false, "Disables fog. Simple as.");
         
         restoreTravelSound = config.getBoolean("restoreTravelSound", "Bugfixes", true, "Restore interdimensional travel sound (travel.ogg). Fixes MC-233, fixed in 1.9");
         fixSmallEntitySwim = config.getBoolean("fixSmallEntitySwim", "Bugfixes", true, "Fixes bug in entity swimming code resulting in small entities (ones with hitboxes less than 0.8 units tall, such as DMod's foxes) being prone to drowning.");

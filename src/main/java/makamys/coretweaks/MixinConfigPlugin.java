@@ -80,6 +80,7 @@ public class MixinConfigPlugin implements IMixinConfigPlugin {
             if(Config.fixForgeChatLinkCrash) mixins.add("bugfix.chatlinkcrash.MixinForgeHooks");
             if(Config.minFarPlaneDistance >= 0f) mixins.add("tweak.farplane.MixinEntityRenderer");
             if(Config.ofUnlockCustomSkyMinRenderDistance) mixins.add("tweak.ofcustomsky.MixinOFD6CustomSky");
+            if(Config.disableFog) mixins.add("tweak.disablefog.MixinEntityRenderer");
             
             if(Config.forceUncapFramerate) mixins.add("MixinMinecraft_SyncTweak");
             if(Config.ofFixUpdateRenderersReturnValue) mixins.add("MixinRenderGlobal");
