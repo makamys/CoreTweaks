@@ -186,7 +186,7 @@ public class ThreadedTextureLoader {
     			if(map.containsKey(key)) {
     				break;
     			} else {
-    				//System.out.println(lastStreamedResource + " hasn't been loaded yet, waiting...");
+    				//LOGGER.info(lastStreamedResource + " hasn't been loaded yet, waiting...");
     	            waitingOn.add(ResourceLoadJob.of(key));
     	            if(waitingOn.size() > 1) throw new IllegalStateException();
     	            
@@ -196,13 +196,13 @@ public class ThreadedTextureLoader {
 	                } catch (InterruptedException e) {
 	                    
 	                }
-    	            //System.out.println("Woke up on " + lastStreamedResource);
+    	            //LOGGER.info("Woke up on " + lastStreamedResource);
     			}
     		}
             
         }
         waitingOn.clear();
-        //System.out.println("Returning " + lastStreamedResource + " fetched by thread");
+        //LOGGER.info("Returning " + lastStreamedResource + " fetched by thread");
         return map.get(key);
     }
     

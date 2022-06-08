@@ -18,7 +18,7 @@ public class MixinDefaultResourcePack {
     @Redirect(method = "func_152780_c(Lnet/minecraft/util/ResourceLocation;)Ljava/io/InputStream;", 
             at = @At(value = "INVOKE", target = "Ljava/io/File;isFile()Z"))
     public boolean redirectIsFile(File file) throws IOException {
-        //System.out.println("Running isFile redirector (DefaultResourcePack). file=" + file);
+        //LOGGER.info("Running isFile redirector (DefaultResourcePack). file=" + file);
         return file.isFile();
     }
 	

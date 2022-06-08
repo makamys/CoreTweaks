@@ -1,6 +1,7 @@
 package makamys.coretweaks.asm;
 
 import static org.objectweb.asm.Opcodes.*;
+import static makamys.coretweaks.CoreTweaks.LOGGER;
 
 import java.util.Iterator;
 import org.objectweb.asm.ClassReader;
@@ -23,7 +24,7 @@ public class FMLFastSplashTransformer implements IClassTransformer {
     }
  
     private static byte[] doTransformProgressBar(byte[] bytes) {
-        System.out.println("FMLFastSplashTransformer: Transforming ProgressManager$ProgressBar");
+        LOGGER.info("FMLFastSplashTransformer: Transforming ProgressManager$ProgressBar");
         
         try {
             ClassNode classNode = new ClassNode();

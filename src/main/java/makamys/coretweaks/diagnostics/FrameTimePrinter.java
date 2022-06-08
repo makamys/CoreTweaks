@@ -1,5 +1,7 @@
 package makamys.coretweaks.diagnostics;
 
+import static makamys.coretweaks.CoreTweaks.LOGGER;
+
 import java.util.Arrays;
 
 public class FrameTimePrinter {
@@ -34,7 +36,7 @@ public class FrameTimePrinter {
                 sum += times[i];
             }
             
-            System.out.println("Frame time: median: " + times[timeI / 2] / 1000000.0 + " ms, avg: " + (sum / (double)timeI / 1000000.0) + " ms");
+            LOGGER.info("Frame time: median: " + times[timeI / 2] / 1000000.0 + " ms, avg: " + (sum / (double)timeI / 1000000.0) + " ms");
             
             timeI = 0;
             

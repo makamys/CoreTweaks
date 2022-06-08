@@ -1,6 +1,7 @@
 package makamys.coretweaks.asm;
 
 import static org.objectweb.asm.Opcodes.*;
+import static makamys.coretweaks.CoreTweaks.LOGGER;
 
 import java.util.Iterator;
 import org.objectweb.asm.ClassReader;
@@ -29,7 +30,7 @@ public class FMLBarProfilerTransformer implements IClassTransformer {
     }
 
     private static byte[] doTransformProgressManager(byte[] bytes) {
-        System.out.println("FMLBarProfiler: Transforming ProgressManager");
+        LOGGER.info("FMLBarProfiler: Transforming ProgressManager");
         
         try {
             ClassNode classNode = new ClassNode();
@@ -71,7 +72,7 @@ public class FMLBarProfilerTransformer implements IClassTransformer {
     }
     
     private static byte[] doTransformProgressBar(byte[] bytes) {
-        System.out.println("FMLBarProfiler: Transforming ProgressManager$ProgressBar");
+        LOGGER.info("FMLBarProfiler: Transforming ProgressManager$ProgressBar");
         
         try {
             ClassNode classNode = new ClassNode();

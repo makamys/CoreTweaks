@@ -92,6 +92,6 @@ class TextureLoaderThread extends Thread {
     }
     
     void say(Object o) {
-        //System.out.println("<" + Thread.currentThread().getName() + "> " + o);
+        //LOGGER.info("<" + Thread.currentThread().getName() + "> " + o);
     }
 }

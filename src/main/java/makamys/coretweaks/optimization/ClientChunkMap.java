@@ -1,5 +1,7 @@
 package makamys.coretweaks.optimization;
 
+import static makamys.coretweaks.CoreTweaks.LOGGER;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -31,7 +33,7 @@ public class ClientChunkMap extends LongHashMap {
     }
     
     public void onBug() {
-    	System.out.println("Bug detected in ClientChunkMap");
+    	LOGGER.info("Bug detected in ClientChunkMap");
     }
     
     public int getNumHashElements()

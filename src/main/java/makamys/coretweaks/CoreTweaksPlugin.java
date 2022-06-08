@@ -1,5 +1,7 @@
 package makamys.coretweaks;
 
+import static makamys.coretweaks.CoreTweaks.LOGGER;
+
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -18,7 +20,7 @@ import net.minecraft.launchwrapper.Launch;
 public class CoreTweaksPlugin implements IFMLLoadingPlugin {
 
 	public CoreTweaksPlugin() {
-		System.out.println("Instantiating CoreTweaksPlugin");
+		LOGGER.info("Instantiating CoreTweaksPlugin");
 		Config.reload();
 		CoreTweaks.init();
 	}

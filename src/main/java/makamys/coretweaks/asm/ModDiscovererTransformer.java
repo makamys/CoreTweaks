@@ -1,6 +1,7 @@
 package makamys.coretweaks.asm;
 
 import static org.objectweb.asm.Opcodes.*;
+import static makamys.coretweaks.CoreTweaks.LOGGER;
 
 import java.io.File;
 import java.util.Iterator;
@@ -27,7 +28,7 @@ public class ModDiscovererTransformer implements IClassTransformer {
     }
 
     private static byte[] doTransform(byte[] bytes) {
-        System.out.println("Transforming ModDiscoverer to skip known libraries");
+        LOGGER.info("Transforming ModDiscoverer to skip known libraries");
         boolean found = false;
         
         try {
@@ -69,7 +70,7 @@ public class ModDiscovererTransformer implements IClassTransformer {
                 classNode.accept(writer);
                 return writer.toByteArray();
             } else {
-                System.out.println("Couldn't find target instructions");
+                LOGGER.info("Couldn't find target instructions");
             }
         } catch(Exception e) {
             e.printStackTrace();

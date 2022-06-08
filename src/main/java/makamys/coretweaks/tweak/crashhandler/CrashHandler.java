@@ -1,5 +1,7 @@
 package makamys.coretweaks.tweak.crashhandler;
 
+import static makamys.coretweaks.CoreTweaks.LOGGER;
+
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -41,15 +43,15 @@ public class CrashHandler {
     public static void createCrashReport(CrashReport crashReporter) {
         File file1 = new File(Minecraft.getMinecraft().mcDataDir, "crash-reports");
         File file2 = new File(file1, "crash-" + (new SimpleDateFormat("yyyy-MM-dd_HH.mm.ss")).format(new Date()) + "-client.txt");
-        System.out.println(crashReporter.getCompleteReport());
+        LOGGER.info(crashReporter.getCompleteReport());
 
         if (crashReporter.getFile() != null) {
-            System.out.println("#@!@# Game crashed! Crash report saved to: #@!@# " + crashReporter.getFile());
+            LOGGER.info("#@!@# Game crashed! Crash report saved to: #@!@# " + crashReporter.getFile());
         }
         else if (crashReporter.saveToFile(file2)) {
-            System.out.println("#@!@# Game crashed! Crash report saved to: #@!@# " + file2.getAbsolutePath());
+            LOGGER.info("#@!@# Game crashed! Crash report saved to: #@!@# " + file2.getAbsolutePath());
         } else {
-            System.out.println("#@?@# Game crashed! Crash report could not be saved. #@?@#");
+            LOGGER.info("#@?@# Game crashed! Crash report could not be saved. #@?@#");
         }
     }
 }

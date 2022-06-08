@@ -306,7 +306,7 @@ public class OpenGLDebugging
       if (instance.propertyList[i].fetchCommand.equals("glIsEnabled()")) {
         System.out.print(instance.propertyList[i].name + ":");
         System.out.print(GL11.glIsEnabled(instance.propertyList[i].gLconstant));
-        System.out.println(" (" + instance.propertyList[i].description + ")");
+        LOGGER.info(" (" + instance.propertyList[i].description + ")");
       }
     }
   }
@@ -315,8 +315,8 @@ public class OpenGLDebugging
     for (int i = 0; i < instance.propertyList.length; ++i) {
       if (instance.propertyList[i].category.equals(type)) {
         System.out.print(instance.propertyList[i].name + ":");
-        System.out.println(getPropertyAsString(i));
-        System.out.println(" (" + instance.propertyList[i].description + ")");
+        LOGGER.info(getPropertyAsString(i));
+        LOGGER.info(" (" + instance.propertyList[i].description + ")");
       }
     }
   }
@@ -346,23 +346,23 @@ public class OpenGLDebugging
     return "";
 //    switch(instance.propertyList[propertyListIndex].fetchCommand) {
 /*
-      case "glGetBooleanv()":  { System.out.println(GL11.glGetBooleanv()); break;}
-      case "glGetFloatv()":  { System.out.println(GL11.glGetFloatv()); break;}
-      case "glGetIntegerv()":  { System.out.println(GL11.glGetIntegerv()); break;}
-      case "glGetLightfv()":  { System.out.println(GL11.glGetLightfv()); break;}
-      case "glGetMapfv()":  { System.out.println(GL11.glGetMapfv()); break;}
-      case "glGetMapiv()":  { System.out.println(GL11.glGetMapiv()); break;}
-      case "glGetMaterialfv()":  { System.out.println(GL11.glGetMaterialfv()); break;}
-      case "glGetPixelMap*()":  { System.out.println(GL11.glGetPixelMap*()); break;}
-      case "glGetPointerv()":  { System.out.println(GL11.glGetPointerv()); break;}
-      case "glGetTexEnvfv()":  { System.out.println(GL11.glGetTexEnvfv()); break;}
-      case "glGetTexEnviv()":  { System.out.println(GL11.glGetTexEnviv()); break;}
-      case "glGetTexGenfv()":  { System.out.println(GL11.glGetTexGenfv()); break;}
-      case "glGetTexGeniv()":  { System.out.println(GL11.glGetTexGeniv()); break;}
-      case "glGetTexImage()":  { System.out.println(GL11.glGetTexImage()); break;}
-      case "glGetTexLevelParameter*()":  { System.out.println(GL11.glGetTexLevelParameter*()); break;}
-      case "glGetTexParameter*()":  { System.out.println(GL11.glGetTexParameter*()); break;}
-      case "glGetTexParameteriv()":  { System.out.println(GL11.glGetTexParameteriv()); break;}
+      case "glGetBooleanv()":  { LOGGER.info(GL11.glGetBooleanv()); break;}
+      case "glGetFloatv()":  { LOGGER.info(GL11.glGetFloatv()); break;}
+      case "glGetIntegerv()":  { LOGGER.info(GL11.glGetIntegerv()); break;}
+      case "glGetLightfv()":  { LOGGER.info(GL11.glGetLightfv()); break;}
+      case "glGetMapfv()":  { LOGGER.info(GL11.glGetMapfv()); break;}
+      case "glGetMapiv()":  { LOGGER.info(GL11.glGetMapiv()); break;}
+      case "glGetMaterialfv()":  { LOGGER.info(GL11.glGetMaterialfv()); break;}
+      case "glGetPixelMap*()":  { LOGGER.info(GL11.glGetPixelMap*()); break;}
+      case "glGetPointerv()":  { LOGGER.info(GL11.glGetPointerv()); break;}
+      case "glGetTexEnvfv()":  { LOGGER.info(GL11.glGetTexEnvfv()); break;}
+      case "glGetTexEnviv()":  { LOGGER.info(GL11.glGetTexEnviv()); break;}
+      case "glGetTexGenfv()":  { LOGGER.info(GL11.glGetTexGenfv()); break;}
+      case "glGetTexGeniv()":  { LOGGER.info(GL11.glGetTexGeniv()); break;}
+      case "glGetTexImage()":  { LOGGER.info(GL11.glGetTexImage()); break;}
+      case "glGetTexLevelParameter*()":  { LOGGER.info(GL11.glGetTexLevelParameter*()); break;}
+      case "glGetTexParameter*()":  { LOGGER.info(GL11.glGetTexParameter*()); break;}
+      case "glGetTexParameteriv()":  { LOGGER.info(GL11.glGetTexParameteriv()); break;}
 */
   }
 

@@ -1,6 +1,7 @@
 package makamys.coretweaks.asm;
 
 import static org.objectweb.asm.Opcodes.*;
+import static makamys.coretweaks.CoreTweaks.LOGGER;
 
 import java.io.File;
 import java.io.IOException;
@@ -53,7 +54,7 @@ public class ProfilerTransformer implements IClassTransformer {
 				try {
 					FileUtils.write(Util.childFile(CoreTweaks.OUT_DIR, "profiler-" + System.currentTimeMillis() + ".json"), String.join("\n", methodInstrumentationDatas.stream().map(d -> d.getDump()).collect(Collectors.toList())));
 				} catch (IOException e) {
-					System.err.println("Failed to write profiler data");
+					LOGGER.error("Failed to write profiler data");
 					e.printStackTrace();
 				}
 			}}, "CoreTweaks profiler save thread"));
@@ -79,7 +80,7 @@ public class ProfilerTransformer implements IClassTransformer {
 				String methodName = m.name;
 				String methodDesc = m.desc;
 				if(classTargets.contains(methodName)) {
-					System.out.println("Instrumenting method " + methodName + " in class " + className);
+					LOGGER.info("Instrumenting method " + methodName + " in class " + className);
 					
 					m.instructions.insert(new MethodInsnNode(INVOKESTATIC, "makamys/coretweaks/asm/ProfilerTransformer", "preTargetCalled", "(I)V", false));
 					m.instructions.insert(new IntInsnNode(SIPUSH, methodInstrumentationDatas.size()));

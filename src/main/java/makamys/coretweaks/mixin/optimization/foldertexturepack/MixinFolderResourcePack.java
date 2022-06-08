@@ -1,5 +1,7 @@
 package makamys.coretweaks.mixin.optimization.foldertexturepack;
 
+import static makamys.coretweaks.CoreTweaks.LOGGER;
+
 import java.io.File;
 import java.util.HashSet;
 
@@ -27,13 +29,13 @@ public abstract class MixinFolderResourcePack {
 	
 	@Inject(method = "<init>*", at = @At("RETURN"))
     private void afterConstructor(File folder, CallbackInfo ci) {
-	    if(DEBUG) System.out.println("running after constructor, folder=" + folder);
+	    if(DEBUG) LOGGER.info("running after constructor, folder=" + folder);
 	    
 		explore(folder, folder.getPath());
     }
 	
 	private void explore(File folder, String path) {
-	    if(DEBUG) System.out.println("exploring folder=" + folder + " path=" + path);
+	    if(DEBUG) LOGGER.info("exploring folder=" + folder + " path=" + path);
 		
 	    for(File f: folder.listFiles()) {
 			String myPath = (path.isEmpty() ? "" : path + File.separator) + f.getName();
@@ -49,7 +51,7 @@ public abstract class MixinFolderResourcePack {
     public boolean redirectIsFile(File file) {
         boolean result = filePaths.contains(file.getPath());
         
-        if(DEBUG) System.out.println("isFile " + file + " ? " + result);
+        if(DEBUG) LOGGER.info("isFile " + file + " ? " + result);
         
 		return result;
     }

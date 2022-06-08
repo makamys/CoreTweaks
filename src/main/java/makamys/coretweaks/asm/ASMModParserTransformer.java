@@ -1,6 +1,7 @@
 package makamys.coretweaks.asm;
 
 import static org.objectweb.asm.Opcodes.*;
+import static makamys.coretweaks.CoreTweaks.LOGGER;
 
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
@@ -26,7 +27,7 @@ public class ASMModParserTransformer implements IClassTransformer {
 	}
 
 	private static byte[] doTransform(byte[] bytes) {
-		System.out.println("Transforming ASMModParser to add empty constructor");
+		LOGGER.info("Transforming ASMModParser to add empty constructor");
 		
 		try {
 			ClassNode classNode = new ClassNode();

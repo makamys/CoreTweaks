@@ -289,7 +289,7 @@ public class CachingTransformer implements IClassTransformer, MapAddListener<Str
 				// fall back to normal behavior..
 			    for (final IClassTransformer transformer : wrappedTransformers.original) {
 				    if(transformer == this) {
-				        System.out.println("oops,");
+				        LOGGER.info("oops,");
 				    }
 				    
 
@@ -380,9 +380,9 @@ public class CachingTransformer implements IClassTransformer, MapAddListener<Str
             
             wrappedTransformers.alt = cacheTransformer;
             
-            System.out.println("Finished initializing cache transformer");
+            LOGGER.info("Finished initializing cache transformer");
         } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
-            System.out.println("Exception registering cache transformer.");
+            LOGGER.info("Exception registering cache transformer.");
             e.printStackTrace();
         }
     	return cacheTransformer;

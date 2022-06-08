@@ -1,5 +1,7 @@
 package makamys.coretweaks.util;
 
+import static makamys.coretweaks.CoreTweaks.LOGGER;
+
 import java.lang.reflect.Field;
 
 import net.minecraft.client.Minecraft;
@@ -15,7 +17,7 @@ public class MCUtil {
 	static {
 		try {
 			ofCloudsHeight_F = GameSettings.class.getDeclaredField("ofCloudsHeight");
-			System.out.println("Found ofCloudsHeight field, assuming OptiFine is present");
+			LOGGER.info("Found ofCloudsHeight field, assuming OptiFine is present");
 			
 			Class<?> reflector = Launch.classLoader.findClass("Reflector");
 			Field hasTileEntityF = reflector.getField("ForgeBlock_hasTileEntity");
@@ -24,9 +26,9 @@ public class MCUtil {
 			Field canRenderInPassF = reflector.getField("ForgeBlock_canRenderInPass");
 			Reflector_ForgeBlock_canRenderInPass = canRenderInPassF.get(null);
 			
-			System.out.println("Found OptiFine fields, assuming OptiFine is present");
+			LOGGER.info("Found OptiFine fields, assuming OptiFine is present");
 		} catch (NoSuchFieldException | SecurityException | ClassNotFoundException | IllegalArgumentException | IllegalAccessException e) {
-			System.out.println("Couldn't find OptiFine fields (" + e.getMessage() + "), assuming OptiFine is not present");
+			LOGGER.info("Couldn't find OptiFine fields (" + e.getMessage() + "), assuming OptiFine is not present");
 		} 
 	}
 	

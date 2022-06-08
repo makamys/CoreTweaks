@@ -1,5 +1,7 @@
 package makamys.coretweaks.optimization.transformercache.lite;
 
+import static makamys.coretweaks.CoreTweaks.LOGGER;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -77,7 +79,7 @@ public class TransformerCache {
         for(int i = 0; i < transformers.size(); i++) {
             IClassTransformer transformer = transformers.get(i);
             if(transformersToCache.contains(transformer.getClass().getCanonicalName())) {
-                System.out.println("Replacing " + transformer.getClass().getCanonicalName() + " with cached proxy");
+                LOGGER.info("Replacing " + transformer.getClass().getCanonicalName() + " with cached proxy");
                 
                 IClassTransformer newTransformer = transformer instanceof IClassNameTransformer
                         ? new CachedNameTransformerProxy(transformer) : new CachedTransformerProxy(transformer);
@@ -118,7 +120,7 @@ public class TransformerCache {
             DAT.getParentFile().mkdirs();
             DAT.createNewFile();
         }
-        System.out.println("Saving transformer cache");
+        LOGGER.info("Saving transformer cache");
         try(Output output = new UnsafeOutput(new BufferedOutputStream(new FileOutputStream(DAT)))) {
             kryo.writeObject(output, transformerMap);
         }

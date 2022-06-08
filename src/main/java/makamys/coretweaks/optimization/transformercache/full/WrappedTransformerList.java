@@ -1,5 +1,7 @@
 package makamys.coretweaks.optimization.transformercache.full;
 
+import static makamys.coretweaks.CoreTweaks.LOGGER;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -104,7 +106,7 @@ public class WrappedTransformerList<T> implements List<T> {
 	            if(!first && !e.getClassName().equals(getClass().getName())) {
 	                if(!e.getClassName().equals(LaunchClassLoader.class.getName())) {
 	                    
-	                    System.out.println("iterator called by " + String.join(" > ", Arrays.stream(Thread.currentThread().getStackTrace()).map(x -> x.getClassName()).collect(Collectors.toList())));
+	                    LOGGER.info("iterator called by " + String.join(" > ", Arrays.stream(Thread.currentThread().getStackTrace()).map(x -> x.getClassName()).collect(Collectors.toList())));
 	                }
 	                break;
 	            }

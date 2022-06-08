@@ -1,5 +1,7 @@
 package makamys.coretweaks.diagnostics;
 
+import static makamys.coretweaks.CoreTweaks.LOGGER;
+
 import cpw.mods.fml.common.event.FMLServerStartedEvent;
 import cpw.mods.fml.common.event.FMLServerStoppedEvent;
 import makamys.coretweaks.IModEventListener;
@@ -18,6 +20,6 @@ public class ServerRunTimePrinter implements IModEventListener {
     @Override
     public void onServerStopped(FMLServerStoppedEvent event) {
         long runTime = System.nanoTime() - startTime;
-        System.out.println("Server ran for " + runTime / 1000000000f + "s");
+        LOGGER.info("Server ran for " + runTime / 1000000000f + "s");
     }
 }
