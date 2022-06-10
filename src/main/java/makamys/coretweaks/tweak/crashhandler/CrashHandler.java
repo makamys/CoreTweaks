@@ -5,6 +5,7 @@ import static makamys.coretweaks.CoreTweaks.LOGGER;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import com.google.common.collect.Multimap;
 
@@ -14,6 +15,7 @@ import cpw.mods.fml.relauncher.ReflectionHelper;
 import makamys.coretweaks.CoreTweaksMod;
 import makamys.coretweaks.util.GLUtil;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.crash.CrashReport;
 import net.minecraft.util.MinecraftError;
@@ -31,6 +33,15 @@ public class CrashHandler {
         
         GLUtil.resetState();
         Tessellator.instance.setTranslation(0.0D, 0.0D, 0.0D);
+        
+        if(Minecraft.getMinecraft().renderGlobal != null) {
+            try {
+                List renderersToUpdate = ReflectionHelper.getPrivateValue(RenderGlobal.class, Minecraft.getMinecraft().renderGlobal, "worldRenderersToUpdate", "field_72767_j");
+                renderersToUpdate.clear();
+            } catch(Exception e) {
+                e.printStackTrace();
+            }
+        }
         
         // When an exception happens in a mod event handler, FML adds it to the error map.
         // It will refuse to restart the server if the errors map is not empty, and it never gets cleared.
