@@ -100,7 +100,12 @@ abstract class MixinMinecraft_CrashHandler {
                             
                             GuiScreen screen = ((Minecraft)(Object)this).currentScreen;
                             if(!(screen instanceof GuiMemoryErrorScreen || screen instanceof GuiFatalErrorScreen)) {
-                                CrashHandler.resetState();
+                                try {
+                                    CrashHandler.resetState();
+                                } catch(Exception e) {
+                                    CoreTweaks.LOGGER.warn("Something went wrong while attempting to reset state.");
+                                    e.printStackTrace();
+                                }
                                 
                                 this.freeMemory();
                                 this.displayGuiScreen(t instanceof OutOfMemoryError ? new GuiMemoryErrorScreen() : new GuiFatalErrorScreen(t));
