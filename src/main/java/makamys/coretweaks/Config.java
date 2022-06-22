@@ -36,6 +36,7 @@ public class Config {
     public static boolean fixForgeChatLinkCrash;
     public static boolean forgeFastDeobfuscationRemapper;
     public static float minFarPlaneDistance;
+    public static boolean uncapCreateWorldGuiTextFieldLength;
     
     public static boolean coreTweaksCommand;
     public static String profilerMethods;
@@ -81,6 +82,8 @@ public class Config {
         ofUnlockCustomSkyMinRenderDistance = config.getBoolean("ofUnlockCustomSkyMinRenderDistance", "Tweaks", true, "Allows custom sky rendering in OptiFine D6 when using a render distance lower than 8.");
         minFarPlaneDistance = config.getFloat("minFarPlaneDistance", "Tweaks", 180f, -1f, Float.MAX_VALUE, "The distance of the view fustrum's far plane will be clamped above this value. Setting this to 180 or higher fixes clipping in OptiFine's custom skybox that happens when using lower render distances. Set this to a negative value to disable this tweak.");
         disableFog = config.getBoolean("disableFog", "Tweaks", false, "Disables fog. Simple as.");
+        uncapCreateWorldGuiTextFieldLength = config.getBoolean("uncapCreateWorldGuiTextFieldLength", "Tweaks", false,
+                "Uncap max length for world name and world seed in the world creation GUI. (By default, it's capped at 32.)");
         
         restoreTravelSound = config.getBoolean("restoreTravelSound", "Bugfixes", true, "Restore interdimensional travel sound (travel.ogg). Fixes MC-233, fixed in 1.9");
         fixSmallEntitySwim = config.getBoolean("fixSmallEntitySwim", "Bugfixes", true, "Fixes bug in entity swimming code resulting in small entities (ones with hitboxes less than 0.8 units tall, such as DMod's foxes) being prone to drowning.");
