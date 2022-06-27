@@ -13,6 +13,7 @@ import com.google.common.collect.Multimap;
 import cpw.mods.fml.common.LoadController;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.relauncher.ReflectionHelper;
+import cpw.mods.fml.relauncher.ReflectionHelper.UnableToAccessFieldException;
 import makamys.coretweaks.CoreTweaksMod;
 import makamys.coretweaks.util.GLUtil;
 import net.minecraft.client.Minecraft;
@@ -64,6 +65,8 @@ public class CrashHandler {
                 List renderersToUpdate = ReflectionHelper.getPrivateValue(RenderGlobal.class, Minecraft.getMinecraft().renderGlobal, "worldRenderersToUpdate", "field_72767_j");
                 renderersToUpdate.clear();
             }
+        } catch(UnableToAccessFieldException e) {
+            // probably an optifine moment, ignore
         } catch(Exception e) {
             exceptions.add(e);
         }
