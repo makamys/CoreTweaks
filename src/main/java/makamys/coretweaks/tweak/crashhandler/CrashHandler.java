@@ -76,8 +76,7 @@ public class CrashHandler {
         
         if(!exceptions.isEmpty()) {
             for(Exception e : exceptions) {
-                LOGGER.warn("Something went wrong while attempting to restore state:");
-                e.printStackTrace();
+                LOGGER.warn("Something went wrong while attempting to restore state after the crash (this is not related to the above crash!): " + e.getMessage());
             }
         }
     }
