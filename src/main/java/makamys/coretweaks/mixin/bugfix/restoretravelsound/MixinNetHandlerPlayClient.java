@@ -1,4 +1,4 @@
-package makamys.coretweaks.mixin;
+package makamys.coretweaks.mixin.bugfix.restoretravelsound;
 
 import java.util.Random;
 

@@ -60,7 +60,7 @@ public class MixinConfigPlugin implements IMixinConfigPlugin {
         Phase phase = MixinEnvironment.getCurrentEnvironment().getPhase();
         if(phase == Phase.PREINIT) {
             if(!isForgeSplashEnabled()) {
-                if(Config.forgeFastStepMessageStrip) mixins.add("MixinFMLClientHandler");
+                if(Config.forgeFastStepMessageStrip) mixins.add("optimization.fmlmessagestrip.MixinFMLClientHandler");
             }
         } else if(phase == Phase.INIT) {
             
@@ -70,26 +70,26 @@ public class MixinConfigPlugin implements IMixinConfigPlugin {
                 TransformerCache.instance.init();
             }
             
-            if(Config.clientChunkMap) mixins.add("MixinChunkProviderClient");
-            if(Config.crashHandler) mixins.add("MixinMinecraft_CrashHandler");
+            if(Config.clientChunkMap) mixins.add("optimization.clientchunkmap.MixinChunkProviderClient");
+            if(Config.crashHandler) mixins.add("tweak.crashhandler.MixinMinecraft");
             if(Config.lightFixStare) mixins.add("tweak.lightfixstare.MixinWorld");
             if(Config.fixDisplayListDelete) mixins.add("bugfix.displaylistdelete.MixinRenderGlobal");
             if(Config.fixHeightmapRange) mixins.add("bugfix.heightmaprange.MixinChunk");
-            if(Config.fixSmallEntitySwim) mixins.add("MixinEntity");
+            if(Config.fixSmallEntitySwim) mixins.add("bugfix.smallentityswim.MixinEntity");
             if(Config.fixForgeChatLinkCrash) mixins.add("bugfix.chatlinkcrash.MixinForgeHooks");
             if(Config.minFarPlaneDistance >= 0f) mixins.add("tweak.farplane.MixinEntityRenderer");
             if(Config.ofUnlockCustomSkyMinRenderDistance) mixins.add("tweak.ofcustomsky.MixinOFD6CustomSky");
             if(Config.disableFog) mixins.add("tweak.disablefog.MixinEntityRenderer");
             if(Config.uncapCreateWorldGuiTextFieldLength) mixins.add("tweak.newworldguimaxlength.MixinGuiCreateWorld");
             
-            if(Config.forceUncapFramerate) mixins.add("MixinMinecraft_SyncTweak");
-            if(Config.ofFixUpdateRenderersReturnValue) mixins.add("MixinRenderGlobal");
-            if(Config.ofOptimizeWorldRenderer) mixins.add("MixinWorldRenderer");
-            if(Config.getPendingBlockUpdates) mixins.add("MixinWorldServer");
-            if(Config.restoreTravelSound) mixins.add("MixinNetHandlerPlayClient");
-            if(Config.cloudHeightCheck != Config.CloudHeightCheck.UNCHANGED) mixins.add("MixinEntityRenderer_Clouds");
-            if(Config.frameProfilerHooks) mixins.addAll(Arrays.asList("MixinEntityRenderer_FrameProfiler",
-                                                                        "MixinMinecraft_FrameProfiler"));
+            if(Config.forceUncapFramerate) mixins.add("tweak.synctweak.MixinMinecraft");
+            if(Config.ofFixUpdateRenderersReturnValue) mixins.add("tweak.ofupdaterenderersreturn.MixinRenderGlobal");
+            if(Config.ofOptimizeWorldRenderer) mixins.add("optimization.ofupdaterendererreflect.MixinWorldRenderer");
+            if(Config.getPendingBlockUpdates) mixins.add("optimization.getpendingblockupdates.MixinWorldServer");
+            if(Config.restoreTravelSound) mixins.add("bugfix.restoretravelsound.MixinNetHandlerPlayClient");
+            if(Config.cloudHeightCheck != Config.CloudHeightCheck.UNCHANGED) mixins.add("tweak.cloudheightcheck.MixinEntityRenderer");
+            if(Config.frameProfilerHooks) mixins.addAll(Arrays.asList("diagnostics.frameprofiler.MixinEntityRenderer",
+                                                                        "diagnostics.frameprofiler.MixinMinecraft"));
             if(Config.fcOptimizeTextureUpload) {
                 String fcVersion = (String)Launch.blackboard.get("fcVersion");
                 if(fcVersion != null) {

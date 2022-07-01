@@ -1,4 +1,4 @@
-package makamys.coretweaks.mixin;
+package makamys.coretweaks.mixin.diagnostics.frameprofiler;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -11,7 +11,7 @@ import net.minecraft.client.renderer.EntityRenderer;
 import net.minecraft.profiler.Profiler;
 
 @Mixin(EntityRenderer.class)
-abstract class MixinEntityRenderer_FrameProfiler {
+abstract class MixinEntityRenderer {
 	
 	@Inject(method = "renderWorld", at = @At("RETURN"))
 	public void postRenderWorld(float alpha, long deadline, CallbackInfo ci) {

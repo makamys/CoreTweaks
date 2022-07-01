@@ -1,4 +1,4 @@
-package makamys.coretweaks.mixin;
+package makamys.coretweaks.mixin.optimization.getpendingblockupdates;
 
 import java.util.ArrayList;
 import java.util.HashMap;

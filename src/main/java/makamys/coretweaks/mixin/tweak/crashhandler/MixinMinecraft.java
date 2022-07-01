@@ -1,4 +1,4 @@
-package makamys.coretweaks.mixin;
+package makamys.coretweaks.mixin.tweak.crashhandler;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -19,7 +19,7 @@ import net.minecraft.util.MinecraftError;
 import net.minecraft.util.ReportedException;
 
 @Mixin(Minecraft.class)
-abstract class MixinMinecraft_CrashHandler {
+abstract class MixinMinecraft {
     
     @Shadow
     volatile boolean running = true;

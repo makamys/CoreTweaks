@@ -1,4 +1,4 @@
-package makamys.coretweaks.mixin;
+package makamys.coretweaks.mixin.diagnostics.frameprofiler;
 
 import org.lwjgl.opengl.Display;
 import org.spongepowered.asm.mixin.Mixin;
@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import net.minecraft.client.Minecraft;
 
 @Mixin(Minecraft.class)
-public class MixinMinecraft_FrameProfiler {
+public class MixinMinecraft {
 	
 	@Inject(method = "runGameLoop", at = @At(value = "INVOKE", target= "Lorg/lwjgl/opengl/Display;sync(I)V"))
 	public void preSync(CallbackInfo ci) {

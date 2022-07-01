@@ -1,4 +1,4 @@
-package makamys.coretweaks.mixin;
+package makamys.coretweaks.mixin.tweak.cloudheightcheck;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.ModifyConstant;
@@ -12,7 +12,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.EntityRenderer;
 
 @Mixin(EntityRenderer.class)
-abstract class MixinEntityRenderer_Clouds {
+abstract class MixinEntityRenderer {
 	
 	@ModifyConstant(method = "renderWorld", constant = @Constant(doubleValue = 128.0D, ordinal = 0))
 	double cloudHeight0(double o) {
