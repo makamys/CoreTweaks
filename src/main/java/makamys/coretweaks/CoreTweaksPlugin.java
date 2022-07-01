@@ -29,7 +29,8 @@ public class CoreTweaksPlugin implements IFMLLoadingPlugin {
 	public String[] getASMTransformerClass() {
 		List<String> transformerClasses = new ArrayList<>();
 		if(JarDiscovererCache.isActive()) {
-			transformerClasses.add("makamys.coretweaks.asm.ASMModParserTransformer");
+			transformerClasses.add("makamys.coretweaks.asm.jardiscoverercache.ASMModParserTransformer");
+			transformerClasses.add("makamys.coretweaks.asm.jardiscoverercache.JarDiscovererTransformer");
 		}
 		if(ProfilerTransformer.isActive()) {
 			transformerClasses.add("makamys.coretweaks.asm.ProfilerTransformer");

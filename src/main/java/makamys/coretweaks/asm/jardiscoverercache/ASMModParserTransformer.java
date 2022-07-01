@@ -1,4 +1,4 @@
-package makamys.coretweaks.asm;
+package makamys.coretweaks.asm.jardiscoverercache;
 
 import static org.objectweb.asm.Opcodes.*;
 import static makamys.coretweaks.CoreTweaks.LOGGER;
