@@ -26,6 +26,7 @@ import cpw.mods.fml.common.discovery.ModCandidate;
 import cpw.mods.fml.common.discovery.asm.ASMModParser;
 import makamys.coretweaks.optimization.JarDiscovererCache;
 import makamys.coretweaks.optimization.JarDiscovererCache.CachedModInfo;
+import makamys.coretweaks.util.ASMUtil;
 import net.minecraft.launchwrapper.IClassTransformer;
 
 public class JarDiscovererTransformer implements IClassTransformer {
@@ -54,9 +55,9 @@ public class JarDiscovererTransformer implements IClassTransformer {
             for(MethodNode m : classNode.methods) {
                 if(m.name.equals("discover")) {
                     final int VAR_IDX_MOD_CANDIDATE = 1;
-                    final int VAR_IDX_JAR = 4;
-                    final int VAR_IDX_ZE = 8;
-                    final int VAR_IDX_MOD_PARSER = 10;
+                    final int VAR_IDX_JAR = ASMUtil.findLocalVariable(m, JarFile.class, 0);
+                    final int VAR_IDX_ZE = ASMUtil.findLocalVariable(m, ZipEntry.class, 0);
+                    final int VAR_IDX_MOD_PARSER = ASMUtil.findLocalVariable(m, ASMModParser.class, 0);
                     
                     // add hook to preDiscover at the beginning of the method
                     
