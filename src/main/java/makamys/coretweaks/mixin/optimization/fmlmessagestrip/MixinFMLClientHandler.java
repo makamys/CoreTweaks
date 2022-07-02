@@ -1,4 +1,4 @@
-package makamys.coretweaks.mixin.bugfix.optimization.fmlmessagestrip;
+package makamys.coretweaks.mixin.optimization.fmlmessagestrip;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
