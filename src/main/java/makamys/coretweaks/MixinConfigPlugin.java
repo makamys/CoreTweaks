@@ -81,6 +81,7 @@ public class MixinConfigPlugin implements IMixinConfigPlugin {
             if(Config.ofUnlockCustomSkyMinRenderDistance) mixins.add("tweak.ofcustomsky.MixinOFD6CustomSky");
             if(Config.disableFog) mixins.add("tweak.disablefog.MixinEntityRenderer");
             if(Config.uncapCreateWorldGuiTextFieldLength) mixins.add("tweak.newworldguimaxlength.MixinGuiCreateWorld");
+            if(Config.wireframe) mixins.add("diagnostics.wireframe.MixinEntityRenderer");
             
             if(Config.forceUncapFramerate) mixins.add("tweak.synctweak.MixinMinecraft");
             if(Config.ofFixUpdateRenderersReturnValue) mixins.add("tweak.ofupdaterenderersreturn.MixinRenderGlobal");
