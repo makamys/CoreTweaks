@@ -121,6 +121,7 @@ public class CoreTweaksMod
     
     @EventHandler
     public void onServerAboutToStart(FMLServerAboutToStartEvent event) {
+        Config.reload();
         listeners.forEach(l -> l.onServerAboutToStart(event));
     }
     
