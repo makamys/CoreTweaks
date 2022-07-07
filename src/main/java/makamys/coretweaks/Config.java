@@ -76,7 +76,7 @@ public class Config {
         Configuration config = new Configuration(new File(Launch.minecraftHome, "config/coretweaks.cfg"));
         
         config.load();
-        crashHandler = config.getBoolean("crashHandler", "Tweaks", true, "Lets you survive crashes without the game exiting, usually. Not compatible with BetterCrashes.");
+        crashHandler = config.getBoolean("crashHandler", "Tweaks", true, "Lets you survive crashes without the game exiting, usually. Not compatible with other mods that do the same thing.");
         lightFixStare = config.getBoolean("lightFixStare", "Tweaks", true, "Causes lighting updates around the block the player is looking at. A workaround for lighting errors that lets you fix them by staring at them. Useful in the Nether.");
         forceUncapFramerate = config.getBoolean("forceUncapFramerate", "Tweaks", false, "Uncaps framerate even when framelimiter is enabled. The framerate limit will only be used to decide how much time to spend updating chunks each frame. Vanilla Beta 1.7.3 behavior. It seems to make things worse though, at least with OptiFine.");
         ofFixUpdateRenderersReturnValue = config.getBoolean("ofFixUpdateRenderersReturnValue", "Tweaks", false, "Fixes OptiFine's implementation of updateRenderers returning the opposite value of what it should (probably a bug). Only effective when framerate limiter is enabled. Speeds up chunk updates significantly, and increases framerate when there aren't many chunk updates. However, during heavy chunk updating (e.g. when loading a world) it decreases the framerate as a side effect of not being as lazy.");
@@ -117,16 +117,16 @@ public class Config {
         forgeBarProfiler = config.getBoolean("forgeBarProfiler", "Diagnostics", false, "Creates a report of how long each step of startup loading took in ./coretweaks/out/fml_bar_profiler.csv.");
         crasher = config.getBoolean("crasher", "Diagnostics", false, "Enables debug feature that crashes the game when pressing certain key combinations.");
         serverRunTimePrinter = config.getBoolean("serverRunTimePrinter", "Diagnostics", false, "Prints server run time.");
-        wireframe = config.getBoolean("wireframe", "Diagnostics", false, "Render world in wireframe mode. Tip: if this is enabled when the game is started, you will be able to toggle it without restarting the game, only the world needs to be reloaded.");
+        wireframe = config.getBoolean("wireframe", "Diagnostics", false, "Render world in wireframe mode. Tip: If this is enabled when the game is started, you will be able to toggle it without restarting the game, only the world needs to be reloaded.");
         
         threadedTextureLoader = config.getBoolean("threadedTextureLoader", "Optimizations", false,
                 "Use multi-threaded texture loading when stitching textures? Placebo.");
         transformerCache = getEnum(config, "transformerCache", "Optimizations", TransformerCache.LITE, "The type of transformer caching to use.\n"
                 + "NONE: None\n"
-                + "LITE: Cache individual transformations of select transformers. Reduces startup time. Relatively safe.\n"
-                + "FULL: Cache the entire transformer chain. Reduces startup time further, but breaks with many things.");
+                + "LITE: Cache individual transformations of select transformers. Reduces startup time. Safe.\n"
+                + "FULL: Cache the entire transformer chain. Reduces startup time further, but breaks with many mods.");
         fastFolderTexturePack = config.getBoolean("fastFolderTexturePack", "Optimizations", true, 
-                "Use the optimization that speeds up loading folder resource packs?");
+                "Cache the file paths contained in folder resource packs. Fixes the extreme load time penalty they cause in large modpacks.");
         
         threadedTextureLoaderThreadCount = config.getInt("threadedTextureLoaderThreadCount", "Optimizations", 0, 0, Integer.MAX_VALUE,
                 "How many threads to use for loading textures? (0: auto (all cores))");
