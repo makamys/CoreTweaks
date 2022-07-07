@@ -18,7 +18,6 @@ import org.spongepowered.asm.mixin.MixinEnvironment.Phase;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
 
-import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.ObfuscationReflectionHelper;
 import cpw.mods.fml.relauncher.ReflectionHelper;
 import makamys.coretweaks.optimization.transformercache.lite.TransformerCache;
@@ -32,17 +31,10 @@ public class MixinConfigPlugin implements IMixinConfigPlugin {
     @Override
     public void onLoad(String mixinPackage) {
         Config.reload();
-        //JarDiscovererCache.load();
-        //Launch.classLoader.registerTransformer(ASMModParserTransformer.class.getName());
-        if(Config.fcOptimizeTextureUpload && MixinEnvironment.getCurrentEnvironment() == MixinEnvironment.getDefaultEnvironment()) {
-            Set<String> transformerExceptions = (Set<String>)ObfuscationReflectionHelper.getPrivateValue(LaunchClassLoader.class, Launch.classLoader, "transformerExceptions");
-            transformerExceptions.remove("fastcraft");
-        }
     }
 
     @Override
     public String getRefMapperConfig() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -53,8 +45,7 @@ public class MixinConfigPlugin implements IMixinConfigPlugin {
 
     @Override
     public void acceptTargets(Set<String> myTargets, Set<String> otherTargets) {
-        // TODO Auto-generated method stub
-        
+
     }
 
     @Override
@@ -120,6 +111,10 @@ public class MixinConfigPlugin implements IMixinConfigPlugin {
                     }
                     
                     if(ok) {
+                        // Allow transforming FastCraft
+                        Set<String> transformerExceptions = ObfuscationReflectionHelper.getPrivateValue(LaunchClassLoader.class, Launch.classLoader, "transformerExceptions");
+                        transformerExceptions.remove("fastcraft");
+                        
                         mixins.add("optimization.fastcrafttextureload.MixinTextureUtil");
                         mixins.add("optimization.fastcrafttextureload.MixinTextureMap");
                     }
@@ -138,7 +133,8 @@ public class MixinConfigPlugin implements IMixinConfigPlugin {
         return mixins;
     }
 
-    private boolean disableFoamFixJarDiscovererTransformer() {
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    private static boolean disableFoamFixJarDiscovererTransformer() {
         try {
             Class bugfixModClassTransformerClass = null;
             try {
@@ -194,14 +190,12 @@ public class MixinConfigPlugin implements IMixinConfigPlugin {
 
     @Override
     public void preApply(String targetClassName, ClassNode targetClass, String mixinClassName, IMixinInfo mixinInfo) {
-        // TODO Auto-generated method stub
-        
+
     }
 
     @Override
     public void postApply(String targetClassName, ClassNode targetClass, String mixinClassName, IMixinInfo mixinInfo) {
-        // TODO Auto-generated method stub
-        
+
     }
 
 }
