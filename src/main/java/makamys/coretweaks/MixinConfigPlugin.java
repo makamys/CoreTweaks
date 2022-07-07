@@ -59,7 +59,7 @@ public class MixinConfigPlugin implements IMixinConfigPlugin {
         
         Phase phase = MixinEnvironment.getCurrentEnvironment().getPhase();
         if(phase == Phase.PREINIT) {
-            if(Config.jarDiscovererCache) mixins.add("MixinJarDiscoverer");
+            if(Config.jarDiscovererCache) mixins.add("optimization.jardiscoverercache.MixinJarDiscoverer");
             if(!isForgeSplashEnabled()) {
                 if(Config.forgeFastStepMessageStrip) mixins.add("optimization.fmlmessagestrip.MixinFMLClientHandler");
             }

@@ -1,4 +1,4 @@
-package makamys.coretweaks.mixin;
+package makamys.coretweaks.mixin.optimization.jardiscoverercache;
 
 import java.io.BufferedInputStream;
 import java.io.File;
