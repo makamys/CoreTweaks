@@ -5,7 +5,10 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
 
@@ -17,6 +20,7 @@ import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
 
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.ObfuscationReflectionHelper;
+import cpw.mods.fml.relauncher.ReflectionHelper;
 import makamys.coretweaks.optimization.transformercache.lite.TransformerCache;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.launchwrapper.LaunchClassLoader;
@@ -59,7 +63,6 @@ public class MixinConfigPlugin implements IMixinConfigPlugin {
         
         Phase phase = MixinEnvironment.getCurrentEnvironment().getPhase();
         if(phase == Phase.PREINIT) {
-            if(Config.jarDiscovererCache) mixins.add("optimization.jardiscoverercache.MixinJarDiscoverer");
             if(!isForgeSplashEnabled()) {
                 if(Config.forgeFastStepMessageStrip) mixins.add("optimization.fmlmessagestrip.MixinFMLClientHandler");
             }
@@ -69,6 +72,13 @@ public class MixinConfigPlugin implements IMixinConfigPlugin {
             if(Config.transformerCache == Config.TransformerCache.LITE) {
                 // At this point the transformer chain is complete, so we can go hook it.
                 TransformerCache.instance.init();
+            }
+            
+            if(Config.jarDiscovererCache) {
+                // We are now at the end of Launch#launch. FoamFix's transformer has finished constructing, so we can hack it.
+                if(disableFoamFixJarDiscovererTransformer()) {
+                    mixins.add("optimization.jardiscoverercache.MixinJarDiscoverer");
+                }
             }
             
             if(Config.clientChunkMap) mixins.add("optimization.clientchunkmap.MixinChunkProviderClient");
@@ -126,6 +136,44 @@ public class MixinConfigPlugin implements IMixinConfigPlugin {
             
         }
         return mixins;
+    }
+
+    private boolean disableFoamFixJarDiscovererTransformer() {
+        try {
+            Class bugfixModClassTransformerClass = null;
+            try {
+                bugfixModClassTransformerClass = Class.forName("pl.asie.foamfix.bugfixmod.coremod.BugfixModClassTransformer");
+                LOGGER.info("Found BugfixModClassTransformer, applying compatibility hack for FoamFix's jarDiscovererMemoryLeakFix");
+                Object instance = bugfixModClassTransformerClass.getField("instance").get(null);
+                Map<String, ArrayList> patchers = (Map<String, ArrayList>) ReflectionHelper.getPrivateValue(bugfixModClassTransformerClass, instance, "patchers");
+                for(Iterator<Entry<String, ArrayList>> it = patchers.entrySet().iterator(); it.hasNext(); ) {
+                    Entry<String, ArrayList> e = it.next();
+                    boolean removed = false;
+                    
+                    for(Iterator<Object> itPatchers = e.getValue().iterator(); itPatchers.hasNext(); ) {
+                        Object patcher = itPatchers.next();
+                        if(patcher.getClass().getSimpleName().equals("JarDiscovererMemoryLeakFixPatcher")) {
+                            LOGGER.trace("Removing patcher " + patcher.getClass().getName() + " for class " + e.getKey());
+                            itPatchers.remove();
+                            removed = true;
+                        }
+                    }
+                    
+                    if(removed && e.getValue().isEmpty()) {
+                        LOGGER.trace("Removing patcher list for class " + e.getKey() + " since we emptied it.");
+                        it.remove();
+                    }
+                    
+                }
+            } catch(ClassNotFoundException e) {
+                LOGGER.trace("Couldn't find BugfixModClassTransformer. This is not an error unless FoamFix is actually present.");
+            }
+        } catch(Exception e) {
+            LOGGER.error("Failed to apply compatibility hack for FoamFix's jarDiscovererMemoryLeakFix. CoreTweaks's jar discoverer cache will be disabled. Please disable FoamFix's jarDiscovererMemoryLeakFix to fix the incompatibility.");
+            e.printStackTrace();
+            return false;
+        }
+        return true;
     }
 
     public static boolean isForgeSplashEnabled() {
