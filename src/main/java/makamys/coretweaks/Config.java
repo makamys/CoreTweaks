@@ -117,7 +117,7 @@ public class Config {
         forgeBarProfiler = config.getBoolean("forgeBarProfiler", "Diagnostics", false, "Creates a report of how long each step of startup loading took in ./coretweaks/out/fml_bar_profiler.csv.");
         crasher = config.getBoolean("crasher", "Diagnostics", false, "Enables debug feature that crashes the game when pressing certain key combinations.");
         serverRunTimePrinter = config.getBoolean("serverRunTimePrinter", "Diagnostics", false, "Prints server run time.");
-        wireframe = config.getBoolean("wireframe", "Diagnostics", false, "Render world in wireframe mode.");
+        wireframe = config.getBoolean("wireframe", "Diagnostics", false, "Render world in wireframe mode. Tip: if this is enabled when the game is started, you will be able to toggle it without restarting the game, only the world needs to be reloaded.");
         
         threadedTextureLoader = config.getBoolean("threadedTextureLoader", "Optimizations", false,
                 "Use multi-threaded texture loading when stitching textures? Placebo.");
