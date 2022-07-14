@@ -19,7 +19,9 @@ abstract class MixinEntityRenderer {
 	
 	@ModifyArg(method = "renderWorld", at = @At(value = "INVOKE", target = "Lnet/minecraft/profiler/Profiler;endStartSection(Ljava/lang/String;)V"), index = 0)
 	private String adjustEndStartSection(String str) {
-	    if(str.equals("prepareterrain")) {
+	    if(str.equals("updatechunks")) {
+            FrameProfiler.instance.preUpdateRenderers();
+        } else if(str.equals("prepareterrain")) {
             FrameProfiler.instance.postUpdateRenderers();
         }
 	    return str;

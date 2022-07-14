@@ -21,6 +21,7 @@ public class FrameProfiler {
     	FRAME_START,
     	FRAME_END,
     	RENDERWORLD_END,
+    	UPDATERENDERERS_START,
     	UPDATERENDERERS_END,
     	UPDATERENDERERS_DEADLINE,
     	SYNC_START,
@@ -63,6 +64,12 @@ public class FrameProfiler {
 	    	addEntry(RENDERWORLD_END);
 	        addEntry(UPDATERENDERERS_DEADLINE, deadline);
     	}
+    }
+    
+    public void preUpdateRenderers() {
+        if(started) {
+            addEntry(UPDATERENDERERS_START);
+        }
     }
     
     public void postUpdateRenderers() {
