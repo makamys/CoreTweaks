@@ -77,7 +77,7 @@ if interactive:
     code.interact(local=locals())
 elif args.graph_chunk_update_time:
     plt.title("Chunk update time (ms)")
-    plt.hist(np.array([r['UPDATERENDERERS_END'] - r['UPDATERENDERERS_START'] for r in rows]) / 1000000.0, bins=100)
+    plt.hist(np.array([r['UPDATERENDERERS_END'] - r['UPDATERENDERERS_START'] for r in rows]) / 1000000.0, bins=200)
     plt.show()
 else:
     idx = 1
