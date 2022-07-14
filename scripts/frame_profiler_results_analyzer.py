@@ -22,20 +22,28 @@ def analyze_row(row, idx, lastRow):
     print("Frame", idx)
     
     print(" ", (row["FRAME_END"] - row["FRAME_START"])/1000000, "ms", " - Total render time")
-    print(" ", (row["SYNC_END"] - row["SYNC_START"])/1000000, "ms", " - Sync time")
-    print(" ", (row["UPDATERENDERERS_END"] - row["UPDATERENDERERS_DEADLINE"])/1000000, "ms", " - UpdateRenderers overshoot")
+    
+    if row["SYNC_START"]:
+        print(" ", (row["SYNC_END"] - row["SYNC_START"])/1000000, "ms", " - Sync time")
+    
+    if(row["UPDATERENDERERS_DEADLINE"] != 0):
+        print(" ", (row["UPDATERENDERERS_END"] - row["UPDATERENDERERS_DEADLINE"])/1000000, "ms", " - UpdateRenderers overshoot")
     print(" ", (row["RENDERWORLD_END"] - row["UPDATERENDERERS_END"])/1000000, "ms", " - Time spent after updateRenderers in renderWorld")
-    print(" ", (row["RENDERWORLD_END"] - row["UPDATERENDERERS_DEADLINE"])/1000000, "ms", " - Total UpdateRenderers deadline overshoot")
+    
+    if(row["UPDATERENDERERS_DEADLINE"] != 0):
+        print(" ", (row["RENDERWORLD_END"] - row["UPDATERENDERERS_DEADLINE"])/1000000, "ms", " - Total UpdateRenderers deadline overshoot")
+    
     print(" ", (row["GAMELOOP_END"] - row["GAMELOOP_START"])/1000000, "ms", " - Total gameloop time")
+    
     if lastRow:
         print(" ", (row["FRAME_END"] - lastRow["FRAME_END"])/1000000, "ms", " - Frame end difference from last frame's")
     
     print("  ---")
     
-    sortedItems = [x for x in sorted(row.items(), key=lambda x: x[1]) if x[1] != "UPDATERENDERERS_DEADLINE"]
+    sortedItems = [x for x in sorted(row.items(), key=lambda x: x[1] if x[1] != None else 0)]
     lastItem = None
     for item in sortedItems:
-        if lastItem != None:
+        if lastItem != None and item[1] != None and lastItem[1] != None:
             print(" ", (item[1] - lastItem[1])/1000000, "ms", "-", lastItem[0], "->", item[0])
         lastItem = item
 
@@ -48,12 +56,12 @@ def readRows(csvPath):
             header = row
         else:
             rowJson = row2json(row, header)
-            if None not in rowJson.values():
-                rowJsons.append(rowJson)
+            rowJsons.append(rowJson)
     
     return rowJsons
 
 rows = readRows(csvPath)
+rows = rows[1 : len(rows) - 1]
 
 if not interactive:
     idx = 1
