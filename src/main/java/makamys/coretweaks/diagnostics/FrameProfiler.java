@@ -18,16 +18,16 @@ public class FrameProfiler {
     private boolean started = false;
     
     enum Entry {
-    	FRAME_START,
-    	FRAME_END,
-    	RENDERWORLD_END,
-    	UPDATERENDERERS_START,
-    	UPDATERENDERERS_END,
-    	UPDATERENDERERS_DEADLINE,
-    	SYNC_START,
-    	SYNC_END,
-    	GAMELOOP_START,
-    	GAMELOOP_END
+        GAMELOOP_START,
+        FRAME_START,
+        UPDATERENDERERS_START,
+        UPDATERENDERERS_DEADLINE,
+        UPDATERENDERERS_END,
+        RENDERWORLD_END,
+        FRAME_END,
+        SYNC_START,
+        SYNC_END,
+        GAMELOOP_END
     }
     
     
