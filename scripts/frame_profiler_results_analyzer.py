@@ -1,10 +1,13 @@
 import argparse
 import sys
 import code
+import matplotlib.pyplot as plt
+import numpy as np
 
 parser = argparse.ArgumentParser(description='')
 
 parser.add_argument('-i', action='store_true')
+parser.add_argument('--graph-chunk-update-time', action='store_true')
 parser.add_argument('FRAME_PROFILER_RESULTS_CSV', type=str)
 
 args = parser.parse_args()
@@ -72,6 +75,10 @@ if interactive:
     print("\n>>> Exposed rows as list 'rows'\n")
     
     code.interact(local=locals())
+elif args.graph_chunk_update_time:
+    plt.title("Chunk update time (ms)")
+    plt.hist(np.array([r['UPDATERENDERERS_END'] - r['UPDATERENDERERS_START'] for r in rows]) / 1000000.0, bins=100)
+    plt.show()
 else:
     idx = 1
     lastRow = None
