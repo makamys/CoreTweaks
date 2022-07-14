@@ -1,11 +1,16 @@
+import argparse
 import sys
 import code
 
-if len(sys.argv) < 2:
-    sys.exit("Usage: {} FRAME_PROFILER_RESULTS_CSV [-i]".format(sys.argv[0]))
+parser = argparse.ArgumentParser(description='')
 
-csvPath = sys.argv[1]
-interactive = len(sys.argv) >= 3 and sys.argv[2] == "-i"
+parser.add_argument('-i', action='store_true')
+parser.add_argument('FRAME_PROFILER_RESULTS_CSV', type=str)
+
+args = parser.parse_args()
+
+csvPath = testName = args.FRAME_PROFILER_RESULTS_CSV
+interactive = args.i
 
 def row2json(row, header):
     result = {}
@@ -63,14 +68,14 @@ def readRows(csvPath):
 rows = readRows(csvPath)
 rows = rows[1 : len(rows) - 1]
 
-if not interactive:
+if interactive:
+    print("\n>>> Exposed rows as list 'rows'\n")
+    
+    code.interact(local=locals())
+else:
     idx = 1
     lastRow = None
     for row in rows:
         analyze_row(row, idx, lastRow)
         idx += 1
         lastRow = row
-else:
-    print("\n>>> Exposed rows as list 'rows'\n")
-    
-    code.interact(local=locals())
