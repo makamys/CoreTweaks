@@ -3,15 +3,7 @@ package makamys.coretweaks.asm;
 import static org.objectweb.asm.Opcodes.*;
 import static makamys.coretweaks.CoreTweaks.LOGGER;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import org.apache.commons.io.FileUtils;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.tree.ClassNode;
@@ -19,11 +11,8 @@ import org.objectweb.asm.tree.IntInsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 
-import makamys.coretweaks.Config;
-import makamys.coretweaks.CoreTweaks;
 import makamys.coretweaks.diagnostics.MethodProfiler;
 import makamys.coretweaks.diagnostics.MethodProfiler.MethodInstrumentationData;
-import makamys.coretweaks.util.Util;
 import net.minecraft.launchwrapper.IClassTransformer;
 
 /** Instruments classes so the profiler can profile them. */
@@ -34,6 +23,7 @@ public class ProfilerTransformer implements IClassTransformer {
 	public byte[] transform(String name, String transformedName, byte[] basicClass) {
 		List<String> classTargets = MethodProfiler.instance.targets.get(transformedName);
 		if(classTargets != null) {
+		    MethodProfiler.instance.clearDatasForClass(transformedName);
 			basicClass = doTransform(basicClass, classTargets);
 		}
 		return basicClass;

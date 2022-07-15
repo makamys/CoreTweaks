@@ -2,7 +2,6 @@ package makamys.coretweaks.diagnostics;
 
 import static makamys.coretweaks.CoreTweaks.LOGGER;
 
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
@@ -31,7 +30,7 @@ public class MethodProfiler {
     private Writer out;
     
     public void init() {
-        if(Config.profilerMethods.isEmpty()) return;
+        if(!isActive()) return;
         
         for(String methodStr : Config.profilerMethods.split(",")) {
             int lastDot = methodStr.lastIndexOf('.');
@@ -51,7 +50,7 @@ public class MethodProfiler {
             @Override
             public void run() {
                 try {
-                    FileUtils.write(Util.childFile(CoreTweaks.OUT_DIR, "method-profiler.json"), String.join("\n", methodInstrumentationDatas.stream().map(d -> d.getDump()).collect(Collectors.toList())));
+                    FileUtils.write(Util.childFile(CoreTweaks.OUT_DIR, "method-profiler.json"), String.join("\n", methodInstrumentationDatas.stream().filter(d -> !d.disabled).map(d -> d.getDump()).collect(Collectors.toList())));
                 } catch (IOException e) {
                     LOGGER.error("Failed to write profiler data");
                     e.printStackTrace();
@@ -64,8 +63,10 @@ public class MethodProfiler {
         if(event.phase == TickEvent.Phase.START) {
             if(profileMode == ProfileMode.PER_FRAME) {
                 for(MethodInstrumentationData mid : methodInstrumentationDatas) {
-                    writeLine(mid.getFullName() + " calls this frame: " + mid.callsThisFrame);
-                    mid.callsThisFrame = 0;
+                    if(!mid.disabled) {
+                        writeLine(mid.getFullName() + " calls this frame: " + mid.callsThisFrame);
+                        mid.callsThisFrame = 0;
+                    }
                 }
             }
         }
@@ -122,10 +123,21 @@ public class MethodProfiler {
     
     public void handlePreTargetCalled(int id) {
         MethodInstrumentationData data = methodInstrumentationDatas.get(id);
-        data.calls++;
-        
-        if(profileMode == ProfileMode.PER_FRAME) {
-            data.callsThisFrame++;
+        if(!data.disabled) {
+            data.calls++;
+            
+            if(profileMode == ProfileMode.PER_FRAME) {
+                data.callsThisFrame++;
+            }
+        }
+    }
+    
+    public void clearDatasForClass(String transformedName) {
+        String internalName = transformedName.replaceAll("\\.", "/");
+        for(MethodInstrumentationData mid : methodInstrumentationDatas) {
+            if(mid.owner.equals(internalName)) {
+                mid.disabled = true;
+            }
         }
     }
     
@@ -140,6 +152,8 @@ public class MethodProfiler {
         int calls;
         
         int callsThisFrame;
+        
+        boolean disabled;
         
         public MethodInstrumentationData(String owner, String name, String desc) {
             this.owner = owner;
