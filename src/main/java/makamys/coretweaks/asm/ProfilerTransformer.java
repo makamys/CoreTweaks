@@ -52,7 +52,7 @@ public class ProfilerTransformer implements IClassTransformer {
 			@Override
 			public void run() {
 				try {
-					FileUtils.write(Util.childFile(CoreTweaks.OUT_DIR, "profiler-" + System.currentTimeMillis() + ".json"), String.join("\n", methodInstrumentationDatas.stream().map(d -> d.getDump()).collect(Collectors.toList())));
+					FileUtils.write(Util.childFile(CoreTweaks.OUT_DIR, "method-profiler.json"), String.join("\n", methodInstrumentationDatas.stream().map(d -> d.getDump()).collect(Collectors.toList())));
 				} catch (IOException e) {
 					LOGGER.error("Failed to write profiler data");
 					e.printStackTrace();
