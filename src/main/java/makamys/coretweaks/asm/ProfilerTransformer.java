@@ -21,6 +21,8 @@ import org.objectweb.asm.tree.MethodNode;
 
 import makamys.coretweaks.Config;
 import makamys.coretweaks.CoreTweaks;
+import makamys.coretweaks.diagnostics.MethodProfiler;
+import makamys.coretweaks.diagnostics.MethodProfiler.MethodInstrumentationData;
 import makamys.coretweaks.util.Util;
 import net.minecraft.launchwrapper.IClassTransformer;
 
@@ -28,41 +30,9 @@ import net.minecraft.launchwrapper.IClassTransformer;
 
 public class ProfilerTransformer implements IClassTransformer {
 	
-	private static Map<String, List<String>> targets = new HashMap<>();
-	private static List<MethodInstrumentationData> methodInstrumentationDatas = new ArrayList<>();
-	
-	public static void init() {
-		if(Config.profilerMethods.isEmpty()) return;
-		
-		for(String methodStr : Config.profilerMethods.split(",")) {
-			int lastDot = methodStr.lastIndexOf('.');
-			String clazz = methodStr.substring(0, lastDot);
-			String method = methodStr.substring(lastDot + 1);
-			List<String> classTargets = targets.get(clazz);
-			if(classTargets == null) {
-				classTargets = new ArrayList<>();
-				targets.put(clazz, classTargets);
-			}
-			
-			classTargets.add(method);
-		}
-		
-		Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
-
-			@Override
-			public void run() {
-				try {
-					FileUtils.write(Util.childFile(CoreTweaks.OUT_DIR, "method-profiler.json"), String.join("\n", methodInstrumentationDatas.stream().map(d -> d.getDump()).collect(Collectors.toList())));
-				} catch (IOException e) {
-					LOGGER.error("Failed to write profiler data");
-					e.printStackTrace();
-				}
-			}}, "CoreTweaks profiler save thread"));
-	}
-	
 	@Override
 	public byte[] transform(String name, String transformedName, byte[] basicClass) {
-		List<String> classTargets = targets.get(transformedName);
+		List<String> classTargets = MethodProfiler.instance.targets.get(transformedName);
 		if(classTargets != null) {
 			basicClass = doTransform(basicClass, classTargets);
 		}
@@ -82,9 +52,9 @@ public class ProfilerTransformer implements IClassTransformer {
 				if(classTargets.contains(methodName)) {
 					LOGGER.info("Instrumenting method " + methodName + " in class " + className);
 					
-					m.instructions.insert(new MethodInsnNode(INVOKESTATIC, "makamys/coretweaks/asm/ProfilerTransformer", "preTargetCalled", "(I)V", false));
-					m.instructions.insert(new IntInsnNode(SIPUSH, methodInstrumentationDatas.size()));
-					methodInstrumentationDatas.add(new MethodInstrumentationData(className, methodName, methodDesc));
+					m.instructions.insert(new MethodInsnNode(INVOKESTATIC, "makamys/coretweaks/diagnostics/MethodProfiler", "preTargetCalled", "(I)V", false));
+					m.instructions.insert(new IntInsnNode(SIPUSH, MethodProfiler.instance.methodInstrumentationDatas.size()));
+					MethodProfiler.instance.methodInstrumentationDatas.add(new MethodInstrumentationData(className, methodName, methodDesc));
 				}
 			}
 			
@@ -97,31 +67,4 @@ public class ProfilerTransformer implements IClassTransformer {
 		return bytes;
 	}
 	
-	public static void preTargetCalled(int id) {
-		MethodInstrumentationData data = methodInstrumentationDatas.get(id);
-		data.calls++;
-	}
-	
-	public static boolean isActive() {
-		return !Config.profilerMethods.isEmpty();
-	}
-	
-	private static class MethodInstrumentationData {
-		String owner;
-		String name;
-		String desc;
-		int calls;
-		
-		public MethodInstrumentationData(String owner, String name, String desc) {
-			this.owner = owner;
-			this.name = name;
-			this.desc = desc;
-		}
-		
-		public String getDump() {
-			return "\"" + owner + ";" + name + desc + "\": {\n" +
-					"  calls: " + calls + "\n"
-					+ "}\n";
-		}
-	}
 }

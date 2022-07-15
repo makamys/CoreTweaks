@@ -11,8 +11,8 @@ import java.util.Map;
 import java.util.Properties;
 
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
-import makamys.coretweaks.asm.ProfilerTransformer;
 import makamys.coretweaks.diagnostics.FMLBarProfiler;
+import makamys.coretweaks.diagnostics.MethodProfiler;
 import makamys.coretweaks.optimization.JarDiscovererCache;
 import net.minecraft.launchwrapper.Launch;
 
@@ -31,7 +31,7 @@ public class CoreTweaksPlugin implements IFMLLoadingPlugin {
 		if(JarDiscovererCache.isActive()) {
 			transformerClasses.add("makamys.coretweaks.asm.ASMModParserTransformer");
 		}
-		if(ProfilerTransformer.isActive()) {
+		if(MethodProfiler.isActive()) {
 			transformerClasses.add("makamys.coretweaks.asm.ProfilerTransformer");
 		}
 		if(Config.forgeModDiscovererSkipKnownLibraries) {
@@ -60,8 +60,8 @@ public class CoreTweaksPlugin implements IFMLLoadingPlugin {
 		if(JarDiscovererCache.isActive()) {
 			JarDiscovererCache.load();
 		}
-		if(ProfilerTransformer.isActive()) {
-			ProfilerTransformer.init();
+		if(MethodProfiler.isActive()) {
+			MethodProfiler.instance.init();
 		}
 		return null;
 	}
