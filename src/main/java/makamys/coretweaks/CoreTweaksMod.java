@@ -40,6 +40,7 @@ import cpw.mods.fml.relauncher.ReflectionHelper;
 import makamys.coretweaks.bugfix.DoubleEatFixer;
 import makamys.coretweaks.command.CoreTweaksCommand;
 import makamys.coretweaks.diagnostics.FrameProfiler;
+import makamys.coretweaks.diagnostics.MethodProfiler;
 import makamys.coretweaks.diagnostics.ServerRunTimePrinter;
 import makamys.coretweaks.ducks.IChunkProviderClient;
 import makamys.coretweaks.optimization.ClientChunkMap;
@@ -107,6 +108,9 @@ public class CoreTweaksMod
         }
         if(Config.fixDoubleEat) {
             FMLCommonHandler.instance().bus().register(new DoubleEatFixer());
+        }
+        if(MethodProfiler.isActive()) {
+            FMLCommonHandler.instance().bus().register(MethodProfiler.instance);
         }
         
         listeners.forEach(l -> l.onInit(event));
