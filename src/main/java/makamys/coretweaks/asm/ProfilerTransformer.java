@@ -23,6 +23,7 @@ public class ProfilerTransformer implements IClassTransformer {
 	public byte[] transform(String name, String transformedName, byte[] basicClass) {
 		List<String> classTargets = MethodProfiler.instance.targets.get(transformedName);
 		if(classTargets != null) {
+		    LOGGER.trace("Visiting class " + transformedName);
 		    MethodProfiler.instance.clearDatasForClass(transformedName);
 			basicClass = doTransform(basicClass, classTargets);
 		}
