@@ -2,13 +2,12 @@ package makamys.coretweaks.diagnostics;
 
 import static makamys.coretweaks.diagnostics.FrameProfiler.Entry.*;
 
-import java.io.File;
 import java.io.IOException;
 
-import makamys.coretweaks.util.Util;
 import makamys.coretweaks.Config;
 import makamys.coretweaks.CoreTweaks;
 import makamys.coretweaks.util.TableBuilder;
+import makamys.coretweaks.util.Util;
 
 public class FrameProfiler {
     

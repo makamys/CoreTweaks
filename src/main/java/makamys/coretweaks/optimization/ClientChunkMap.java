@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.minecraft.util.LongHashMap;
-import net.minecraft.util.MathHelper;
 import net.minecraft.world.ChunkCoordIntPair;
 import net.minecraft.world.chunk.Chunk;
 

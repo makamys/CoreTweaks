@@ -4,6 +4,7 @@ import org.lwjgl.opengl.GL11;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
+
 import makamys.coretweaks.CoreTweaks;
 
 /* According to the javadoc of `targets`, specifying this (public) class via a string is supposed to cause an exception during runtime.

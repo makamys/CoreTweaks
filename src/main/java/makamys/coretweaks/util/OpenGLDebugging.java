@@ -1,11 +1,11 @@
 package makamys.coretweaks.util;
 
-import org.lwjgl.BufferUtils;
-import org.lwjgl.opengl.GL11;
+import static makamys.coretweaks.CoreTweaks.LOGGER;
 
 import java.nio.ByteBuffer;
 
-import static makamys.coretweaks.CoreTweaks.LOGGER;
+import org.lwjgl.BufferUtils;
+import org.lwjgl.opengl.GL11;
 
 // Adapted from https://github.com/TheGreyGhost/MinecraftByExample/blob/1-8final/src/main/java/minecraftbyexample/usefultools/OpenGLdebugging.java
 /**

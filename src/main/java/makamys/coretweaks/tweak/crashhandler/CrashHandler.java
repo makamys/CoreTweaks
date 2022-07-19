@@ -14,14 +14,11 @@ import cpw.mods.fml.common.LoadController;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.relauncher.ReflectionHelper;
 import cpw.mods.fml.relauncher.ReflectionHelper.UnableToAccessFieldException;
-import makamys.coretweaks.CoreTweaksMod;
 import makamys.coretweaks.util.GLUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.crash.CrashReport;
-import net.minecraft.util.MinecraftError;
-import net.minecraft.util.ReportedException;
 
 public class CrashHandler {
     

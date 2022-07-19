@@ -1,15 +1,11 @@
 package makamys.coretweaks.mixin.diagnostics.frameprofiler;
 
-import org.lwjgl.opengl.Display;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import makamys.coretweaks.diagnostics.FrameProfiler;
-
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-
 import net.minecraft.client.Minecraft;
 
 @Mixin(Minecraft.class)

@@ -1,18 +1,14 @@
 package makamys.coretweaks.optimization;
 
+import static makamys.coretweaks.CoreTweaks.LOGGER;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -37,9 +33,6 @@ import cpw.mods.fml.common.discovery.asm.ModAnnotation.EnumHolder;
 import makamys.coretweaks.Config;
 import makamys.coretweaks.CoreTweaks;
 import makamys.coretweaks.util.Util;
-import net.minecraft.launchwrapper.Launch;
-
-import static makamys.coretweaks.CoreTweaks.LOGGER;
 
 public class JarDiscovererCache {
 	

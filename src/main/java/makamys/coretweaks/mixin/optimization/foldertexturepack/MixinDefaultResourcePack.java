@@ -2,15 +2,12 @@ package makamys.coretweaks.mixin.optimization.foldertexturepack;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 import net.minecraft.client.resources.DefaultResourcePack;
-import net.minecraft.client.resources.FolderResourcePack;
-import net.minecraft.util.ResourceLocation;
 
 @Mixin(DefaultResourcePack.class)
 public class MixinDefaultResourcePack {

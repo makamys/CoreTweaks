@@ -2,19 +2,14 @@ package makamys.coretweaks;
 
 import static makamys.coretweaks.CoreTweaks.LOGGER;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
 import makamys.coretweaks.diagnostics.FMLBarProfiler;
 import makamys.coretweaks.diagnostics.MethodProfiler;
 import makamys.coretweaks.optimization.JarDiscovererCache;
-import net.minecraft.launchwrapper.Launch;
 
 @IFMLLoadingPlugin.SortingIndex(1001) // Run after deobf (FMLDeobfTweaker has an index of 1000)
 public class CoreTweaksPlugin implements IFMLLoadingPlugin {

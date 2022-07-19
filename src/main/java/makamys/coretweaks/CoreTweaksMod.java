@@ -1,27 +1,9 @@
 package makamys.coretweaks;
 
-import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Properties;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.opengl.GL11;
-
-import com.google.common.collect.Multimap;
-import com.google.common.eventbus.EventBus;
 
 import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.LoadController;
-import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.event.FMLConstructionEvent;
@@ -36,7 +18,6 @@ import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 import cpw.mods.fml.common.gameevent.TickEvent.ClientTickEvent;
-import cpw.mods.fml.relauncher.ReflectionHelper;
 import makamys.coretweaks.bugfix.DoubleEatFixer;
 import makamys.coretweaks.command.CoreTweaksCommand;
 import makamys.coretweaks.diagnostics.FrameProfiler;
@@ -45,31 +26,18 @@ import makamys.coretweaks.diagnostics.ServerRunTimePrinter;
 import makamys.coretweaks.ducks.IChunkProviderClient;
 import makamys.coretweaks.optimization.ClientChunkMap;
 import makamys.coretweaks.optimization.JarDiscovererCache;
-import makamys.coretweaks.optimization.ThreadedTextureLoader;
-import makamys.coretweaks.optimization.transformercache.full.CachingTransformer;
 import makamys.coretweaks.optimization.transformercache.lite.TransformerCache;
 import makamys.coretweaks.tweak.crashhandler.Crasher;
-import makamys.coretweaks.util.GLUtil;
 import makamys.coretweaks.util.KeyboardUtil;
-import makamys.coretweaks.util.OpenGLDebugging;
 import makamys.mclib.core.MCLib;
 import makamys.mclib.core.MCLibModules;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiMemoryErrorScreen;
 import net.minecraft.client.multiplayer.ChunkProviderClient;
 import net.minecraft.client.multiplayer.WorldClient;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.crash.CrashReport;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.launchwrapper.Launch;
 import net.minecraft.util.LongHashMap;
-import net.minecraft.util.MinecraftError;
-import net.minecraft.util.ReportedException;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraftforge.client.ClientCommandHandler;
-import net.minecraftforge.client.event.TextureStitchEvent;
-import net.minecraftforge.event.world.ChunkEvent;
 
 @Mod(modid = CoreTweaks.MODID, version = CoreTweaks.VERSION)
 public class CoreTweaksMod

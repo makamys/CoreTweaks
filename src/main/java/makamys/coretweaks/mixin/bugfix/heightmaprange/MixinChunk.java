@@ -3,6 +3,7 @@ package makamys.coretweaks.mixin.bugfix.heightmaprange;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
+
 import net.minecraft.world.chunk.Chunk;
 
 @Mixin(Chunk.class)

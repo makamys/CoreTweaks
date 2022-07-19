@@ -2,7 +2,6 @@ package makamys.coretweaks.command;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import makamys.coretweaks.diagnostics.FrameProfiler;

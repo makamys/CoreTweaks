@@ -14,7 +14,6 @@ import cpw.mods.fml.common.ProgressManager.ProgressBar;
 import makamys.coretweaks.Config;
 import makamys.coretweaks.CoreTweaks;
 import makamys.coretweaks.util.Util;
-import net.minecraft.launchwrapper.Launch;
 
 public class FMLBarProfiler {
     

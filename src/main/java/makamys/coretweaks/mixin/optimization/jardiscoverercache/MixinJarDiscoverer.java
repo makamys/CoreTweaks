@@ -1,14 +1,13 @@
 package makamys.coretweaks.mixin.optimization.jardiscoverercache;
 
-import java.io.BufferedInputStream;
+import static makamys.coretweaks.CoreTweaks.LOGGER;
+
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
 
-import org.apache.commons.codec.digest.DigestUtils;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -24,8 +23,6 @@ import cpw.mods.fml.common.discovery.asm.ASMModParser;
 import makamys.coretweaks.optimization.JarDiscovererCache;
 import makamys.coretweaks.optimization.JarDiscovererCache.CachedModInfo;
 import net.minecraft.network.play.INetHandlerPlayClient;
-
-import static makamys.coretweaks.CoreTweaks.LOGGER;
 
 @Mixin(value = JarDiscoverer.class, remap = false)
 abstract class MixinJarDiscoverer implements INetHandlerPlayClient {

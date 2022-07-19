@@ -1,5 +1,7 @@
 package makamys.coretweaks;
 
+import static makamys.coretweaks.CoreTweaks.LOGGER;
+
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -23,8 +25,6 @@ import cpw.mods.fml.relauncher.ReflectionHelper;
 import makamys.coretweaks.optimization.transformercache.lite.TransformerCache;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.launchwrapper.LaunchClassLoader;
-
-import static makamys.coretweaks.CoreTweaks.LOGGER;
 
 public class MixinConfigPlugin implements IMixinConfigPlugin {
     

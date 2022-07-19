@@ -10,7 +10,6 @@ import org.spongepowered.asm.mixin.Shadow;
 import makamys.coretweaks.CoreTweaks;
 import makamys.coretweaks.tweak.crashhandler.CrashHandler;
 import makamys.coretweaks.tweak.crashhandler.GuiFatalErrorScreen;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiMemoryErrorScreen;
 import net.minecraft.client.gui.GuiScreen;

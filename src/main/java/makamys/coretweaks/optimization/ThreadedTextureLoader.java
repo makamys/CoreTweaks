@@ -1,5 +1,7 @@
 package makamys.coretweaks.optimization;
 
+import static makamys.coretweaks.CoreTweaks.LOGGER;
+
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -7,26 +9,19 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Optional;
 import java.util.Map.Entry;
+import java.util.NoSuchElementException;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import makamys.coretweaks.mixin.optimization.threadedtextureloader.ITextureMap;
-
-import java.util.Objects;
-
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.resources.IResource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.TextureStitchEvent;
-
-import static makamys.coretweaks.CoreTweaks.LOGGER;
 
 /**
  * Class used to parallelize the I/O operations of loadTextureAtlas. May be useless. 

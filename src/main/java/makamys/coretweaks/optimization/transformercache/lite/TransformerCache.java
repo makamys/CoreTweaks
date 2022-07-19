@@ -28,7 +28,6 @@ import com.google.common.hash.Hashing;
 import cpw.mods.fml.relauncher.ReflectionHelper;
 import makamys.coretweaks.Config;
 import makamys.coretweaks.CoreTweaks;
-import makamys.coretweaks.CoreTweaksMod;
 import makamys.coretweaks.IModEventListener;
 import makamys.coretweaks.optimization.transformercache.lite.TransformerCache.TransformerData.CachedTransformation;
 import makamys.coretweaks.util.Util;

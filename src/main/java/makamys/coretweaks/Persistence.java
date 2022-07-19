@@ -1,5 +1,7 @@
 package makamys.coretweaks;
 
+import static makamys.coretweaks.CoreTweaks.LOGGER;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -21,16 +23,11 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.lang3.tuple.Pair;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.relauncher.ModListHelper;
 import makamys.coretweaks.util.Util;
 import net.minecraft.launchwrapper.Launch;
-
-import static makamys.coretweaks.CoreTweaks.LOGGER;
 
 public class Persistence {
 	
