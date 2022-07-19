@@ -45,7 +45,7 @@ public class FrameProfiler {
         }
         
         if(Config.frameProfilerPrint) {
-            FrameTimePrinter.preRenderWorld();
+            RenderTickTimePrinter.preRenderWorld();
         }
     }
     
@@ -55,7 +55,7 @@ public class FrameProfiler {
         }
         
         if(Config.frameProfilerPrint) {
-            FrameTimePrinter.postRenderWorld();
+            RenderTickTimePrinter.postRenderWorld();
         }
     }
     

@@ -4,7 +4,7 @@ import static makamys.coretweaks.CoreTweaks.LOGGER;
 
 import java.util.Arrays;
 
-public class FrameTimePrinter {
+public class RenderTickTimePrinter {
     
     private static long frameStart, frameEnd;
     
