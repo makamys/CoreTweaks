@@ -47,6 +47,7 @@ import makamys.coretweaks.optimization.ClientChunkMap;
 import makamys.coretweaks.optimization.JarDiscovererCache;
 import makamys.coretweaks.optimization.ThreadedTextureLoader;
 import makamys.coretweaks.optimization.transformercache.full.CachingTransformer;
+import makamys.coretweaks.optimization.transformercache.lite.TransformerCache;
 import makamys.coretweaks.tweak.crashhandler.Crasher;
 import makamys.coretweaks.util.GLUtil;
 import makamys.coretweaks.util.KeyboardUtil;
@@ -81,11 +82,20 @@ public class CoreTweaksMod
         
         Config.reload();
         
+        Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+            @Override
+            public void run() {
+                listeners.forEach(l -> l.onShutdown());
+            }}, "CoreTweaks shutdown thread"));
+        
         if(Config.crasher) {
             registerListener(Crasher.instance = new Crasher());
         }
         if(Config.serverRunTimePrinter) {
             registerListener(ServerRunTimePrinter.instance = new ServerRunTimePrinter());
+        }
+        if(Config.transformerCache == Config.TransformerCache.LITE) {
+            registerListener(TransformerCache.instance);
         }
     }
     

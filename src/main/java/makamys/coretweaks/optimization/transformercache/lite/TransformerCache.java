@@ -28,6 +28,8 @@ import com.google.common.hash.Hashing;
 import cpw.mods.fml.relauncher.ReflectionHelper;
 import makamys.coretweaks.Config;
 import makamys.coretweaks.CoreTweaks;
+import makamys.coretweaks.CoreTweaksMod;
+import makamys.coretweaks.IModEventListener;
 import makamys.coretweaks.optimization.transformercache.lite.TransformerCache.TransformerData.CachedTransformation;
 import makamys.coretweaks.util.Util;
 import net.minecraft.launchwrapper.IClassNameTransformer;
@@ -35,7 +37,7 @@ import net.minecraft.launchwrapper.IClassTransformer;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.launchwrapper.LaunchClassLoader;
 
-public class TransformerCache {
+public class TransformerCache implements IModEventListener {
     
     public static TransformerCache instance = new TransformerCache();
     
@@ -63,12 +65,6 @@ public class TransformerCache {
         Launch.classLoader.addTransformerExclusion("makamys.coretweaks.optimization.transformercache.lite");
         
         loadData();
-        
-        Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
-            @Override
-            public void run() {
-                shutdown();
-            }}, "CoreTweaks transformer cache shutdown thread"));
         
         hookClassLoader();
     }
@@ -106,7 +102,8 @@ public class TransformerCache {
         }
     }
     
-    private void shutdown() {
+    @Override
+    public void onShutdown() {
         try {
             saveTransformerCache();
             saveProfilingResults();

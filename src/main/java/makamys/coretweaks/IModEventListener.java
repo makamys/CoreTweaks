@@ -21,4 +21,6 @@ public interface IModEventListener {
     default void onServerStopping(FMLServerStoppingEvent event) {};
     default void onServerStopped(FMLServerStoppedEvent event) {};
     
+    default void onShutdown() {};
+    
 }
