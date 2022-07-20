@@ -3,11 +3,14 @@ import sys
 import code
 import matplotlib.pyplot as plt
 import numpy as np
+import os
+import datetime
 
 parser = argparse.ArgumentParser(description='')
 
 parser.add_argument('-i', action='store_true')
 parser.add_argument('--graph-chunk-update-time', action='store_true')
+parser.add_argument('--graph-fps', action='store_true')
 parser.add_argument('FRAME_PROFILER_RESULTS_CSV', type=str)
 
 args = parser.parse_args()
@@ -79,6 +82,27 @@ if interactive:
 elif args.graph_chunk_update_time:
     plt.title("Chunk update time (ms)")
     plt.hist(np.array([r['t_updateRenderersEnd'] - r['t_updateRenderersStart'] for r in rows]) / 1000000.0, bins=200)
+    plt.show()
+elif args.graph_fps:
+    
+    lastNonZeroChunkUpdateTime = None
+    
+    for i in range(0, len(rows) - 1):
+        row = rows[i]
+        row['_frameTime'] = rows[i + 1]['t_gameLoopStart'] - row['t_gameLoopStart']
+        if row['chunkUpdates'] != 0 or lastNonZeroChunkUpdateTime == None:
+            lastNonZeroChunkUpdateTime = rows[i]['t_gameLoopStart']
+            
+        row['_idle'] = (row['gui'] == None or row['gui'] == 'net.minecraft.client.gui.GuiChat') and (row['t_gameLoopStart'] - lastNonZeroChunkUpdateTime) > 1000000000
+    
+    totalTime = rows[len(rows) - 1]['t_gameLoopStart'] - rows[0]['t_gameLoopStart']
+    
+    FPSs = 1000000000.0 / (np.array([row['_frameTime'] for row in rows[0:len(rows)-1] if row['_idle']]))
+    
+    title = "FPS ({})\nMean: {} Med: {}: Min: {} Max: {} Elapsed: {}".format(os.path.basename(csvPath), int(np.mean(FPSs)), int(np.median(FPSs)), int(np.min(FPSs)), int(np.max(FPSs)), datetime.timedelta(seconds=totalTime // 1000000000))
+    print(title)
+    plt.title(title)
+    plt.hist(FPSs, bins=100)
     plt.show()
 else:
     idx = 1
