@@ -8,12 +8,14 @@ import makamys.coretweaks.Config;
 import makamys.coretweaks.CoreTweaks;
 import makamys.coretweaks.util.TableBuilder;
 import makamys.coretweaks.util.Util;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.WorldRenderer;
 
 public class FrameProfiler {
     
     public static FrameProfiler instance = new FrameProfiler();
-    TableBuilder<Entry, Long> tb;
+    TableBuilder<Entry, Object> tb;
     
     private boolean started = false;
     
@@ -30,11 +32,12 @@ public class FrameProfiler {
         T_SYNC_START,
         T_SYNC_END,
         T_GAMELOOP_END,
-        CHUNK_UPDATES
+        CHUNK_UPDATES,
+        GUI
     }
     
     
-    private void addEntry(Entry type, long value) {
+    private void addEntry(Entry type, Object value) {
     	tb.set(type, value);
     }
     
@@ -46,6 +49,8 @@ public class FrameProfiler {
         if(started) {
             addEntry(T_FRAME_START);
             chunksUpdatedAtFrameStart = WorldRenderer.chunksUpdated;
+            GuiScreen gui = Minecraft.getMinecraft().currentScreen;
+            addEntry(GUI, gui == null ? null : gui.getClass().getName());
         }
         
         if(Config.frameProfilerPrint) {
