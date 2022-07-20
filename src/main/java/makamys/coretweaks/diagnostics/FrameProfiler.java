@@ -17,16 +17,16 @@ public class FrameProfiler {
     private boolean started = false;
     
     enum Entry {
-        GAMELOOP_START,
-        FRAME_START,
-        UPDATERENDERERS_START,
+        T_GAMELOOP_START,
+        T_FRAME_START,
+        T_UPDATERENDERERS_START,
         UPDATERENDERERS_DEADLINE,
-        UPDATERENDERERS_END,
-        RENDERWORLD_END,
-        FRAME_END,
-        SYNC_START,
-        SYNC_END,
-        GAMELOOP_END
+        T_UPDATERENDERERS_END,
+        T_RENDERWORLD_END,
+        T_FRAME_END,
+        T_SYNC_START,
+        T_SYNC_END,
+        T_GAMELOOP_END
     }
     
     
@@ -40,7 +40,7 @@ public class FrameProfiler {
     
     public void onFrameStart() {
         if(started) {
-            addEntry(FRAME_START);
+            addEntry(T_FRAME_START);
         }
         
         if(Config.frameProfilerPrint) {
@@ -50,7 +50,7 @@ public class FrameProfiler {
     
     public void onFrameEnd() {
         if(started) {
-            addEntry(FRAME_END);
+            addEntry(T_FRAME_END);
         }
         
         if(Config.frameProfilerPrint) {
@@ -60,45 +60,45 @@ public class FrameProfiler {
     
     public void postRenderWorld(float alpha, long deadline) {
     	if(started) {
-	    	addEntry(RENDERWORLD_END);
+	    	addEntry(T_RENDERWORLD_END);
 	        addEntry(UPDATERENDERERS_DEADLINE, deadline);
     	}
     }
     
     public void preUpdateRenderers() {
         if(started) {
-            addEntry(UPDATERENDERERS_START);
+            addEntry(T_UPDATERENDERERS_START);
         }
     }
     
     public void postUpdateRenderers() {
     	if(started) {
-	    	addEntry(UPDATERENDERERS_END);
+	    	addEntry(T_UPDATERENDERERS_END);
     	}
     }
     
     public void preSync() {
     	if(started) {
-	    	addEntry(SYNC_START);
+	    	addEntry(T_SYNC_START);
     	}
     }
     
     public void postSync() {
     	if(started) {
-	    	addEntry(SYNC_END);
+	    	addEntry(T_SYNC_END);
     	}
     }
     
     public void preRunGameLoop() {
     	if(started) {
         	tb.endRow();
-	    	addEntry(GAMELOOP_START);
+	    	addEntry(T_GAMELOOP_START);
     	}
     }
     
     public void postRunGameLoop() {
     	if(started) {
-	    	addEntry(GAMELOOP_END);
+	    	addEntry(T_GAMELOOP_END);
     	}
     }
     
