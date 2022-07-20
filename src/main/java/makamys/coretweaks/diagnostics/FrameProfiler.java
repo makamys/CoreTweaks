@@ -16,6 +16,9 @@ import makamys.coretweaks.util.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.util.EnumChatFormatting;
+import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.common.MinecraftForge;
 
 public class FrameProfiler implements IModEventListener {
     
@@ -23,6 +26,7 @@ public class FrameProfiler implements IModEventListener {
     TableBuilder<Entry, Object> tb;
     
     private boolean started = false;
+    private boolean renderDebugText;
     
     private int chunksUpdatedAtFrameStart = 0;
     
@@ -149,6 +153,7 @@ public class FrameProfiler implements IModEventListener {
     @Override
     public void onInit(FMLInitializationEvent event) {
         FMLCommonHandler.instance().bus().register(instance);
+        MinecraftForge.EVENT_BUS.register(instance);
         
         if(Config.frameProfilerStartEnabled) {
             start();
@@ -171,4 +176,17 @@ public class FrameProfiler implements IModEventListener {
         }
     }
     
+    @SubscribeEvent
+    public void onRenderOverlay(RenderGameOverlayEvent.Pre event) {
+        if (event.type.equals(RenderGameOverlayEvent.ElementType.DEBUG)) {
+            renderDebugText = true;
+        } else if (renderDebugText && (event instanceof RenderGameOverlayEvent.Text) && event.type.equals(RenderGameOverlayEvent.ElementType.TEXT)) {
+            renderDebugText = false;
+            RenderGameOverlayEvent.Text text = (RenderGameOverlayEvent.Text) event;
+            if(isStarted()) {
+                text.left.add(null);
+                text.left.add(EnumChatFormatting.YELLOW + "Having this overlay open may affect profiling results.");
+            }
+        }
+    }
 }
