@@ -8,6 +8,7 @@ import makamys.coretweaks.Config;
 import makamys.coretweaks.CoreTweaks;
 import makamys.coretweaks.util.TableBuilder;
 import makamys.coretweaks.util.Util;
+import net.minecraft.client.renderer.WorldRenderer;
 
 public class FrameProfiler {
     
@@ -15,6 +16,8 @@ public class FrameProfiler {
     TableBuilder<Entry, Long> tb;
     
     private boolean started = false;
+    
+    private int chunksUpdatedAtFrameStart = 0;
     
     enum Entry {
         T_GAMELOOP_START,
@@ -26,7 +29,8 @@ public class FrameProfiler {
         T_FRAME_END,
         T_SYNC_START,
         T_SYNC_END,
-        T_GAMELOOP_END
+        T_GAMELOOP_END,
+        CHUNK_UPDATES
     }
     
     
@@ -41,6 +45,7 @@ public class FrameProfiler {
     public void onFrameStart() {
         if(started) {
             addEntry(T_FRAME_START);
+            chunksUpdatedAtFrameStart = WorldRenderer.chunksUpdated;
         }
         
         if(Config.frameProfilerPrint) {
@@ -51,6 +56,7 @@ public class FrameProfiler {
     public void onFrameEnd() {
         if(started) {
             addEntry(T_FRAME_END);
+            addEntry(CHUNK_UPDATES, WorldRenderer.chunksUpdated - chunksUpdatedAtFrameStart);
         }
         
         if(Config.frameProfilerPrint) {
