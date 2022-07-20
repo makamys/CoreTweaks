@@ -11,6 +11,7 @@ parser = argparse.ArgumentParser(description='')
 parser.add_argument('-i', action='store_true')
 parser.add_argument('--graph-chunk-update-time', action='store_true')
 parser.add_argument('--graph-fps', action='store_true')
+parser.add_argument('--summarize-fps', action='store_true')
 parser.add_argument('FRAME_PROFILER_RESULTS_CSV', type=str)
 
 args = parser.parse_args()
@@ -83,7 +84,7 @@ elif args.graph_chunk_update_time:
     plt.title("Chunk update time (ms)")
     plt.hist(np.array([r['t_updateRenderersEnd'] - r['t_updateRenderersStart'] for r in rows]) / 1000000.0, bins=200)
     plt.show()
-elif args.graph_fps:
+elif args.graph_fps or args.summarize_fps:
     
     lastNonZeroChunkUpdateTime = None
     
@@ -101,9 +102,11 @@ elif args.graph_fps:
     
     title = "FPS ({})\nMean: {} Med: {}: Min: {} Max: {} Elapsed: {}".format(os.path.basename(csvPath), int(np.mean(FPSs)), int(np.median(FPSs)), int(np.min(FPSs)), int(np.max(FPSs)), datetime.timedelta(seconds=totalTime // 1000000000))
     print(title)
-    plt.title(title)
-    plt.hist(FPSs, bins=100)
-    plt.show()
+    
+    if args.graph_fps:
+        plt.title(title)
+        plt.hist(FPSs, bins=100)
+        plt.show()
 else:
     idx = 1
     lastRow = None
