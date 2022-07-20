@@ -19,8 +19,9 @@ def row2json(row, header):
     result = {}
     
     for i in range(len(row)):
-        if row[i]:
-            result[header[i]] = int(row[i])
+        cell = row[i]
+        if cell:
+            result[header[i]] = int(cell) if cell.isnumeric() else cell
         else:
             result[header[i]] = None
     
@@ -29,26 +30,26 @@ def row2json(row, header):
 def analyze_row(row, idx, lastRow):
     print("Frame", idx)
     
-    print(" ", (row["FRAME_END"] - row["FRAME_START"])/1000000, "ms", " - Total render time")
+    print(" ", (row["t_frameEnd"] - row["t_frameStart"])/1000000, "ms", " - Total render time")
     
-    if row["SYNC_START"]:
-        print(" ", (row["SYNC_END"] - row["SYNC_START"])/1000000, "ms", " - Sync time")
+    if row["t_syncStart"]:
+        print(" ", (row["t_syncEnd"] - row["t_syncStart"])/1000000, "ms", " - Sync time")
     
-    if(row["UPDATERENDERERS_DEADLINE"] != 0):
-        print(" ", (row["UPDATERENDERERS_END"] - row["UPDATERENDERERS_DEADLINE"])/1000000, "ms", " - UpdateRenderers overshoot")
-    print(" ", (row["RENDERWORLD_END"] - row["UPDATERENDERERS_END"])/1000000, "ms", " - Time spent after updateRenderers in renderWorld")
+    if(row["t_updateRenderersDeadline"] != 0):
+        print(" ", (row["t_updateRenderersEnd"] - row["t_updateRenderersDeadline"])/1000000, "ms", " - UpdateRenderers overshoot")
+    print(" ", (row["t_renderWorldEnd"] - row["t_updateRenderersEnd"])/1000000, "ms", " - Time spent after updateRenderers in renderWorld")
     
-    if(row["UPDATERENDERERS_DEADLINE"] != 0):
-        print(" ", (row["RENDERWORLD_END"] - row["UPDATERENDERERS_DEADLINE"])/1000000, "ms", " - Total UpdateRenderers deadline overshoot")
+    if(row["t_updateRenderersDeadline"] != 0):
+        print(" ", (row["t_renderWorldEnd"] - row["t_updateRenderersDeadline"])/1000000, "ms", " - Total UpdateRenderers deadline overshoot")
     
-    print(" ", (row["GAMELOOP_END"] - row["GAMELOOP_START"])/1000000, "ms", " - Total gameloop time")
+    print(" ", (row["t_gameLoopEnd"] - row["t_gameLoopStart"])/1000000, "ms", " - Total gameloop time")
     
     if lastRow:
-        print(" ", (row["FRAME_END"] - lastRow["FRAME_END"])/1000000, "ms", " - Frame end difference from last frame's")
+        print(" ", (row["t_frameEnd"] - lastRow["t_frameEnd"])/1000000, "ms", " - Frame end difference from last frame's")
     
     print("  ---")
     
-    sortedItems = [x for x in sorted(row.items(), key=lambda x: x[1] if x[1] != None else 0)]
+    sortedItems = [x for x in sorted([i for i in row.items() if i[0].startswith('t_')], key=lambda x: x[1] if x[1] != None else 0)]
     lastItem = None
     for item in sortedItems:
         if lastItem != None and item[1] != None and lastItem[1] != None:
@@ -77,7 +78,7 @@ if interactive:
     code.interact(local=locals())
 elif args.graph_chunk_update_time:
     plt.title("Chunk update time (ms)")
-    plt.hist(np.array([r['UPDATERENDERERS_END'] - r['UPDATERENDERERS_START'] for r in rows]) / 1000000.0, bins=200)
+    plt.hist(np.array([r['t_updateRenderersEnd'] - r['t_updateRenderersStart'] for r in rows]) / 1000000.0, bins=200)
     plt.show()
 else:
     idx = 1
