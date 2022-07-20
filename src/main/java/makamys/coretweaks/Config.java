@@ -27,6 +27,7 @@ public class Config {
     public static boolean jarDiscovererCache;
     public static boolean forgeFastProgressBar;
     public static boolean forgeFastStepMessageStrip;
+    public static boolean frameProfilerStartEnabled;
     public static boolean frameProfilerHooks;
     public static boolean frameProfilerPrint;
     public static CloudHeightCheck cloudHeightCheck;
@@ -112,6 +113,7 @@ public class Config {
         
         coreTweaksCommand = config.getBoolean("coreTweaksCommand", "Diagnostics", true, "Enables /coretweaks command");
         profilerMethods = config.getString("profilerMethods", "Diagnostics", "", "Comma-separated list of methods to profile. The results will be written to ./coretweaks/out/profiler-<timestamp>.csv. Currently only the call count is measured. Method names have the syntax of `<canonical class name>.<method name>`, like `some.package.SomeClass.method`.");
+        frameProfilerStartEnabled = config.getBoolean("frameProfilerStartEnabled", "Diagnostics", false, "Automatically start frame profiler as soon as the game starts.");
         frameProfilerHooks = config.getBoolean("frameProfilerHooks", "Diagnostics", false, "Insert hooks that lets the frame profiler profile various parts of frame rendering. If this is disabled, the frame profiler will only be able to show very limited information.");
         frameProfilerPrint = config.getBoolean("frameProfilerPrint", "Diagnostics", false, "Print render tick times to log periodically.");
         forgeBarProfiler = config.getBoolean("forgeBarProfiler", "Diagnostics", false, "Creates a report of how long each step of startup loading took in ./coretweaks/out/fml_bar_profiler.csv.");

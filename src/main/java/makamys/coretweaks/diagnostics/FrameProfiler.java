@@ -149,6 +149,17 @@ public class FrameProfiler implements IModEventListener {
     @Override
     public void onInit(FMLInitializationEvent event) {
         FMLCommonHandler.instance().bus().register(instance);
+        
+        if(Config.frameProfilerStartEnabled) {
+            start();
+        }
+    }
+    
+    @Override
+    public void onShutdown() {
+        if(started) {
+            stop();
+        }
     }
     
     @SubscribeEvent
