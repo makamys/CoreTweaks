@@ -2,6 +2,7 @@ package makamys.coretweaks.command;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import makamys.coretweaks.diagnostics.FrameProfiler;
@@ -10,6 +11,8 @@ import makamys.coretweaks.diagnostics.MethodProfiler.ProfileMode;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
+import net.minecraft.event.ClickEvent;
+import net.minecraft.event.ClickEvent.Action;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
 
@@ -32,8 +35,12 @@ public class CoreTweaksCommand extends CommandBase {
 
     @Override
     public void processCommand(ICommandSender sender, String[] args) {
+        EnumChatFormatting helpColor = EnumChatFormatting.BLUE;
+        EnumChatFormatting helpUsageColor = EnumChatFormatting.YELLOW;
+        EnumChatFormatting helpEmphasisColor = EnumChatFormatting.DARK_AQUA;
         if(args.length > 0) {
             if(args[0].equals("frameprofiler")) {
+                String usage = "coretweaks frameprofiler <start|stop|help>";
                 if(args.length == 2) {
                     switch(args[1]) {
                         case "start": {
@@ -58,10 +65,18 @@ public class CoreTweaksCommand extends CommandBase {
                             
                             return;
                         }
+                        case "help": {
+                            addColoredChatMessage(sender, "Usage: " + usage, helpUsageColor);
+                            addColoredChatMessage(sender, "Creates a report about the timing of various parts of the rendering process.", helpColor);
+                            addColoredChatMessage(sender, "The report will be written to " + helpEmphasisColor + "./coretweaks/out/frameprofiler.csv" + helpColor + ".", helpColor);
+                            addColoredChatMessage(sender, "A useful script for parsing the results of the report can be found at " + helpEmphasisColor + "https://github.com/makamys/CoreTweaks/tree/master/scripts", helpColor, (msg) -> msg.getChatStyle().setChatClickEvent(new ClickEvent(Action.OPEN_URL, "https://github.com/makamys/CoreTweaks/tree/master/scripts")));
+                            return;
+                        }
                     }
                 }
-                throw new WrongUsageException("coretweaks (frameprofiler (start|stop))", new Object[0]);
+                throw new WrongUsageException(usage, new Object[0]);
             } else if(args[0].equals("methodprofiler")) {
+                String usage = "coretweaks methodprofiler <start|stop|help>";
                 if(args.length >= 2) {
                     switch(args[1]) {
                         case "start": {
@@ -88,6 +103,7 @@ public class CoreTweaksCommand extends CommandBase {
                                     
                                 } else {
                                     sender.addChatMessage(new ChatComponentText(EnumChatFormatting.RED + "Need a mode. Valid ones are: " + validValues.stream().filter(v -> !v.equals(MethodProfiler.ProfileMode.NONE.name())).collect(Collectors.toList())));
+                                    throw new WrongUsageException("coretweaks methodprofiler start <mode>", new Object[0]);
                                 }
                             }
                             return;
@@ -105,12 +121,34 @@ public class CoreTweaksCommand extends CommandBase {
                             
                             return;
                         }
+                        case "help": {
+                            addColoredChatMessage(sender, "Usage: " + usage, helpUsageColor);
+                            addColoredChatMessage(sender, "Creates a report of how many times per frame the methods specified in the " + helpEmphasisColor + "profilerMethods" + helpColor + " config option were called.", helpColor);
+                            return;
+                        }
                     }
                 }
-                throw new WrongUsageException("coretweaks (methodprofiler (start|stop))", new Object[0]);
+                throw new WrongUsageException(usage, new Object[0]);
             }
-            throw new WrongUsageException("coretweaks (frameprofiler|methodprofiler)", new Object[0]);
         }
+        throw new WrongUsageException("coretweaks <frameprofiler|methodprofiler>", new Object[0]);
+    }
+    
+    private static void addColoredChatMessage(ICommandSender sender, String text, EnumChatFormatting color) {
+        addColoredChatMessage(sender, text, color, null);
+    }
+    
+    private static void addColoredChatMessage(ICommandSender sender, String text, EnumChatFormatting color, Consumer<ChatComponentText> fixup) {
+        ChatComponentText msg = new ChatComponentText(text);
+        msg.getChatStyle().setColor(color);
+        if(fixup != null) {
+            fixup.accept(msg);
+        }
+        sender.addChatMessage(msg);
+    }
+    
+    public List<String> addTabCompletionOptions(ICommandSender sender, String[] args) {
+        return args.length == 1 ? getListOfStringsMatchingLastWord(args, new String[] {"frameprofiler", "methodprofiler"}) : null;
     }
     
 }
