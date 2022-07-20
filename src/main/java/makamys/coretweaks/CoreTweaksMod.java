@@ -65,6 +65,7 @@ public class CoreTweaksMod
         if(Config.transformerCache == Config.TransformerCache.LITE) {
             registerListener(TransformerCache.instance);
         }
+        registerListener(FrameProfiler.instance = new FrameProfiler());
     }
     
     @EventHandler
@@ -145,15 +146,6 @@ public class CoreTweaksMod
         }
         
         KeyboardUtil.tick();
-    }
-    
-    @SubscribeEvent
-    public void onRenderTick(TickEvent.RenderTickEvent event) {
-        if(event.phase == TickEvent.Phase.START) {
-            FrameProfiler.instance.onFrameStart();
-        } else if(event.phase == TickEvent.Phase.END) {
-        	FrameProfiler.instance.onFrameEnd();
-        }
     }
     
     public void registerListener(IModEventListener listener) {

@@ -4,17 +4,22 @@ import static makamys.coretweaks.diagnostics.FrameProfiler.Entry.*;
 
 import java.io.IOException;
 
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.TickEvent;
 import makamys.coretweaks.Config;
 import makamys.coretweaks.CoreTweaks;
+import makamys.coretweaks.IModEventListener;
 import makamys.coretweaks.util.TableBuilder;
 import makamys.coretweaks.util.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.WorldRenderer;
 
-public class FrameProfiler {
+public class FrameProfiler implements IModEventListener {
     
-    public static FrameProfiler instance = new FrameProfiler();
+    public static FrameProfiler instance;
     TableBuilder<Entry, Object> tb;
     
     private boolean started = false;
@@ -139,6 +144,20 @@ public class FrameProfiler {
     
     public boolean isStarted() {
         return started;
+    }
+    
+    @Override
+    public void onInit(FMLInitializationEvent event) {
+        FMLCommonHandler.instance().bus().register(instance);
+    }
+    
+    @SubscribeEvent
+    public void onRenderTick(TickEvent.RenderTickEvent event) {
+        if(event.phase == TickEvent.Phase.START) {
+            FrameProfiler.instance.onFrameStart();
+        } else if(event.phase == TickEvent.Phase.END) {
+            FrameProfiler.instance.onFrameEnd();
+        }
     }
     
 }
