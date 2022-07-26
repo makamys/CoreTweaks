@@ -11,6 +11,7 @@ parser = argparse.ArgumentParser(description='')
 parser.add_argument('-i', action='store_true')
 parser.add_argument('--graph-chunk-update-time', action='store_true')
 parser.add_argument('--graph-fps', action='store_true')
+parser.add_argument('--graph-render-sections', action='store_true')
 parser.add_argument('--summarize-fps', action='store_true')
 parser.add_argument('FRAME_PROFILER_RESULTS_CSV', type=str)
 
@@ -39,11 +40,13 @@ def analyze_row(row, idx, lastRow):
     if row["t_syncStart"]:
         print(" ", (row["t_syncEnd"] - row["t_syncStart"])/1000000, "ms", " - Sync time")
     
-    if(row["t_updateRenderersDeadline"] != 0):
+    if(row["t_updateRenderersEnd"] and row["t_updateRenderersDeadline"]):
         print(" ", (row["t_updateRenderersEnd"] - row["t_updateRenderersDeadline"])/1000000, "ms", " - UpdateRenderers overshoot")
-    print(" ", (row["t_renderWorldEnd"] - row["t_updateRenderersEnd"])/1000000, "ms", " - Time spent after updateRenderers in renderWorld")
     
-    if(row["t_updateRenderersDeadline"] != 0):
+    if(row["t_updateRenderersEnd"]):
+        print(" ", (row["t_renderWorldEnd"] - row["t_updateRenderersEnd"])/1000000, "ms", " - Time spent after updateRenderers in renderWorld")
+    
+    if(row["t_updateRenderersDeadline"]):
         print(" ", (row["t_renderWorldEnd"] - row["t_updateRenderersDeadline"])/1000000, "ms", " - Total UpdateRenderers deadline overshoot")
     
     print(" ", (row["t_gameLoopEnd"] - row["t_gameLoopStart"])/1000000, "ms", " - Total gameloop time")
@@ -107,6 +110,11 @@ elif args.graph_fps or args.summarize_fps:
         plt.title(title)
         plt.hist(FPSs, bins=100)
         plt.show()
+elif args.graph_render_sections:
+    plt.plot([row["t_gameLoopStart"] for row in rows if row["t_updateRenderersStart"]], [row["t_updateRenderersEnd"] - row["t_updateRenderersStart"] for row in rows if row["t_updateRenderersStart"]])
+    plt.plot([row["t_gameLoopStart"] for row in rows], [row["t_gameLoopEnd"] - row["t_gameLoopStart"] for row in rows])
+    plt.title(os.path.basename(csvPath))
+    plt.show()
 else:
     idx = 1
     lastRow = None
