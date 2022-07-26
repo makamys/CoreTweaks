@@ -81,6 +81,12 @@ public class Config {
         Configuration config = new Configuration(new File(Launch.minecraftHome, "config/coretweaks.cfg"));
         
         config.load();
+        
+        config.addCustomCategoryComment("Tweaks", "In addition to these settings, there are some tweaks that are activated via JVM flags:\n" +
+        "    -Dcoretweaks.launchWorld=WORLD : Automatically loads the world with the folder name WORLD once the main menu is reached. WORLD can be left blank, in this case the most recently played world will be loaded.\n" +
+        "    -Dcoretweaks.launchMinimized : Launch Minecraft minimized. Only implemented on Windows at the moment.\n" +
+        "    -Dcoretweaks.launchOnDesktop=NUMBER : Launch Minecraft on the virtual desktop with ordinal NUMBER. Only implemented on Linux at the moment. xprop has to be installed for it to work. Only tested on Openbox.");
+        
         crashHandler = config.getBoolean("crashHandler", "Tweaks", true, "Lets you survive crashes without the game exiting, usually. Not compatible with other mods that do the same thing.");
         lightFixStare = config.getBoolean("lightFixStare", "Tweaks", true, "Causes lighting updates around the block the player is looking at. A workaround for lighting errors that lets you fix them by staring at them. Useful in the Nether.");
         forceUncapFramerate = config.getBoolean("forceUncapFramerate", "Tweaks", false, "Uncaps framerate even when framelimiter is enabled. The framerate limit will only be used to decide how much time to spend updating chunks each frame. Vanilla Beta 1.7.3 behavior. It seems to make things worse though, at least with OptiFine.");
@@ -90,9 +96,6 @@ public class Config {
         disableFog = config.getBoolean("disableFog", "Tweaks", false, "Disables fog. Simple as.");
         uncapCreateWorldGuiTextFieldLength = config.getBoolean("uncapCreateWorldGuiTextFieldLength", "Tweaks", false,
                 "Uncap max length for world name and world seed in the world creation GUI. (By default, it's capped at 32.)");
-        
-        //config.addCustomCategoryComment("_general", "Example JVM arg: -Dmcargs.args=\"world:Folder name of my cool world,minimized\"");
-        //config.addCustomCategoryComment("world entry", "These options will only work if pausing in losing focus is disabled (F3+P)");
         
         pauseOnWorldEntry = config.getBoolean("pauseOnWorldEntry", "Tweaks", true, "Pause some ticks after auto-loaded world is loaded.\nDelaying the pausing can be useful because some initialization like chunk updates won't happen while the game is paused.");
         dingOnWorldEntry = config.getBoolean("dingOnWorldEntry", "Tweaks", true, "Ding once auto-loaded world is loaded.");
