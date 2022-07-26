@@ -39,6 +39,10 @@ public class Config {
     public static float minFarPlaneDistance;
     public static boolean uncapCreateWorldGuiTextFieldLength;
     
+    public static boolean pauseOnWorldEntry;
+	public static boolean dingOnWorldEntry;
+	public static int pauseWaitLength;
+    
     public static boolean coreTweaksCommand;
     public static String profilerMethods;
     
@@ -86,6 +90,13 @@ public class Config {
         disableFog = config.getBoolean("disableFog", "Tweaks", false, "Disables fog. Simple as.");
         uncapCreateWorldGuiTextFieldLength = config.getBoolean("uncapCreateWorldGuiTextFieldLength", "Tweaks", false,
                 "Uncap max length for world name and world seed in the world creation GUI. (By default, it's capped at 32.)");
+        
+        //config.addCustomCategoryComment("_general", "Example JVM arg: -Dmcargs.args=\"world:Folder name of my cool world,minimized\"");
+        //config.addCustomCategoryComment("world entry", "These options will only work if pausing in losing focus is disabled (F3+P)");
+        
+        pauseOnWorldEntry = config.getBoolean("pauseOnWorldEntry", "Tweaks", true, "Pause some ticks after auto-loaded world is loaded.\nDelaying the pausing can be useful because some initialization like chunk updates won't happen while the game is paused.");
+        dingOnWorldEntry = config.getBoolean("dingOnWorldEntry", "Tweaks", true, "Ding once auto-loaded world is loaded.");
+        pauseWaitLength = config.getInt("pauseWaitLength", "Tweaks", 20, 0, Integer.MAX_VALUE, "How many ticks to wait before pausing an auto-loaded world.");
         
         restoreTravelSound = config.getBoolean("restoreTravelSound", "Bugfixes", true, "Restore interdimensional travel sound (travel.ogg). Fixes MC-233, fixed in 1.9");
         fixSmallEntitySwim = config.getBoolean("fixSmallEntitySwim", "Bugfixes", true, "Fixes bug in entity swimming code resulting in small entities (ones with hitboxes less than 0.8 units tall, such as DMod's foxes) being prone to drowning.");
