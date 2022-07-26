@@ -31,6 +31,10 @@ public class MixinConfigPlugin implements IMixinConfigPlugin {
     @Override
     public void onLoad(String mixinPackage) {
         Config.reload();
+        
+    	if(JVMArgs.LAUNCH_MINIMIZED != null) {
+    		((Set<String>)ReflectionHelper.getPrivateValue(LaunchClassLoader.class, Launch.classLoader, "classLoaderExceptions")).remove("org.lwjgl.");
+    	}
     }
 
     @Override
@@ -58,7 +62,9 @@ public class MixinConfigPlugin implements IMixinConfigPlugin {
                 if(Config.forgeFastStepMessageStrip) mixins.add("optimization.fmlmessagestrip.MixinFMLClientHandler");
             }
         } else if(phase == Phase.INIT) {
-            
+        	if(JVMArgs.LAUNCH_MINIMIZED != null) {
+        		mixins.add("tweak.launchminimized.MixinWindowsDisplay");
+        	}
         } else if(phase == Phase.DEFAULT) {
             if(Config.transformerCache == Config.TransformerCache.LITE) {
                 // At this point the transformer chain is complete, so we can go hook it.
