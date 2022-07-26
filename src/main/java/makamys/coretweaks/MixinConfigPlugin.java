@@ -32,7 +32,7 @@ public class MixinConfigPlugin implements IMixinConfigPlugin {
     public void onLoad(String mixinPackage) {
         Config.reload();
         
-    	if(JVMArgs.LAUNCH_MINIMIZED != null) {
+    	if(JVMArgs.LAUNCH_MINIMIZED != null || JVMArgs.LAUNCH_ON_DESKTOP != null) {
     		((Set<String>)ReflectionHelper.getPrivateValue(LaunchClassLoader.class, Launch.classLoader, "classLoaderExceptions")).remove("org.lwjgl.");
     	}
     }
@@ -64,6 +64,9 @@ public class MixinConfigPlugin implements IMixinConfigPlugin {
         } else if(phase == Phase.INIT) {
         	if(JVMArgs.LAUNCH_MINIMIZED != null) {
         		mixins.add("tweak.launchminimized.MixinWindowsDisplay");
+        	}
+        	if(JVMArgs.LAUNCH_ON_DESKTOP != null) {
+        		mixins.add("tweak.launchondesktop.MixinLinuxDisplay");
         	}
         } else if(phase == Phase.DEFAULT) {
             if(Config.transformerCache == Config.TransformerCache.LITE) {
