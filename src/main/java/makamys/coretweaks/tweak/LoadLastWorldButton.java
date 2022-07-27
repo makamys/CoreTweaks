@@ -28,8 +28,9 @@ public class LoadLastWorldButton implements IModEventListener {
     public void onGui(InitGuiEvent.Post event) {
         if(event.gui instanceof GuiMainMenu) {
             GuiButton newWorld = ((List<GuiButton>)event.buttonList).stream().filter(b -> b.id == 1).findFirst().get();
-            newWorld.width = 98;
-            loadLastWorldButton = new GuiButton(UPDATES_BUTTON_ID, newWorld.xPosition + 102, newWorld.yPosition, newWorld.width, newWorld.height, "Continue");
+            int originalWidth = newWorld.width;
+            newWorld.width = originalWidth / 3 * 2 - 2;
+            loadLastWorldButton = new GuiButton(UPDATES_BUTTON_ID, newWorld.xPosition + originalWidth / 3 * 2 + 2, newWorld.yPosition, originalWidth - (originalWidth / 3 * 2 + 2), newWorld.height, "Continue");
             event.buttonList.add(loadLastWorldButton);
         }
     }
