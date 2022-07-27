@@ -27,6 +27,7 @@ import makamys.coretweaks.ducks.IChunkProviderClient;
 import makamys.coretweaks.optimization.ClientChunkMap;
 import makamys.coretweaks.optimization.JarDiscovererCache;
 import makamys.coretweaks.optimization.transformercache.lite.TransformerCache;
+import makamys.coretweaks.tweak.LoadLastWorldButton;
 import makamys.coretweaks.tweak.automation.AutoWorldLoad;
 import makamys.coretweaks.tweak.crashhandler.Crasher;
 import makamys.coretweaks.util.KeyboardUtil;
@@ -69,6 +70,9 @@ public class CoreTweaksMod
         registerListener(FrameProfiler.instance = new FrameProfiler());
         if(JVMArgs.LAUNCH_WORLD != null) {
         	registerListener(AutoWorldLoad.instance = new AutoWorldLoad());
+        }
+        if(Config.mainMenuContinueButton) {
+            registerListener(LoadLastWorldButton.instance = new LoadLastWorldButton());
         }
     }
     

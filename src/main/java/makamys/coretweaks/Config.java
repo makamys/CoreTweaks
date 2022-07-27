@@ -38,6 +38,7 @@ public class Config {
     public static boolean forgeFastDeobfuscationRemapper;
     public static float minFarPlaneDistance;
     public static boolean uncapCreateWorldGuiTextFieldLength;
+    public static boolean mainMenuContinueButton;
     
     public static boolean pauseOnWorldEntry;
 	public static boolean dingOnWorldEntry;
@@ -96,6 +97,8 @@ public class Config {
         disableFog = config.getBoolean("disableFog", "Tweaks", false, "Disables fog. Simple as.");
         uncapCreateWorldGuiTextFieldLength = config.getBoolean("uncapCreateWorldGuiTextFieldLength", "Tweaks", false,
                 "Uncap max length for world name and world seed in the world creation GUI. (By default, it's capped at 32.)");
+        mainMenuContinueButton = config.getBoolean("mainMenuContinueButton", "Tweaks", false,
+                "Add a button to the main menu that loads the last played world.");
         
         pauseOnWorldEntry = config.getBoolean("pauseOnWorldEntry", "Tweaks", true, "Pause some ticks after auto-loaded world is loaded.\nDelaying the pausing can be useful because some initialization like chunk updates won't happen while the game is paused.");
         dingOnWorldEntry = config.getBoolean("dingOnWorldEntry", "Tweaks", true, "Ding once auto-loaded world is loaded.");
