@@ -5,6 +5,7 @@ import java.util.List;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import makamys.coretweaks.IModEventListener;
+import makamys.coretweaks.util.MCUtil;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraftforge.client.event.GuiScreenEvent.ActionPerformedEvent;
@@ -34,9 +35,9 @@ public class LoadLastWorldButton implements IModEventListener {
     }
         
     @SubscribeEvent
-    public void onActionPerformed(ActionPerformedEvent event) {
+    public void onActionPerformed(ActionPerformedEvent.Post event) {
         if(event.button == loadLastWorldButton) {
-            System.out.println("click");
+            MCUtil.tryToLoadWorld(null);
         }
     }
     

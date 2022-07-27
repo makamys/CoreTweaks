@@ -30,6 +30,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import makamys.coretweaks.Config;
 import makamys.coretweaks.IModEventListener;
 import makamys.coretweaks.JVMArgs;
+import makamys.coretweaks.util.MCUtil;
 
 public class AutoWorldLoad implements IModEventListener {
 	
@@ -99,37 +100,7 @@ public class AutoWorldLoad implements IModEventListener {
     
     private void tryToLoadWorld() {
 		if(JVMArgs.LAUNCH_WORLD != null) {
-			ISaveFormat saveLoader = mc.getSaveLoader();
-    		try {
-    			Optional<SaveFormatComparator> saveOpt;
-    			
-    			List<SaveFormatComparator> saveList = (List<SaveFormatComparator>)saveLoader.getSaveList();
-				
-    			if(!JVMArgs.LAUNCH_WORLD.isEmpty()) {
-					saveOpt = saveList.stream()
-							.filter(s -> s.getFileName().equals(JVMArgs.LAUNCH_WORLD)).findFirst();
-    			} else {
-    				if(saveList != null && !saveList.isEmpty()) {
-    					Collections.sort(saveList);
-    					saveOpt = Optional.of(saveList.get(0));
-    				} else {
-    					saveOpt = Optional.empty();
-    				}
-    			}
-				if(saveOpt.isPresent()) {
-					SaveFormatComparator save = (SaveFormatComparator)saveOpt.get();
-					if(mc.loadingScreen == null) {
-						mc.loadingScreen = new LoadingScreenRenderer(mc);
-					}
-    				FMLClientHandler.instance().tryLoadExistingWorld(null, save.getFileName(), save.getDisplayName());
-				} else {
-					LOGGER.error("Couldn't find a suitable world to load");
-					worldLoadFailed = true;
-				}
-			} catch (Exception e) {
-				LOGGER.error("Failed to load world on startup");
-				e.printStackTrace();
-			}
+			MCUtil.tryToLoadWorld(JVMArgs.LAUNCH_WORLD);
 		}
     }
 }
