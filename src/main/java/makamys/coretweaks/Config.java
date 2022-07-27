@@ -119,7 +119,7 @@ public class Config {
         fixForgeChatLinkCrash = config.getBoolean("fixForgeChatLinkCrash", "Bugfixes", false, "Fixes crash when certain invalid URLs appear in chat. Incompatible with Hodgepodge 1.6.14 and higher, which already does this.");
         
         getPendingBlockUpdates = config.getBoolean("getPendingBlockUpdates", "Optimizations", true, "Optimizes WorldServer#getPendingBlockUpdates. OptiFine also does this, but this won't have an effect when OF is present, so there's no conflict.");
-        clientChunkMap = config.getBoolean("clientChunkMap", "Optimizations", false, "Faster implementation of ChunkProviderClient#chunkMapping. From 1.16 (I don't know when exactly it was added). Might be a little buggy (it should only cause client-side errors though).");
+        clientChunkMap = config.getBoolean("clientChunkMap", "Optimizations", false, "(WIP) Faster implementation of ChunkProviderClient#chunkMapping. From 1.16 (I don't know when exactly it was added). Might be a little buggy (it should only cause client-side errors though).");
         forgeModDiscovererSkipKnownLibraries = config.getBoolean("forgeModDiscovererSkipKnownLibraries", "Optimizations", true, "Skip over known libraries during Forge mod discovery. From Forge 1.12 (added in 1.9)");
         jarDiscovererCache = config.getBoolean("jarDiscovererCache", "Optimizations", true, "Cache jar discoverer results (and fix a memory leak as a nice bonus).");
         forgeFastProgressBar = config.getBoolean("forgeFastProgressBar", "Optimizations", true, "Don't update progress bar on steps. Only active if splash is disabled.");
@@ -138,8 +138,8 @@ public class Config {
         serverRunTimePrinter = config.getBoolean("serverRunTimePrinter", "Diagnostics", false, "Prints server run time.");
         wireframe = config.getBoolean("wireframe", "Diagnostics", false, "Render world in wireframe mode. Tip: If this is enabled when the game is started, you will be able to toggle it without restarting the game, only the world needs to be reloaded.");
         
-        threadedTextureLoader = config.getBoolean("threadedTextureLoader", "Optimizations", false,
-                "Use multi-threaded texture loading when stitching textures? Placebo.");
+        //threadedTextureLoader = config.getBoolean("threadedTextureLoader", "Optimizations", false,
+        //        "Use multi-threaded texture loading when stitching textures? Placebo.");
         transformerCache = getEnum(config, "transformerCache", "Optimizations", TransformerCache.LITE, "The type of transformer caching to use.\n"
                 + "NONE: None\n"
                 + "LITE: Cache individual transformations of select transformers. Reduces startup time. Safe.\n"
