@@ -94,13 +94,17 @@ public class MCUtil {
         }
         return false;
     }
-	
-	/** EntityLivingBase#rayTrace but it works on servers. */
-    public static MovingObjectPosition rayTrace(EntityLivingBase entity, double reach) {
+    
+    /** EntityLivingBase#rayTrace but it works on servers. */
+    public static MovingObjectPosition rayTrace(EntityLivingBase entity, double reach, boolean stopOnLiquid) {
         Vec3 vec3 = Vec3.createVectorHelper(entity.posX, entity.posY, entity.posZ);
         Vec3 vec31 = entity.getLook(1);
         Vec3 vec32 = vec3.addVector(vec31.xCoord * reach, vec31.yCoord * reach, vec31.zCoord * reach);
-        return entity.worldObj.func_147447_a(vec3, vec32, true, false, true);
+        return entity.worldObj.func_147447_a(vec3, vec32, stopOnLiquid, false, true);
+    }
+    
+    public static MovingObjectPosition rayTrace(EntityLivingBase entity, double reach) {
+        return rayTrace(entity, reach, true);
     }
 	
 }
