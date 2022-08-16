@@ -1,11 +1,13 @@
 package makamys.coretweaks.diagnostics;
 
 import static makamys.coretweaks.CoreTweaks.LOGGER;
+import static makamys.coretweaks.command.CoreTweaksCommand.*;
 
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,7 +19,13 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 import makamys.coretweaks.Config;
 import makamys.coretweaks.CoreTweaks;
+import makamys.coretweaks.command.CoreTweaksCommand;
+import makamys.coretweaks.command.ISubCommand;
 import makamys.coretweaks.util.Util;
+import net.minecraft.command.ICommandSender;
+import net.minecraft.command.WrongUsageException;
+import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.EnumChatFormatting;
 
 public class MethodProfiler {
     
@@ -31,6 +39,8 @@ public class MethodProfiler {
     
     public void init() {
         if(!isActive()) return;
+        
+        CoreTweaksCommand.registerSubCommand("methodprofiler", new MethodProfilerSubCommand());
         
         for(String methodStr : Config.profilerMethods.split(",")) {
             int lastDot = methodStr.lastIndexOf('.');
@@ -176,4 +186,63 @@ public class MethodProfiler {
         NONE, PER_FRAME
     }
     
+    private static class MethodProfilerSubCommand implements ISubCommand {
+        
+        @Override
+        public void processCommand(ICommandSender sender, String[] args) {
+            String usage = "coretweaks methodprofiler <start|stop|help>";
+            if(args.length >= 2) {
+                switch(args[1]) {
+                    case "start": {
+                        if(MethodProfiler.instance.isStarted()) {
+                            sender.addChatMessage(new ChatComponentText(EnumChatFormatting.RED + "Already started method profiler"));
+                        } else {
+                            List<String> validValues = Arrays.stream(MethodProfiler.ProfileMode.values()).map(v -> v.name())
+                                    .collect(Collectors.toList());
+                            if(args.length == 3) {
+                                String modeStr = args[2];
+                                
+                                if(validValues.contains(modeStr.toUpperCase())) {
+                                    MethodProfiler.ProfileMode mode = MethodProfiler.ProfileMode.valueOf(modeStr.toUpperCase());
+                                    if(mode != ProfileMode.NONE) {
+                                        if(MethodProfiler.instance.start(mode)) {
+                                            sender.addChatMessage(new ChatComponentText("Started method profiler"));
+                                        } else {
+                                            sender.addChatMessage(new ChatComponentText(EnumChatFormatting.RED + "Failed to start method profiler, see log for details"));
+                                        }
+                                    }
+                                } else {
+                                    sender.addChatMessage(new ChatComponentText(EnumChatFormatting.RED + "Invalid mode: " + modeStr));
+                                }
+                                
+                            } else {
+                                sender.addChatMessage(new ChatComponentText(EnumChatFormatting.RED + "Need a mode. Valid ones are: " + validValues.stream().filter(v -> !v.equals(MethodProfiler.ProfileMode.NONE.name())).collect(Collectors.toList())));
+                                throw new WrongUsageException("coretweaks methodprofiler start <mode>", new Object[0]);
+                            }
+                        }
+                        return;
+                    }
+                    case "stop": {
+                        if(!MethodProfiler.instance.isStarted()) {
+                            sender.addChatMessage(new ChatComponentText(EnumChatFormatting.RED + "Method profiler is not running"));
+                        } else {
+                            if(MethodProfiler.instance.stop()) {
+                                sender.addChatMessage(new ChatComponentText("Stopped method profiler"));
+                            } else {
+                                sender.addChatMessage(new ChatComponentText(EnumChatFormatting.RED + "Failed to save method profiler results, see log for details"));
+                            }
+                        }
+                        
+                        return;
+                    }
+                    case "help": {
+                        addColoredChatMessage(sender, "Usage: " + usage, HELP_USAGE_COLOR);
+                        addColoredChatMessage(sender, "Creates a report of how many times per frame the methods specified in the " + HELP_EMPHASIS_COLOR + "profilerMethods" + HELP_COLOR + " config option were called.", HELP_COLOR);
+                        return;
+                    }
+                }
+            }
+            throw new WrongUsageException(usage, new Object[0]);
+        }
+    }
 }
