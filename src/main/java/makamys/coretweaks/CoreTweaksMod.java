@@ -23,6 +23,7 @@ import makamys.coretweaks.command.CoreTweaksCommand;
 import makamys.coretweaks.diagnostics.FrameProfiler;
 import makamys.coretweaks.diagnostics.MethodProfiler;
 import makamys.coretweaks.diagnostics.ServerRunTimePrinter;
+import makamys.coretweaks.diagnostics.WAIAA;
 import makamys.coretweaks.ducks.IChunkProviderClient;
 import makamys.coretweaks.optimization.ClientChunkMap;
 import makamys.coretweaks.optimization.JarDiscovererCache;
@@ -89,6 +90,7 @@ public class CoreTweaksMod
         
         if(Config.coreTweaksCommand) {
             ClientCommandHandler.instance.registerCommand(new CoreTweaksCommand());
+            WAIAA.instance = new WAIAA();
         }
         if(CoreTweaks.textureLoader != null) {
             FMLCommonHandler.instance().bus().register(CoreTweaks.textureLoader);
