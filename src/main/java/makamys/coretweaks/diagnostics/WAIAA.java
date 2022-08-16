@@ -30,9 +30,14 @@ public class WAIAA {
                 // Vanilla's ray trace method is limited at 200 steps...
                 MovingObjectPosition pos = MCUtil.rayTrace(elb, 100000000);
                 Block block = sender.getEntityWorld().getBlock(pos.blockX, pos.blockY, pos.blockZ);
+                int chunkX = pos.blockX >> 4;
+                int chunkY = pos.blockY >> 4;
+                int chunkZ = pos.blockZ >> 4;
+                
                 sender.addChatMessage(new ChatComponentText(HELP_EMPHASIS_COLOR + "You are looking at"));
-                sender.addChatMessage(new ChatComponentText("" + HELP_USAGE_COLOR + "Position: " + HELP_COLOR + BOLD + pos.blockX + ", " + pos.blockY + ", " + pos.blockZ));
-                sender.addChatMessage(new ChatComponentText("" + HELP_USAGE_COLOR + "Block: " + HELP_COLOR + BOLD + block.getClass().getName()));
+                sender.addChatMessage(new ChatComponentText("Position: (" + pos.blockX + ", " + pos.blockY + ", " + pos.blockZ + ")"));
+                sender.addChatMessage(new ChatComponentText("Subchunk: (" + chunkX + ", " + chunkY + ", " + chunkZ + ") Corner: (" + (chunkX * 16) + ", " + (chunkY * 16) + ", " + (chunkZ * 16) + ")"));
+                sender.addChatMessage(new ChatComponentText("Block: " + block.getClass().getName()));
             } else {
                 sender.addChatMessage(new ChatComponentText(EnumChatFormatting.RED + "Caller is a " + sender.getClass() + ", expected an EntityLivingBase subclass."));
             }
