@@ -12,7 +12,10 @@ import makamys.coretweaks.JVMArgs;
 import net.minecraft.client.LoadingScreenRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.GameSettings;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.launchwrapper.Launch;
+import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.Vec3;
 import net.minecraft.world.storage.ISaveFormat;
 import net.minecraft.world.storage.SaveFormatComparator;
 
@@ -90,6 +93,14 @@ public class MCUtil {
             e.printStackTrace();
         }
         return false;
+    }
+	
+	/** EntityLivingBase#rayTrace but it works on servers. */
+    public static MovingObjectPosition rayTrace(EntityLivingBase entity, double reach) {
+        Vec3 vec3 = Vec3.createVectorHelper(entity.posX, entity.posY, entity.posZ);
+        Vec3 vec31 = entity.getLook(1);
+        Vec3 vec32 = vec3.addVector(vec31.xCoord * reach, vec31.yCoord * reach, vec31.zCoord * reach);
+        return entity.worldObj.func_147447_a(vec3, vec32, true, false, true);
     }
 	
 }
