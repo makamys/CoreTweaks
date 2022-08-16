@@ -18,6 +18,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
 
 import cpw.mods.fml.client.FMLClientHandler;
@@ -48,7 +49,7 @@ public class AutoWorldLoad implements IModEventListener {
     
     private Minecraft mc;
     
-    private boolean worldLoadFailed;
+    private boolean cancelled;
     
     @Override
     public void onInit(FMLInitializationEvent event) {
@@ -81,9 +82,15 @@ public class AutoWorldLoad implements IModEventListener {
     }
     
     private void onGuiChanged(GuiScreen gui) {
-    	if(JVMArgs.LAUNCH_WORLD != null && !worldLoadFailed) {
+    	if(JVMArgs.LAUNCH_WORLD != null && !cancelled) {
 	    	if(gui instanceof GuiMainMenu && timesSeenMainMenu++ == 0) {
-	    		tryToLoadWorld();
+	    	    if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
+	                cancelled = true;
+	                LOGGER.info("Cancelled world auto-load because the Shift key was held down.");
+	                mc.getSoundHandler().playSound(PositionedSoundRecord.func_147674_a(new ResourceLocation("random.break"), 1.0F));
+	            } else {
+	                tryToLoadWorld();
+	            }
 	    	} else if(gui instanceof GuiMainMenu) {
 	    		LOGGER.debug("times seen main menu: " + timesSeenMainMenu);
 	    	}
