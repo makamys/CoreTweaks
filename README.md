@@ -2,8 +2,6 @@
 
 A Minecraft 1.7.10 coremod that contains various bug fixes, tweaks, optimizations (mainly to startup time) and performance diagnostics.
 
-Most of the mod's features target the **client** side. It does not work on servers at all at the moment.
-
 ## Features
 * [VanillaFix](https://www.curseforge.com/minecraft/mc-mods/vanillafix)-like crash handling
 * A class transformer cache that speeds up startup (one that's safer than [FastStart](https://github.com/makamys/FastStart)'s - FastStart's version is also included as an alternative)
