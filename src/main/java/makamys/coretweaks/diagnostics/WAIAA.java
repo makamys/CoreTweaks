@@ -27,7 +27,6 @@ public class WAIAA {
         public void processCommand(ICommandSender sender, String[] args) {
             if(sender instanceof EntityLivingBase) {
                 EntityLivingBase elb = (EntityLivingBase)sender;
-                // Vanilla's ray trace method is limited at 200 steps...
                 MovingObjectPosition posLiquid = MCUtil.rayTrace(elb, 100000000, true);
                 MovingObjectPosition posNoLiquid = MCUtil.rayTrace(elb, 100000000, false);
                 
