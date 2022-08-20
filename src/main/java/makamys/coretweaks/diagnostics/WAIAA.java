@@ -7,6 +7,7 @@ import makamys.coretweaks.command.CoreTweaksCommand;
 import makamys.coretweaks.command.ISubCommand;
 import makamys.coretweaks.util.MCUtil;
 import net.minecraft.block.Block;
+import net.minecraft.client.Minecraft;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.ChatComponentText;
@@ -27,7 +28,8 @@ public class WAIAA {
         public void processCommand(ICommandSender sender, String[] args) {
             if(sender instanceof EntityLivingBase) {
                 EntityLivingBase elb = (EntityLivingBase)sender;
-                MovingObjectPosition posLiquid = MCUtil.rayTrace(elb, 100000000, true);
+                int rayLength = Minecraft.getMinecraft().gameSettings.renderDistanceChunks * 16 * 2;
+                MovingObjectPosition posLiquid = MCUtil.rayTrace(elb, rayLength, true);
                 MovingObjectPosition posNoLiquid = MCUtil.rayTrace(elb, 100000000, false);
                 
                 sender.addChatMessage(new ChatComponentText(HELP_EMPHASIS_COLOR + "You are looking at"));
