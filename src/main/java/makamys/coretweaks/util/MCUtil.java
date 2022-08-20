@@ -129,7 +129,9 @@ public class MCUtil {
 
                 MovingObjectPosition movingobjectposition2 = null;
 
-                while (true) {
+                k1 = (int)(Math.abs(ray.xCoord) + Math.abs(ray.yCoord) + Math.abs(ray.zCoord)) * 2;
+
+                while (k1-- >= 0) {
                     if (Double.isNaN(origin.xCoord) || Double.isNaN(origin.yCoord) || Double.isNaN(origin.zCoord))
                     {
                         return null;
@@ -261,6 +263,7 @@ public class MCUtil {
                         }
                     }
                 }
+                return mysteryFlag2 ? movingobjectposition2 : null;
             } else {
                 return null;
             }
