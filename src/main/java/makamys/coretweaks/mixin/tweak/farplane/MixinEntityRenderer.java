@@ -10,7 +10,7 @@ import net.minecraft.client.renderer.EntityRenderer;
 @Mixin(EntityRenderer.class)
 public abstract class MixinEntityRenderer {
     
-    @ModifyArg(method = "setupCameraTransform", at = @At(value = "INVOKE", target = "Lorg/lwjgl/util/glu/Project;gluPerspective(FFFF)V"), index = 3)
+    @ModifyArg(method = "setupCameraTransform", at = @At(value = "INVOKE", target = "Lorg/lwjgl/util/glu/Project;gluPerspective(FFFF)V", remap = false), index = 3)
     private float modifyFarPlane(float original) {
         return FarPlaneDistanceTweaker.modifyFarPlane(original);
     }

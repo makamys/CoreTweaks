@@ -53,6 +53,10 @@ abstract class MixinMinecraft {
     @Shadow
     public abstract void shutdownMinecraftApplet();
     
+    /**
+     * @author makamys 
+     * @reason Change game loop to recover from crashes.
+     * */
     @Overwrite
     public void run() {
         this.running = true;

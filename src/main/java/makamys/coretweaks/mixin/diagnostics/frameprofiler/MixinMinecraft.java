@@ -11,12 +11,12 @@ import net.minecraft.client.Minecraft;
 @Mixin(Minecraft.class)
 public class MixinMinecraft {
 	
-	@Inject(method = "runGameLoop", at = @At(value = "INVOKE", target= "Lorg/lwjgl/opengl/Display;sync(I)V"))
+	@Inject(method = "runGameLoop", at = @At(value = "INVOKE", target= "Lorg/lwjgl/opengl/Display;sync(I)V", remap = false))
 	public void preSync(CallbackInfo ci) {
 		FrameProfiler.instance.preSync();
 	}
 	
-	@Inject(method = "runGameLoop", at = @At(value = "INVOKE", target= "Lorg/lwjgl/opengl/Display;sync(I)V", shift = At.Shift.AFTER))
+	@Inject(method = "runGameLoop", at = @At(value = "INVOKE", target= "Lorg/lwjgl/opengl/Display;sync(I)V", shift = At.Shift.AFTER, remap = false))
 	public void postSync(CallbackInfo ci) {
 		FrameProfiler.instance.postSync();
 	}

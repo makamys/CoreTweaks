@@ -36,7 +36,7 @@ abstract class MixinWorldServer {
     
     Map<Long, List<NextTickListEntry>> map;
     
-    @Redirect(method = {"scheduleBlockUpdateWithPriority", "func_147446_b"}, at = @At(value = "INVOKE", target = "Ljava/util/TreeSet;add(Ljava/lang/Object;)Z"))
+    @Redirect(method = {"scheduleBlockUpdateWithPriority", "func_147446_b"}, at = @At(value = "INVOKE", target = "Ljava/util/TreeSet;add(Ljava/lang/Object;)Z", remap = false))
     public boolean redirectAdd(TreeSet set, Object o) {
         NextTickListEntry e = (NextTickListEntry)o;
         long key = ChunkCoordIntPair.chunkXZ2Int(e.xCoord / 16, e.yCoord / 16);
@@ -51,7 +51,7 @@ abstract class MixinWorldServer {
         return set.add(o);
     }
     
-    @Redirect(method = {"tickUpdates"}, at = @At(value = "INVOKE", target = "Ljava/util/TreeSet;remove(Ljava/lang/Object;)Z"))
+    @Redirect(method = {"tickUpdates"}, at = @At(value = "INVOKE", target = "Ljava/util/TreeSet;remove(Ljava/lang/Object;)Z", remap = false))
     public boolean redirectRemove(TreeSet set, Object o) {
         NextTickListEntry e = (NextTickListEntry)o;
         List<NextTickListEntry> list = map.get(ChunkCoordIntPair.chunkXZ2Int(e.xCoord / 16, e.zCoord / 16));
@@ -61,6 +61,10 @@ abstract class MixinWorldServer {
         return set.remove(o);
     }
     
+    /**
+     * @author makamys
+     * @reason Use map instead of iterating over the full contents of pendingTickListEntriesTreeSet for more fastness.
+     * */
     @Overwrite
     public List getPendingBlockUpdates(Chunk p_72920_1_, boolean p_72920_2_)
     {

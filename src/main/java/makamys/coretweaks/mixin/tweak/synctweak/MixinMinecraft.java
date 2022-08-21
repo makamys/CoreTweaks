@@ -9,7 +9,7 @@ import net.minecraft.client.Minecraft;
 @Mixin(Minecraft.class)
 abstract class MixinMinecraft {
 
-    @Redirect(method = "Lnet/minecraft/client/Minecraft;runGameLoop()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;isFramerateLimitBelowMax()Z"))
+    @Redirect(method = "Lnet/minecraft/client/Minecraft;runGameLoop()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;isFramerateLimitBelowMax()Z", remap = false))
     public boolean redirectIsFramelimitBelowMax(Minecraft minecraft) {
     	return false;
     }

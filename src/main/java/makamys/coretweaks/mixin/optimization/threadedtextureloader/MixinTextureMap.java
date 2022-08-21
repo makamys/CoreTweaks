@@ -24,7 +24,7 @@ public abstract class MixinTextureMap {
     Map mapRegisteredSprites;
 	
 	@Redirect(method = "loadTextureAtlas(Lnet/minecraft/client/resources/IResourceManager;)V", 
-            at = @At(value = "INVOKE", target = "Ljavax/imageio/ImageIO;read(Ljava/io/InputStream;)Ljava/awt/image/BufferedImage;"))
+            at = @At(value = "INVOKE", target = "Ljavax/imageio/ImageIO;read(Ljava/io/InputStream;)Ljava/awt/image/BufferedImage;", remap = false))
     public BufferedImage redirectImageIORead(InputStream is) throws IOException {
 		if(CoreTweaks.textureLoader.isHooked()) {
 	        BufferedImage result = CoreTweaks.textureLoader.fetchLastStreamedResource();

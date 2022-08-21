@@ -47,7 +47,7 @@ public abstract class MixinFolderResourcePack {
 	}
     
     @Redirect(method = "hasResourceName(Ljava/lang/String;)Z", 
-            at = @At(value = "INVOKE", target = "Ljava/io/File;isFile()Z"))
+            at = @At(value = "INVOKE", target = "Ljava/io/File;isFile()Z", remap = false))
     public boolean redirectIsFile(File file) {
         boolean result = filePaths.contains(file.getPath());
         

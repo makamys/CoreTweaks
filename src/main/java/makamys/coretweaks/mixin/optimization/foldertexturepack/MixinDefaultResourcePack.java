@@ -11,11 +11,10 @@ import net.minecraft.client.resources.DefaultResourcePack;
 
 @Mixin(DefaultResourcePack.class)
 public class MixinDefaultResourcePack {
-	//public InputStream func_152780_c(ResourceLocation p_152780_1_) throws IOException
+    
     @Redirect(method = "func_152780_c(Lnet/minecraft/util/ResourceLocation;)Ljava/io/InputStream;", 
-            at = @At(value = "INVOKE", target = "Ljava/io/File;isFile()Z"))
+            at = @At(value = "INVOKE", target = "Ljava/io/File;isFile()Z", remap = false))
     public boolean redirectIsFile(File file) throws IOException {
-        //LOGGER.info("Running isFile redirector (DefaultResourcePack). file=" + file);
         return file.isFile();
     }
 	
