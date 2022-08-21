@@ -39,6 +39,7 @@ public class Config {
     public static float minFarPlaneDistance;
     public static boolean uncapCreateWorldGuiTextFieldLength;
     public static boolean mainMenuContinueButton;
+    public static boolean tcpNoDelay;
     
     public static boolean pauseOnWorldEntry;
 	public static boolean dingOnWorldEntry;
@@ -127,6 +128,7 @@ public class Config {
         forgeFastDeobfuscationRemapper = config.getBoolean("forgeFastDeobfuscationRemapper", "Optimizations", true, "Reduces the unnecessary work FMLDeobfuscationRemapper does when we are in a deobfuscated (i.e. development) environment.");
         ofOptimizeWorldRenderer = config.getBoolean("ofOptimizeWorldRenderer", "Optimizations", true, "Replaces the reflection OptiFine uses to access Forge methods in WorldRenderer#updateRenderer with direct calls to those methods. Small speedup during chunk updates.");
         fcOptimizeTextureUpload = config.getBoolean("fcOptimizeTextureUpload", "Optimizations", true, "Removes the call to GL11#getInteger in FastCraft's texture upload handler during texture stitching and uses a cached value instead. Fixes the slowness of texture stitching that happens when OptiFine and FastCraft are both present, and mipmapping is enabled.");
+        tcpNoDelay = config.getBoolean("tcpNoDelay", "Optimizations", true, "Sets TCP_NODELAY to true, reducing network latency in multiplayer. Works on server as well as client. From Minecraft 1.12 (added in 1.8.1).");
         
         coreTweaksCommand = config.getBoolean("coreTweaksCommand", "Diagnostics", true, "Enables the /coretweaks command, used to access various diagnostics. Invoke it in-game for additional information.");
         profilerMethods = config.getString("profilerMethods", "Diagnostics", "", "Comma-separated list of methods to profile. The results will be written to ./coretweaks/out/profiler-<timestamp>.csv. Currently only the call count is measured. Method names have the syntax of `<canonical class name>.<method name>`, like `some.package.SomeClass.method`.");
