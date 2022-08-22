@@ -11,7 +11,7 @@ import net.minecraftforge.common.config.Property;
 
 public class ConfigDumper {
 
-    public static final boolean ENABLED = Boolean.parseBoolean(System.getProperty("configDumper.enabled", "false"));
+    public static final boolean ENABLED = Boolean.parseBoolean(System.getProperty("coretweaks.configDumper.enabled", "false"));
 
     public static void dumpConfig(Configuration config) {
         File outFile = new File(Launch.minecraftHome, "config-export-" + config.getConfigFile().getName() + ".md");
