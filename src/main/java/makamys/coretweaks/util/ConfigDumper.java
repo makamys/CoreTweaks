@@ -19,13 +19,41 @@ public class ConfigDumper {
             for(String category : config.getCategoryNames()) {
                 ConfigCategory cat = config.getCategory(category);
                 fw.write("# " + cat.getName() + "\n\n");
+                
+                String comment = cat.getComment();
+                
+                if(comment != null) {
+                    fw.write(commentToMarkdown(cat.getComment()));
+                    fw.write("\n\n");
+                }
+                
                 for(Property prop : cat.getValues().values()) {
-                    fw.write("### " + prop.getName() + "\n" + prop.comment.replaceAll("\n", "\n\n") + "\n\n");
+                    fw.write("### " + prop.getName() + "\n" + commentToMarkdown(prop.comment) + "\n\n");
                 }
             }
         } catch(IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private static String commentToMarkdown(String comment) {
+        String outText = "";
+        
+        boolean backticksBetwixt = false;
+        for(int i = 0; i < comment.length(); i++) {
+            char c = comment.charAt(i);
+            String outChar = String.valueOf(c);
+            if(c == '`') {
+                backticksBetwixt = !backticksBetwixt;
+            }
+            
+            if(c == '<' && !backticksBetwixt) {
+                outChar = "&lt;";
+            }
+            
+            outText += outChar;
+        }
+        return outText.replaceAll("\n", "\n\n");
     }
 
 }
