@@ -8,12 +8,12 @@ import datetime
 
 parser = argparse.ArgumentParser(description='')
 
-parser.add_argument('-i', action='store_true')
-parser.add_argument('--graph-chunk-update-time', action='store_true')
-parser.add_argument('--graph-fps', action='store_true')
-parser.add_argument('--graph-render-sections', action='store_true')
-parser.add_argument('--summarize-fps', action='store_true')
-parser.add_argument('FRAME_PROFILER_RESULTS_CSV', type=str)
+parser.add_argument('-i', action='store_true', help="Start an interactive Python REPL session for examining data")
+parser.add_argument('--graph-chunk-update-time', action='store_true', help="Shows a histogram of chunk update time")
+parser.add_argument('--graph-fps', action='store_true', help="Shows a histogram of FPS (restricted to when no chunk updates are happening and no GUI is open)")
+parser.add_argument('--graph-render-sections', action='store_true', help="Shows a line graph of frametime over time, similarly to OptiFine's lagometer")
+parser.add_argument('--summarize-fps', action='store_true', help="Prints FPS statistics")
+parser.add_argument('FRAME_PROFILER_RESULTS_CSV', type=str, help="Output of CoreTweaks's frame profiler. They are created at .minecraft/coretweaks/out/frameprofiler.csv")
 
 args = parser.parse_args()
 
