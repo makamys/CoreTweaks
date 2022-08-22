@@ -85,9 +85,9 @@ public class Config {
         config.load();
         
         config.addCustomCategoryComment("Tweaks", "In addition to these settings, there are some tweaks that are activated via JVM flags:\n" +
-        "    -Dcoretweaks.launchWorld=WORLD : Automatically loads the world with the folder name WORLD once the main menu is reached. WORLD can be left blank, in this case the most recently played world will be loaded. Hold down shift when the main menu appears to cancel the automatic loading.\n" +
-        "    -Dcoretweaks.launchMinimized : Launch Minecraft minimized. Only implemented on Windows at the moment.\n" +
-        "    -Dcoretweaks.launchOnDesktop=NUMBER : Launch Minecraft on the virtual desktop with ordinal NUMBER. Only implemented on Linux at the moment. xprop has to be installed for it to work. Only tested on Openbox.");
+        "* -Dcoretweaks.launchWorld=WORLD : Automatically loads the world with the folder name WORLD once the main menu is reached. WORLD can be left blank, in this case the most recently played world will be loaded. Hold down shift when the main menu appears to cancel the automatic loading.\n" +
+        "* -Dcoretweaks.launchMinimized : Launch Minecraft minimized. Only implemented on Windows at the moment.\n" +
+        "* -Dcoretweaks.launchOnDesktop=NUMBER : Launch Minecraft on the virtual desktop with ordinal NUMBER. Only implemented on Linux at the moment. xprop has to be installed for it to work. Only tested on Openbox.");
         
         crashHandler = config.getBoolean("crashHandler", "Tweaks", true, "Lets you survive crashes without the game exiting, usually. Not compatible with other mods that do the same thing.");
         lightFixStare = config.getBoolean("lightFixStare", "Tweaks", true, "Causes lighting updates around the block the player is looking at. A workaround for lighting errors that lets you fix them by staring at them. Useful in the Nether.");
@@ -109,10 +109,10 @@ public class Config {
         fixSmallEntitySwim = config.getBoolean("fixSmallEntitySwim", "Bugfixes", true, "Fixes bug in entity swimming code resulting in small entities (ones with hitboxes less than 0.8 units tall, such as DMod's foxes) being prone to drowning.");
         cloudHeightCheck = CloudHeightCheck.valueOf(config.get("Tweaks", "cloudHeightCheck", CloudHeightCheck.ALWAYS_TRANSPARENT.toString(),
                 "Lets you tweak the condition used to decide whether to render opaque or transparent clouds.\n" + 
-                "UNCHANGED: Don't change anything\n" +
-                "VARIABLE_CORRECTED: Keep vanilla behavior of rendering clouds as opaque when the player is below them and transparent otherwise, but with the turning point corrected to match the cloud height even when the world provider has a different cloud height than 128. Also provides a fix for OptiFine's bug where clouds disappear when the player is between Y=128 and the cloud height level when they are raised.\n" +
-                "ALWAYS_TRANSPARENT: Always render clouds as transparent (how it is in b1.7.3 and 1.15+)\n" + 
-                "ALWAYS_OPAQUE: Always render clouds as opaque",
+                "* UNCHANGED: Don't change anything\n" +
+                "* VARIABLE_CORRECTED: Keep vanilla behavior of rendering clouds as opaque when the player is below them and transparent otherwise, but with the turning point corrected to match the cloud height even when the world provider has a different cloud height than 128. Also provides a fix for OptiFine's bug where clouds disappear when the player is between Y=128 and the cloud height level when they are raised.\n" +
+                "* ALWAYS_TRANSPARENT: Always render clouds as transparent (how it is in b1.7.3 and 1.15+)\n" + 
+                "* ALWAYS_OPAQUE: Always render clouds as opaque",
                 EnumUtils.getEnumMap(CloudHeightCheck.class).keySet().toArray(new String[]{})).getString());
         fixDisplayListDelete = config.getBoolean("fixDisplayListDelete", "Bugfixes", true, "Fixes graphical glitches that happen after recovering from a game crash, caused by world renderer display lists getting deleted but never reallocated. From 1.12.");
         fixHeightmapRange = config.getBoolean("fixHeightmapRange", "Bugfixes", true, "Fixes heightmap calculation not including the top layer of 16x16x16 regions, causing lighting errors (MC-7508)");
@@ -143,9 +143,9 @@ public class Config {
         //threadedTextureLoader = config.getBoolean("threadedTextureLoader", "Optimizations", false,
         //        "Use multi-threaded texture loading when stitching textures? Placebo.");
         transformerCache = getEnum(config, "transformerCache", "Optimizations", TransformerCache.LITE, "The type of transformer caching to use.\n"
-                + "NONE: None\n"
-                + "LITE: Cache individual transformations of select transformers. Reduces startup time. Safe.\n"
-                + "FULL: Cache the entire transformer chain. Reduces startup time further, but breaks with many mods.");
+                + "* NONE: None\n"
+                + "* LITE: Cache individual transformations of select transformers. Reduces startup time. Safe.\n"
+                + "* FULL: Cache the entire transformer chain. Reduces startup time further, but breaks with many mods.");
         fastFolderTexturePack = config.getBoolean("fastFolderTexturePack", "Optimizations", true, 
                 "Cache the file paths contained in folder resource packs. Fixes the immense slowdown they add to the loading of large modpacks.");
         
@@ -158,29 +158,22 @@ public class Config {
                 "org.spongepowered.asm.mixin.transformer.Proxy,appeng.transformer.asm.ApiRepairer,com.mumfrey.liteloader.transformers.ClassOverlayTransformer+",
                 "Comma-separated list of transformers for which the view of the transformer chain should be restored.\n" + 
                 "\n" + 
-                "The caching class transformer replaces the transformer chain with just itself.\n" + 
-                "This creates conflicts with certain other transformers which also access the transformer chain,\n" +
-                "which can result in the game crashing.\n" +
+                "The caching class transformer replaces the transformer chain with just itself. This creates conflicts with certain other transformers which also access the transformer chain, which can result in the game crashing.\n" +
                 "To solve this, our transformer will restore the view of the transformer chain while these transformers are running.\n" + 
                 "\n" + 
-                "How to find bad transformers? If you see another transformer's name in your crash log,\n" +
-                "or see its name in one of the iterator stack traces printed in debug mode,\n" +
-                "adding it to this list may solve the problem.\n");
+                "How to find bad transformers? If you see another transformer's name in your crash log, or see its name in one of the iterator stack traces printed in debug mode, adding it to this list may solve the problem.\n");
         badClasses = config.getString("badClasses", "transformer_cache_full", "net.eq2online.macros.permissions.MacroModPermissions", 
                 "Sometimes caching classes can cause problems. Classes in this list will not be cached.\n");
         modFilesToIgnore = config.getString("modFilesToIgnore", "transformer_cache_full", "CMD files.jar", 
-                "Comma-separated list of mod files to ignore modifications of when deciding if a cache rebuild\n" +
-                "should be triggered.\n" +
-                "If your cache keeps getting rebuilt even though you haven't changed any mods, look for deranged\n" +
-                "mod files and add them to this list.");
+                "Comma-separated list of mod files to ignore modifications of when deciding if a cache rebuild should be triggered.\n" +
+                "If your cache keeps getting rebuilt even though you haven't changed any mods, look for deranged mod files and add them to this list.");
         recentCacheSize = config.getInt("recentCacheSize", "transformer_cache_full", 512, -1, Integer.MAX_VALUE, 
-                "Cached class bytecode is removed from memory after being used, but the most recent N are kept around\n" +
-                "because the same class is often transformed more than once. This option sets the value of that N.\n" +
+                "Cached class bytecode is removed from memory after being used, but the most recent N are kept around because the same class is often transformed more than once. This option sets the value of that N.\n" +
                 "(Set to -1 to keep class bytecode in RAM forever)");
         verbosity = config.getInt("verbosity", "transformer_cache_full", 1, 0, 2,
-                "0: Only print the essential messages.\n" +
-                "1: Print when the cache gets saved.\n" +
-                "2: Debug mode. Turn this on to log a bunch of stuff that can help find the cause of a crash.");
+                "* 0: Only print the essential messages.\n" +
+                "* 1: Print when the cache gets saved.\n" +
+                "* 2: Debug mode. Turn this on to log a bunch of stuff that can help find the cause of a crash.");
         
         config.setCategoryComment("transformer_cache_lite", 
                 "Options for the lite caching class transformer. (only appliable if it's enabled)");
