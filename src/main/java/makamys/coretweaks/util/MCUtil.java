@@ -68,7 +68,9 @@ public class MCUtil {
         return rayTrace(entity.worldObj, vec3, vec32, stopOnLiquid, false, true);
     }
     
-    /** World#func_147447_a but there is no cap on range. */
+    /** Changes from World#func_147447_a:
+     * - There is no cap on range
+     * - It does not step into unloaded chunks */
     public static MovingObjectPosition rayTrace(World dis, Vec3 start, Vec3 end, boolean stopOnLiquid, boolean mysteryFlag1, boolean mysteryFlag2) {
         if (!Double.isNaN(start.xCoord) && !Double.isNaN(start.yCoord) && !Double.isNaN(start.zCoord)) {
             if (!Double.isNaN(end.xCoord) && !Double.isNaN(end.yCoord) && !Double.isNaN(end.zCoord)) {
@@ -210,7 +212,11 @@ public class MCUtil {
                         --startZ;
                         ++vec32.zCoord;
                     }
-
+                    
+                    if(!dis.blockExists(startX, startY, startZ)) {
+                        break;
+                    }
+                    
                     Block newStartBlock = dis.getBlock(startX, startY, startZ);
                     int newStartMeta = dis.getBlockMetadata(startX, startY, startZ);
 
