@@ -8,16 +8,19 @@ A Minecraft 1.7.10 coremod that contains various bug fixes, tweaks, optimization
 * A startup profiler that logs how long each part of startup took
 * Many small fixes - check the [Config](https://github.com/makamys/CoreTweaks/wiki/Config) page on the wiki for the full list.
 
-# Incompatibilities
+## Incompatibilities
 
 * Other crash handling mods (e.g. [BetterCrashes](https://github.com/vfyjxf/BetterCrashes), [CrashGuard](https://github.com/FalsePattern/CrashGuard)) will only work if CoreTweaks's `crashHandler` is disabled. Using them may be preferable in some cases, as they can catch some crashes CoreTweaks cannot. The opposite is also true, however.
 * Various coremods will cause a crash on startup due to an incompatibility with Mixin. Use [Mixingasm](https://github.com/makamys/Mixingasm) to fix this.
 
-# License
+## Suggested mods
+For more 1.7.10 bugfix/performance/debug mods, refer to [this list](https://gist.github.com/makamys/7cb74cd71d93a4332d2891db2624e17c).
+
+## License
 
 This mod is licensed under the [MIT License](https://github.com/makamys/CoreTweaks/blob/master/LICENSE).
 
-# Contributing
+## Contributing
 
 When running in an IDE, add these program arguments
 ```
