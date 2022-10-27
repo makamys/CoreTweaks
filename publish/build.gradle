@@ -28,7 +28,8 @@ def getCommitVersion(){
 }
 
 def buildVersion = getCommitVersion()
-def changeLog = new File("${projectDir}/changelog.md").getText('UTF-8')
+def changeLogFile = new File("${projectDir}/changelog.md")
+def changeLog = changeLogFile.exists() ? changeLogFile.getText('UTF-8') : ""
 ext.gameVersionsMap = new JsonSlurper().parseText(file("gameVersions.json").getText('UTF-8'))
 ext.gameVersions = gameVersionsMap.keySet()
 
