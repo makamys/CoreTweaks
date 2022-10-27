@@ -40,6 +40,7 @@ public class JarDiscovererCache {
 	private static Map<String, CachedModInfo> dirtyCache = new HashMap<>();
 	
 	private static final File DAT = Util.childFile(CoreTweaks.CACHE_DIR, "jarDiscovererCache.dat");
+	private static final File DAT_ERRORED = Util.childFile(CoreTweaks.CACHE_DIR, "jarDiscovererCache.dat.errored");
 	
 	private static final Kryo kryo = new Kryo();
 	
@@ -57,6 +58,12 @@ public class JarDiscovererCache {
 					while(true) {
 						String k = kryo.readObject(is, String.class);
 						CachedModInfo v = kryo.readObject(is, CachedModInfo.class);
+						if(k.equals(null)) {
+						    throw new RuntimeException("Key is null");
+						}
+						if(v.equals(null)) {
+                            throw new RuntimeException("Value is null");
+                        }
 						LOGGER.trace("Read CachedModInfo " + k);
 						cache.put(k, v);
 					}
@@ -68,9 +75,11 @@ public class JarDiscovererCache {
 					}
 				}
 				
-			} catch (FileNotFoundException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
+			} catch (Exception e) {
+			    CoreTweaks.LOGGER.error("There was an error reading the jar discoverer cache. A new one will be created. The previous one has been saved as " + DAT_ERRORED.getName() + " for inspection.");
+			    DAT.renameTo(DAT_ERRORED);
+				e.printStackTrace();
+				cache.clear();
 			}
 		}
 	}

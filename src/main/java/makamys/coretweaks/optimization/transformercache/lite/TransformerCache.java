@@ -18,6 +18,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.lang.model.SourceVersion;
+
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
@@ -90,7 +92,7 @@ public class TransformerCache implements IModEventListener {
         
         if(DAT.exists()) {
             try(Input is = new UnsafeInput(new BufferedInputStream(new FileInputStream(DAT)))) {
-                transformerMap = kryo.readObject(is, HashMap.class);
+                transformerMap = returnVerifiedTransformerMap(kryo.readObject(is, HashMap.class));
             } catch (IOException e) {
                 e.printStackTrace();
             } catch(Exception e) {
@@ -99,6 +101,21 @@ public class TransformerCache implements IModEventListener {
                 e.printStackTrace();
             }
         }
+    }
+    
+    private static Map<String, TransformerData> returnVerifiedTransformerMap(Map<String, TransformerData> map) {
+        if(map.containsKey(null)) {
+            throw new RuntimeException("Map contains null key");
+        }
+        if(map.containsValue(null)) {
+            throw new RuntimeException("Map contains null value");
+        }
+        for(String key : map.keySet()) {
+            if(!SourceVersion.isName(key)) {
+                throw new RuntimeException("Map contains invalid key: " + key);
+            }
+        }
+        return map;
     }
     
     @Override
