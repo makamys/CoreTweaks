@@ -27,99 +27,99 @@ import net.minecraftforge.client.event.TextureStitchEvent;
  * Class used to parallelize the I/O operations of loadTextureAtlas. May be useless. 
  */
 public class ThreadedTextureLoader {
-	
-	static class ResourceLoadJob {
-		Optional<IResource> resource = Optional.empty();
-		Optional<ResourceLocation> resourceLocation = Optional.empty();
-		
-		public ResourceLoadJob(IResource res) {
-			this.resource = Optional.of(res);
-		}
-		
-		public ResourceLoadJob(ResourceLocation resLoc) {
-			this.resourceLocation = Optional.of(resLoc);
-		}
-		
-		public static ResourceLoadJob of(Object object){
-			if(object instanceof IResource) {
-				return new ResourceLoadJob((IResource)object);
-			} else if(object instanceof ResourceLocation) {
-				return new ResourceLoadJob((ResourceLocation)object);
-			} else {
-				return null; // uh oh
-			}
-		}
-		
-		@Override
-		public boolean equals(Object obj) {
-			if(obj instanceof ResourceLoadJob) {
-				ResourceLoadJob o = (ResourceLoadJob)obj;
-				return Objects.equals(resource, o.resource) && Objects.equals(resourceLocation, o.resourceLocation);
-			} else {
-				return false;
-			}
-		}
-		
-		@Override
-		public int hashCode() {
-			return Objects.hash(resource, resourceLocation);
-		}
-	}
-	
-	/**
-	 * Contains an object, or an exception that was encountered when trying to
-	 * construct the object.
-	 */
-	static class Failable<T, E extends Exception> {
-		private Optional<T> thing = null;
-		private E exception = null;
-		
-		public Failable(T thing) {
-			this.thing = Optional.ofNullable(thing);
-		}
-		
-		public Failable(E e) {
-			this.exception = e;
-		}
-		
-		public T get() {
-			if(thing == null) {
-				throw new NoSuchElementException();
-			} else {
-				return thing.orElse(null);
-			}
-		}
-		
-		public T getOrThrow() throws E {
-			if(exception != null) {
-				throw exception;
-			} else {
-				return get();
-			}
-		}
-		
-		public boolean present() {
-			return thing != null;
-		}
-		
-		public boolean failed() {
-			return exception != null;
-		}
-		
-		public Exception getException() {
-			return exception;
-		}
-		
-		public static <T, E extends Exception> Failable<T, E> of(T thing){
-			return new Failable<T, E>(thing);
-		}
-		
-		public static <T, E extends Exception> Failable<T, E> failed(E e){
-			return new Failable<T, E>(e);
-		}
-	}
-	
-	List<TextureLoaderThread> threads = new ArrayList<>();
+    
+    static class ResourceLoadJob {
+        Optional<IResource> resource = Optional.empty();
+        Optional<ResourceLocation> resourceLocation = Optional.empty();
+        
+        public ResourceLoadJob(IResource res) {
+            this.resource = Optional.of(res);
+        }
+        
+        public ResourceLoadJob(ResourceLocation resLoc) {
+            this.resourceLocation = Optional.of(resLoc);
+        }
+        
+        public static ResourceLoadJob of(Object object){
+            if(object instanceof IResource) {
+                return new ResourceLoadJob((IResource)object);
+            } else if(object instanceof ResourceLocation) {
+                return new ResourceLoadJob((ResourceLocation)object);
+            } else {
+                return null; // uh oh
+            }
+        }
+        
+        @Override
+        public boolean equals(Object obj) {
+            if(obj instanceof ResourceLoadJob) {
+                ResourceLoadJob o = (ResourceLoadJob)obj;
+                return Objects.equals(resource, o.resource) && Objects.equals(resourceLocation, o.resourceLocation);
+            } else {
+                return false;
+            }
+        }
+        
+        @Override
+        public int hashCode() {
+            return Objects.hash(resource, resourceLocation);
+        }
+    }
+    
+    /**
+     * Contains an object, or an exception that was encountered when trying to
+     * construct the object.
+     */
+    static class Failable<T, E extends Exception> {
+        private Optional<T> thing = null;
+        private E exception = null;
+        
+        public Failable(T thing) {
+            this.thing = Optional.ofNullable(thing);
+        }
+        
+        public Failable(E e) {
+            this.exception = e;
+        }
+        
+        public T get() {
+            if(thing == null) {
+                throw new NoSuchElementException();
+            } else {
+                return thing.orElse(null);
+            }
+        }
+        
+        public T getOrThrow() throws E {
+            if(exception != null) {
+                throw exception;
+            } else {
+                return get();
+            }
+        }
+        
+        public boolean present() {
+            return thing != null;
+        }
+        
+        public boolean failed() {
+            return exception != null;
+        }
+        
+        public Exception getException() {
+            return exception;
+        }
+        
+        public static <T, E extends Exception> Failable<T, E> of(T thing){
+            return new Failable<T, E>(thing);
+        }
+        
+        public static <T, E extends Exception> Failable<T, E> failed(E e){
+            return new Failable<T, E>(e);
+        }
+    }
+    
+    List<TextureLoaderThread> threads = new ArrayList<>();
     protected LinkedBlockingQueue<ResourceLoadJob> queue = new LinkedBlockingQueue<>();
     protected ConcurrentHashMap<ResourceLocation, Failable<IResource, IOException>> resMap = new ConcurrentHashMap<>();
     protected ConcurrentHashMap<IResource, Failable<BufferedImage, IOException>> map = new ConcurrentHashMap<>();
@@ -130,8 +130,8 @@ public class ThreadedTextureLoader {
     private boolean hooked; // you'll be hooked on the brothers!
     
     public ThreadedTextureLoader(int numThreads) {
-    	initThreads(numThreads);
-    	LOGGER.info("Initialized threaded texture loader with " + numThreads + " threads.");
+        initThreads(numThreads);
+        LOGGER.info("Initialized threaded texture loader with " + numThreads + " threads.");
     }
     
     private void initThreads(int numThreads) {
@@ -141,7 +141,7 @@ public class ThreadedTextureLoader {
         
         for(TextureLoaderThread t: threads) t.start();
     }
-	
+    
     public void setLastStreamedResource(IResource res) {
         lastStreamedResource = res;
     }
@@ -161,7 +161,7 @@ public class ThreadedTextureLoader {
                 resMap.clear();
                 
                 if(!map.containsKey(resLoc)) {
-                	queue.add(new ResourceLoadJob(resLoc));
+                    queue.add(new ResourceLoadJob(resLoc));
                 }
             } catch(Exception e) {}
         }
@@ -172,28 +172,28 @@ public class ThreadedTextureLoader {
     }
     
     public IResource fetchResource(ResourceLocation loc) throws IOException {
-    	return fetchFromMap(resMap, loc).getOrThrow();
+        return fetchFromMap(resMap, loc).getOrThrow();
     }
     
     public <K, V> V fetchFromMap(Map<K, V> map, K key){
-    	while(true) {
-    		synchronized(waitingOn) {
-    			if(map.containsKey(key)) {
-    				break;
-    			} else {
-    				//LOGGER.info(lastStreamedResource + " hasn't been loaded yet, waiting...");
-    	            waitingOn.add(ResourceLoadJob.of(key));
-    	            if(waitingOn.size() > 1) throw new IllegalStateException();
-    	            
-	                queue.add(ResourceLoadJob.of(key));
-	                try {
-	                    waitingOn.wait();
-	                } catch (InterruptedException e) {
-	                    
-	                }
-    	            //LOGGER.info("Woke up on " + lastStreamedResource);
-    			}
-    		}
+        while(true) {
+            synchronized(waitingOn) {
+                if(map.containsKey(key)) {
+                    break;
+                } else {
+                    //LOGGER.info(lastStreamedResource + " hasn't been loaded yet, waiting...");
+                    waitingOn.add(ResourceLoadJob.of(key));
+                    if(waitingOn.size() > 1) throw new IllegalStateException();
+                    
+                    queue.add(ResourceLoadJob.of(key));
+                    try {
+                        waitingOn.wait();
+                    } catch (InterruptedException e) {
+                        
+                    }
+                    //LOGGER.info("Woke up on " + lastStreamedResource);
+                }
+            }
             
         }
         waitingOn.clear();
@@ -235,6 +235,6 @@ public class ThreadedTextureLoader {
     }
     
     public boolean isHooked() {
-    	return hooked;
+        return hooked;
     }
 }

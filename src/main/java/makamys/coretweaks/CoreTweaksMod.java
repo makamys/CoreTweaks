@@ -70,7 +70,7 @@ public class CoreTweaksMod
         }
         registerListener(FrameProfiler.instance = new FrameProfiler());
         if(JVMArgs.LAUNCH_WORLD != null) {
-        	registerListener(AutoWorldLoad.instance = new AutoWorldLoad());
+            registerListener(AutoWorldLoad.instance = new AutoWorldLoad());
         }
         if(Config.mainMenuContinueButton) {
             registerListener(LoadLastWorldButton.instance = new LoadLastWorldButton());

@@ -14,10 +14,10 @@ abstract class MixinRenderGlobal {
 
     @Inject(method = "updateRenderers", at = @At("RETURN"), cancellable = true)
     public void postUpdateRenderers(EntityLivingBase elb, boolean bool, CallbackInfoReturnable<Boolean> cir) {
-    	if(OFUtil.isOptifinePresent()) {
-    		// OptiFine has it backwards for some reason
-    		cir.setReturnValue(!cir.getReturnValueZ());
-    	}
+        if(OFUtil.isOptifinePresent()) {
+            // OptiFine has it backwards for some reason
+            cir.setReturnValue(!cir.getReturnValueZ());
+        }
     }
     
 }

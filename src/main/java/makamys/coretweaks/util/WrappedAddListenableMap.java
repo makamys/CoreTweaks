@@ -8,10 +8,10 @@ import java.util.Set;
 
 public class WrappedAddListenableMap<K, V> implements Map<K, V> {
     
-	public static interface MapAddListener<K, V> {
-		boolean onPut(Map<K, V> delegateMap, K key, V value);
-	}
-	
+    public static interface MapAddListener<K, V> {
+        boolean onPut(Map<K, V> delegateMap, K key, V value);
+    }
+    
     private Map<K, V> o;
     
     private List<MapAddListener<K, V>> listeners = new ArrayList<>();
@@ -57,15 +57,15 @@ public class WrappedAddListenableMap<K, V> implements Map<K, V> {
 
     @Override
     public V put(K key, V value) {
-    	boolean blocked = false;
-    	for(MapAddListener<K, V> l : listeners) {
-    		if(!l.onPut(o, key, value)) {
-    			blocked = true;
-    			break;
-    		}
-    	}
-    	
-		return blocked ? null : o.put(key, value);
+        boolean blocked = false;
+        for(MapAddListener<K, V> l : listeners) {
+            if(!l.onPut(o, key, value)) {
+                blocked = true;
+                break;
+            }
+        }
+        
+        return blocked ? null : o.put(key, value);
     }
 
     @Override
@@ -89,11 +89,11 @@ public class WrappedAddListenableMap<K, V> implements Map<K, V> {
     }
     
     public void addListener(MapAddListener<K, V> l) {
-    	listeners.add(l);
+        listeners.add(l);
     }
     
     public void removeListener(MapAddListener<K, V> l) {
-    	listeners.remove(l);
+        listeners.remove(l);
     }
     
 }

@@ -13,7 +13,7 @@ import net.minecraft.util.ResourceLocation;
 
 class TextureLoaderThread extends Thread {
     
-	ThreadedTextureLoader parent;
+    ThreadedTextureLoader parent;
     
     public TextureLoaderThread(ThreadedTextureLoader parent, int index) {
         this.parent = parent;
@@ -32,47 +32,47 @@ class TextureLoaderThread extends Thread {
                 
                 IResource res;
                 if(job.resource.isPresent()) {
-                	res = job.resource.get();
+                    res = job.resource.get();
                 } else {
-                	ResourceLocation resLoc = job.resourceLocation.get();
-                	// reusing res may be a bad idea since the stream gets stale
-                	boolean reuseRes = false;
-                	if(reuseRes && parent.resMap.containsKey(resLoc)) {
-                		Failable<IResource, IOException> resMaybe = parent.resMap.get(resLoc);
-                		if(resMaybe.present()) {
-                			res = resMaybe.get();
-                		} else {
-                			continue;
-                		}
-                	} else {
-            			try {
-            				res = Minecraft.getMinecraft().getResourceManager().getResource(resLoc);
-            				parent.resMap.put(resLoc, Failable.of(res));
-            			} catch (IOException e) {
-            				say("hmm, couldn't load " + resLoc);
-            				parent.resMap.put(resLoc, Failable.failed(e));
-            				res = null;
-            			}
-            			notifyIfWaitingOn(resLoc);
-                	}
+                    ResourceLocation resLoc = job.resourceLocation.get();
+                    // reusing res may be a bad idea since the stream gets stale
+                    boolean reuseRes = false;
+                    if(reuseRes && parent.resMap.containsKey(resLoc)) {
+                        Failable<IResource, IOException> resMaybe = parent.resMap.get(resLoc);
+                        if(resMaybe.present()) {
+                            res = resMaybe.get();
+                        } else {
+                            continue;
+                        }
+                    } else {
+                        try {
+                            res = Minecraft.getMinecraft().getResourceManager().getResource(resLoc);
+                            parent.resMap.put(resLoc, Failable.of(res));
+                        } catch (IOException e) {
+                            say("hmm, couldn't load " + resLoc);
+                            parent.resMap.put(resLoc, Failable.failed(e));
+                            res = null;
+                        }
+                        notifyIfWaitingOn(resLoc);
+                    }
                 }
                 
                 if(res != null) {
-                	if(!parent.map.containsKey(res)) {
-	                
-	                    BufferedImage img;
-	                    try {
-	                        img = ImageIO.read(res.getInputStream());
-	                        parent.map.put(res, Failable.of(img));
-	                    } catch (IOException e) {
-	                        img = null;
-	                        say("hmm, couldn't load image " + res);
-	                        parent.map.put(res, Failable.failed(e));
-	                    }
-	                } else {
-	                    //say("meh, I already loaded " + res);
-	                }
-                	notifyIfWaitingOn(res);
+                    if(!parent.map.containsKey(res)) {
+                    
+                        BufferedImage img;
+                        try {
+                            img = ImageIO.read(res.getInputStream());
+                            parent.map.put(res, Failable.of(img));
+                        } catch (IOException e) {
+                            img = null;
+                            say("hmm, couldn't load image " + res);
+                            parent.map.put(res, Failable.failed(e));
+                        }
+                    } else {
+                        //say("meh, I already loaded " + res);
+                    }
+                    notifyIfWaitingOn(res);
                 }
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -81,12 +81,12 @@ class TextureLoaderThread extends Thread {
     }
     
     private void notifyIfWaitingOn(Object o) {
-    	synchronized(parent.waitingOn) {
-    		if(!parent.waitingOn.isEmpty()) {
-            	ResourceLoadJob job = parent.waitingOn.get(0);
-            	if(o.equals(job.resource.orElse(null)) || o.equals(job.resourceLocation.orElse(null))) {
-            		parent.waitingOn.notify();
-            	}
+        synchronized(parent.waitingOn) {
+            if(!parent.waitingOn.isEmpty()) {
+                ResourceLoadJob job = parent.waitingOn.get(0);
+                if(o.equals(job.resource.orElse(null)) || o.equals(job.resourceLocation.orElse(null))) {
+                    parent.waitingOn.notify();
+                }
             }
         }
     }

@@ -13,6 +13,6 @@ abstract class MixinFMLClientHandler {
      * */
     @Overwrite(remap = false)
     public String stripSpecialChars(String message) {
-    	return message;
+        return message;
     }
 }

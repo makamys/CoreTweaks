@@ -32,7 +32,7 @@ public class ClientChunkMap extends LongHashMap {
     }
     
     public void onBug() {
-    	LOGGER.info("Bug detected in ClientChunkMap");
+        LOGGER.info("Bug detected in ClientChunkMap");
     }
     
     public int getNumHashElements()
@@ -40,9 +40,9 @@ public class ClientChunkMap extends LongHashMap {
         int result = chunksContained;
         
         if(testMap != null) {
-        	if(result != testMap.getNumHashElements()) {
-        		onBug();
-        	}
+            if(result != testMap.getNumHashElements()) {
+                onBug();
+            }
         }
         
         return result;
@@ -65,7 +65,7 @@ public class ClientChunkMap extends LongHashMap {
         
         if(testMap != null) {
             if(result != testMap.getValueByKey(xz)) {
-            	onBug();
+                onBug();
             }
         }
         
@@ -83,7 +83,7 @@ public class ClientChunkMap extends LongHashMap {
         int mapZ = Math.floorMod(z, radius * 2 + 1);
         
         if(chunkXinternal2world(mapX) != x || chunkZinternal2world(mapZ) != z) {
-        	onBug();
+            onBug();
         }
         
         map[mapX][mapZ] = chunk;
@@ -102,7 +102,7 @@ public class ClientChunkMap extends LongHashMap {
         
         if(testMap != null) {
             if(result != testMap.containsItem(xz)) {
-            	onBug();
+                onBug();
             }
         }
         
@@ -152,7 +152,7 @@ public class ClientChunkMap extends LongHashMap {
         
         if(testMap != null) {
             if(result != testMap.remove(xz)) {
-            	onBug();
+                onBug();
             }
         }
         return result;
@@ -179,8 +179,8 @@ public class ClientChunkMap extends LongHashMap {
         
         Chunk chunk = getMapElement(x, z);
         if(chunk != null && !isInRange(chunk.xPosition, chunk.zPosition)) {
-        	farMap.put(ChunkCoordIntPair.chunkXZ2Int(chunk.xPosition, chunk.zPosition), chunk);
-        	map[x][z] = null;
+            farMap.put(ChunkCoordIntPair.chunkXZ2Int(chunk.xPosition, chunk.zPosition), chunk);
+            map[x][z] = null;
         }
         
         Chunk farChunk = farMap.remove(ChunkCoordIntPair.chunkXZ2Int(worldX, worldZ));
@@ -205,20 +205,20 @@ public class ClientChunkMap extends LongHashMap {
         int signDx = (int)Math.signum(newX - oldOffX);
         int signDz = (int)Math.signum(newZ - oldOffZ);
         for(int px = oldOffX + (signDx > 0 ? 0 : -1); px != newX + (signDx > 0 ? 0 : -1); px += signDx) {
-        	for(int z = 0; z < getDiameter(); z++) {
-        		updateDirty(px, z);
-        	}
+            for(int z = 0; z < getDiameter(); z++) {
+                updateDirty(px, z);
+            }
         }
         for(int pz = oldOffZ + (signDz > 0 ? 0 : -1); pz != newZ + (signDz > 0 ? 0 : -1); pz += signDz) {
-        	for(int x = 0; x < getDiameter(); x++) {
-        		updateDirty(x, pz);
-        	}
+            for(int x = 0; x < getDiameter(); x++) {
+                updateDirty(x, pz);
+            }
         }
         
         if(test) {
             for(Chunk chunk : farMap.values()) {
                 if(isInRange(chunk.xPosition, chunk.zPosition)) {
-                	onBug();
+                    onBug();
                 }
             }
         }

@@ -17,5 +17,5 @@ public class MixinDefaultResourcePack {
     public boolean redirectIsFile(File file) throws IOException {
         return file.isFile();
     }
-	
+    
 }

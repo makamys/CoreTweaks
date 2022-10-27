@@ -18,27 +18,27 @@ import net.minecraft.util.ResourceLocation;
 @Mixin(NetHandlerPlayClient.class)
 abstract class MixinNetHandlerPlayClient implements INetHandlerPlayClient {
     
-	@Shadow
-	private Random avRandomizer;
-	@Shadow
-	private Minecraft gameController;
-	
-	private boolean soundPending = false;
-	
+    @Shadow
+    private Random avRandomizer;
+    @Shadow
+    private Minecraft gameController;
+    
+    private boolean soundPending = false;
+    
     @Inject(method = "handleRespawn", at = @At("HEAD"))
     public void preHandleRespawn(S07PacketRespawn packet, CallbackInfo ci) {
         int dimension = packet.func_149082_c();
         if (dimension != gameController.thePlayer.dimension) {
-        	soundPending = true;
+            soundPending = true;
         }
     }
     
     @Inject(method = "handleRespawn", at = @At("RETURN"))
     public void postHandleRespawn(S07PacketRespawn packet, CallbackInfo ci) {
-    	if(soundPending) {
-	    	gameController.getSoundHandler().playSound(
-	    			PositionedSoundRecord.func_147674_a(new ResourceLocation("portal.travel"), avRandomizer.nextFloat() * 0.4F + 0.8F));
-	    	soundPending = false;
-    	}
+        if(soundPending) {
+            gameController.getSoundHandler().playSound(
+                    PositionedSoundRecord.func_147674_a(new ResourceLocation("portal.travel"), avRandomizer.nextFloat() * 0.4F + 0.8F));
+            soundPending = false;
+        }
     }
 }

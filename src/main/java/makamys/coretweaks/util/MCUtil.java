@@ -23,9 +23,9 @@ import net.minecraft.world.storage.ISaveFormat;
 import net.minecraft.world.storage.SaveFormatComparator;
 
 public class MCUtil {
-	
-	public static boolean tryToLoadWorld(String worldName) {
-	    Minecraft mc = Minecraft.getMinecraft();
+    
+    public static boolean tryToLoadWorld(String worldName) {
+        Minecraft mc = Minecraft.getMinecraft();
         ISaveFormat saveLoader = mc.getSaveLoader();
         try {
             Optional<SaveFormatComparator> saveOpt;
@@ -244,5 +244,5 @@ public class MCUtil {
     public static MovingObjectPosition rayTrace(EntityLivingBase entity, double reach) {
         return rayTrace(entity, reach, true);
     }
-	
+    
 }

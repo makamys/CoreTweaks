@@ -10,9 +10,9 @@ import net.minecraft.util.AxisAlignedBB;
 
 @Mixin(Entity.class)
 public class MixinEntity {
-	
-	@Redirect(method = "handleWaterMovement", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/AxisAlignedBB;contract(DDD)Lnet/minecraft/util/AxisAlignedBB;"))
-	public AxisAlignedBB redirectContract(AxisAlignedBB dis, double dx, double dy, double dz) {
-		return AxisAlignedBBHelper.ensureNonNegativeDimensions(dis.contract(dx, dy, dz));
-	}
+    
+    @Redirect(method = "handleWaterMovement", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/AxisAlignedBB;contract(DDD)Lnet/minecraft/util/AxisAlignedBB;"))
+    public AxisAlignedBB redirectContract(AxisAlignedBB dis, double dx, double dy, double dz) {
+        return AxisAlignedBBHelper.ensureNonNegativeDimensions(dis.contract(dx, dy, dz));
+    }
 }

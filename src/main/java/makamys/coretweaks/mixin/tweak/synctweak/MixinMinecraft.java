@@ -11,7 +11,7 @@ abstract class MixinMinecraft {
 
     @Redirect(method = "Lnet/minecraft/client/Minecraft;runGameLoop()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;isFramerateLimitBelowMax()Z", remap = false))
     public boolean redirectIsFramelimitBelowMax(Minecraft minecraft) {
-    	return false;
+        return false;
     }
     
 }

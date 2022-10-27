@@ -17,11 +17,11 @@ import net.minecraft.launchwrapper.LaunchClassLoader;
  * It delegates all operations to the original list, save for one: iterator() (which
  * LaunchClassLoader uses to iterate over the transformer chain):
  * <ul>
- * 	<li> returns an iterator to a list which only contains {@link CachingTransformer} normally</li>
- * 	<li> returns an iterator to the original list inside exceptional transformers that require 
- *       iteration over the real transformer chain</li>
+ * <li> returns an iterator to a list which only contains {@link CachingTransformer} normally </li>
+ * <li> returns an iterator to the original list inside exceptional transformers that require 
+ *      iteration over the real transformer chain </li>
  * </ul>
- */	
+ */ 
 
 public class WrappedTransformerList<T> implements List<T> {
     public List<T> original;
@@ -48,7 +48,7 @@ public class WrappedTransformerList<T> implements List<T> {
 
     @Override
     public boolean addAll(int index, Collection<? extends T> c) {
-    	return original.addAll(c);
+        return original.addAll(c);
     }
 
     @Override
@@ -58,7 +58,7 @@ public class WrappedTransformerList<T> implements List<T> {
 
     @Override
     public boolean contains(Object o) {
-    	return original.contains(o);
+        return original.contains(o);
     }
 
     @Override
@@ -68,22 +68,22 @@ public class WrappedTransformerList<T> implements List<T> {
 
     @Override
     public T get(int index) throws IndexOutOfBoundsException {
-		return original.get(index);
+        return original.get(index);
     }
 
     @Override
     public int indexOf(Object o) {
-		return original.indexOf(o);
+        return original.indexOf(o);
     }
 
     @Override
     public boolean isEmpty() {
-		return original.isEmpty();
+        return original.isEmpty();
     }
 
     @Override
     public Iterator<T> iterator() {
-    	return listIterator();
+        return listIterator();
     }
 
     @Override
@@ -93,7 +93,7 @@ public class WrappedTransformerList<T> implements List<T> {
 
     @Override
     public ListIterator<T> listIterator() {
-    	return listIterator(0);
+        return listIterator(0);
     }
 
     @Override
@@ -101,55 +101,55 @@ public class WrappedTransformerList<T> implements List<T> {
         boolean first = true;
         
         if(CachingTransformer.DEBUG_PRINT) {
-	        for(StackTraceElement e : Thread.currentThread().getStackTrace()) {
-	            if(!first && !e.getClassName().equals(getClass().getName())) {
-	                if(!e.getClassName().equals(LaunchClassLoader.class.getName())) {
-	                    
-	                    LOGGER.info("iterator called by " + String.join(" > ", Arrays.stream(Thread.currentThread().getStackTrace()).map(x -> x.getClassName()).collect(Collectors.toList())));
-	                }
-	                break;
-	            }
-	            first = false;
-	        }
+            for(StackTraceElement e : Thread.currentThread().getStackTrace()) {
+                if(!first && !e.getClassName().equals(getClass().getName())) {
+                    if(!e.getClassName().equals(LaunchClassLoader.class.getName())) {
+                        
+                        LOGGER.info("iterator called by " + String.join(" > ", Arrays.stream(Thread.currentThread().getStackTrace()).map(x -> x.getClassName()).collect(Collectors.toList())));
+                    }
+                    break;
+                }
+                first = false;
+            }
         }
         
-    	if(alt == null) {
-    		return original.listIterator(index);
-    	} else {
-    		List<T> list = new ArrayList<T>(1);
-    		list.add(alt);
-    		return list.listIterator(index);
-    	}
+        if(alt == null) {
+            return original.listIterator(index);
+        } else {
+            List<T> list = new ArrayList<T>(1);
+            list.add(alt);
+            return list.listIterator(index);
+        }
     }
 
     @Override
     public boolean remove(Object o) {
-		return original.remove(o);
+        return original.remove(o);
     }
 
     @Override
     public T remove(int index) {
-		return original.remove(index);
+        return original.remove(index);
     }
 
     @Override
     public boolean removeAll(Collection<?> c) {
-		return original.removeAll(c);
+        return original.removeAll(c);
     }
 
     @Override
     public boolean retainAll(Collection<?> c) {
-		return original.retainAll(c);
+        return original.retainAll(c);
     }
 
     @Override
     public T set(int index, T element) {
-		return original.set(index, element);
+        return original.set(index, element);
     }
 
     @Override
     public int size() {
-    	return original.size();
+        return original.size();
     }
 
     @Override
@@ -159,11 +159,11 @@ public class WrappedTransformerList<T> implements List<T> {
 
     @Override
     public Object[] toArray() {
-		return original.toArray();
+        return original.toArray();
     }
 
     @Override
     public <T> T[] toArray(T[] a) {
-		return original.toArray(a);
+        return original.toArray(a);
     }
 }

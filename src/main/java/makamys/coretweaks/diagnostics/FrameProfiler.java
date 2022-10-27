@@ -58,11 +58,11 @@ public class FrameProfiler implements IModEventListener {
     }
     
     private void addEntry(Entry type, Object value) {
-    	tb.set(type, value);
+        tb.set(type, value);
     }
     
     private void addEntry(Entry type) {
-    	addEntry(type, System.nanoTime());
+        addEntry(type, System.nanoTime());
     }
     
     public void onFrameStart() {
@@ -90,10 +90,10 @@ public class FrameProfiler implements IModEventListener {
     }
     
     public void postRenderWorld(float alpha, long deadline) {
-    	if(started) {
-	    	addEntry(t_renderWorldEnd);
-	        addEntry(t_updateRenderersDeadline, deadline);
-    	}
+        if(started) {
+            addEntry(t_renderWorldEnd);
+            addEntry(t_updateRenderersDeadline, deadline);
+        }
     }
     
     public void preUpdateRenderers() {
@@ -103,50 +103,50 @@ public class FrameProfiler implements IModEventListener {
     }
     
     public void postUpdateRenderers() {
-    	if(started) {
-	    	addEntry(t_updateRenderersEnd);
-    	}
+        if(started) {
+            addEntry(t_updateRenderersEnd);
+        }
     }
     
     public void preSync() {
-    	if(started) {
-	    	addEntry(t_syncStart);
-    	}
+        if(started) {
+            addEntry(t_syncStart);
+        }
     }
     
     public void postSync() {
-    	if(started) {
-	    	addEntry(t_syncEnd);
-    	}
+        if(started) {
+            addEntry(t_syncEnd);
+        }
     }
     
     public void preRunGameLoop() {
-    	if(started) {
-        	tb.endRow();
-	    	addEntry(t_gameLoopStart);
-    	}
+        if(started) {
+            tb.endRow();
+            addEntry(t_gameLoopStart);
+        }
     }
     
     public void postRunGameLoop() {
-    	if(started) {
-	    	addEntry(t_gameLoopEnd);
-    	}
+        if(started) {
+            addEntry(t_gameLoopEnd);
+        }
     }
     
     public void start() {
-    	tb = new TableBuilder<>();
+        tb = new TableBuilder<>();
         started = true;
     }
     
     private boolean dumpProfilingResults() {
-    	try {
-    		tb.writeToCSV(Util.childFile(CoreTweaks.OUT_DIR, "frameprofiler.csv"));
-    		return true;
-    	} catch(IOException e) {
-    		return false;
-    	} finally {
-    		tb = null;
-    	}
+        try {
+            tb.writeToCSV(Util.childFile(CoreTweaks.OUT_DIR, "frameprofiler.csv"));
+            return true;
+        } catch(IOException e) {
+            return false;
+        } finally {
+            tb = null;
+        }
     }
     
     public boolean stop() {

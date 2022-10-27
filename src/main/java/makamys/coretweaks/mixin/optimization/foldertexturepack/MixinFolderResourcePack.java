@@ -22,29 +22,29 @@ import net.minecraft.client.resources.FolderResourcePack;
 
 @Mixin(FolderResourcePack.class)
 public abstract class MixinFolderResourcePack {
-	
+    
     private static final boolean DEBUG = Boolean.parseBoolean(System.getProperty("coretweaks.debugFolderResourcePackMixin", "false"));
     
-	HashSet<String> filePaths = new HashSet<String>();
-	
-	@Inject(method = "<init>*", at = @At("RETURN"))
+    HashSet<String> filePaths = new HashSet<String>();
+    
+    @Inject(method = "<init>*", at = @At("RETURN"))
     private void afterConstructor(File folder, CallbackInfo ci) {
-	    if(DEBUG) LOGGER.info("running after constructor, folder=" + folder);
-	    
-		explore(folder, folder.getPath());
+        if(DEBUG) LOGGER.info("running after constructor, folder=" + folder);
+        
+        explore(folder, folder.getPath());
     }
-	
-	private void explore(File folder, String path) {
-	    if(DEBUG) LOGGER.info("exploring folder=" + folder + " path=" + path);
-		
-	    for(File f: folder.listFiles()) {
-			String myPath = (path.isEmpty() ? "" : path + File.separator) + f.getName();
-			filePaths.add(myPath);
-			if(f.isDirectory()) {
-				explore(f, myPath);
-			}
-		}
-	}
+    
+    private void explore(File folder, String path) {
+        if(DEBUG) LOGGER.info("exploring folder=" + folder + " path=" + path);
+        
+        for(File f: folder.listFiles()) {
+            String myPath = (path.isEmpty() ? "" : path + File.separator) + f.getName();
+            filePaths.add(myPath);
+            if(f.isDirectory()) {
+                explore(f, myPath);
+            }
+        }
+    }
     
     @Redirect(method = "hasResourceName(Ljava/lang/String;)Z", 
             at = @At(value = "INVOKE", target = "Ljava/io/File;isFile()Z", remap = false))
@@ -53,7 +53,7 @@ public abstract class MixinFolderResourcePack {
         
         if(DEBUG) LOGGER.info("isFile " + file + " ? " + result);
         
-		return result;
+        return result;
     }
-	
+    
 }

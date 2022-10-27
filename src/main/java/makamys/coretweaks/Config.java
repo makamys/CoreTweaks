@@ -42,8 +42,8 @@ public class Config {
     public static boolean tcpNoDelay;
     
     public static boolean pauseOnWorldEntry;
-	public static boolean dingOnWorldEntry;
-	public static int pauseWaitLength;
+    public static boolean dingOnWorldEntry;
+    public static int pauseWaitLength;
     
     public static boolean coreTweaksCommand;
     public static String profilerMethods;
@@ -67,10 +67,10 @@ public class Config {
     public static String[] transformersToCache;
     
     public static enum CloudHeightCheck {
-    	UNCHANGED,
-    	VARIABLE_CORRECTED,
-    	ALWAYS_TRANSPARENT,
-    	ALWAYS_OPAQUE
+        UNCHANGED,
+        VARIABLE_CORRECTED,
+        ALWAYS_TRANSPARENT,
+        ALWAYS_OPAQUE
     }
     
     public static enum TransformerCache {

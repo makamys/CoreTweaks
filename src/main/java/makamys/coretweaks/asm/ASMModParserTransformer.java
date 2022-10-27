@@ -18,38 +18,38 @@ import net.minecraft.launchwrapper.IClassTransformer;
 /** Adds an empty constructor to ASMModParser so it can be serialized by JarDiscovererCache. */
 public class ASMModParserTransformer implements IClassTransformer {
 
-	@Override
-	public byte[] transform(String name, String transformedName, byte[] basicClass) {
-		if(name.equals("cpw.mods.fml.common.discovery.asm.ASMModParser")) {
-			basicClass = doTransform(basicClass);
-		}
-		return basicClass;
-	}
+    @Override
+    public byte[] transform(String name, String transformedName, byte[] basicClass) {
+        if(name.equals("cpw.mods.fml.common.discovery.asm.ASMModParser")) {
+            basicClass = doTransform(basicClass);
+        }
+        return basicClass;
+    }
 
-	private static byte[] doTransform(byte[] bytes) {
-		LOGGER.info("Transforming ASMModParser to add empty constructor");
-		
-		try {
-			ClassNode classNode = new ClassNode();
-			ClassReader classReader = new ClassReader(bytes);
-			classReader.accept(classNode, 0);
-			MethodNode emptyConstructor = new MethodNode(ACC_PUBLIC, "<init>", "()V", null, null);
-			
-			emptyConstructor.instructions.add(new VarInsnNode(ALOAD, 0));
-			emptyConstructor.instructions.add(new MethodInsnNode(INVOKESPECIAL, "java/lang/Object", "<init>", "()V", false));
-			emptyConstructor.instructions.add(new VarInsnNode(ALOAD, 0));
-			emptyConstructor.instructions.add(new MethodInsnNode(INVOKESTATIC, "com/google/common/collect/Lists", "newLinkedList", "()Ljava/util/LinkedList;", false));
-			emptyConstructor.instructions.add(new FieldInsnNode(PUTFIELD, "cpw/mods/fml/common/discovery/asm/ASMModParser", "annotations", "Ljava/util/LinkedList;"));
-			emptyConstructor.instructions.add(new InsnNode(Opcodes.RETURN));
-			
-			classNode.methods.add(emptyConstructor);
-			
-			ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
-			classNode.accept(writer);
-			return writer.toByteArray();
-		} catch(Exception e) {
-			e.printStackTrace();
-		}
-		return bytes;
-	}
+    private static byte[] doTransform(byte[] bytes) {
+        LOGGER.info("Transforming ASMModParser to add empty constructor");
+        
+        try {
+            ClassNode classNode = new ClassNode();
+            ClassReader classReader = new ClassReader(bytes);
+            classReader.accept(classNode, 0);
+            MethodNode emptyConstructor = new MethodNode(ACC_PUBLIC, "<init>", "()V", null, null);
+            
+            emptyConstructor.instructions.add(new VarInsnNode(ALOAD, 0));
+            emptyConstructor.instructions.add(new MethodInsnNode(INVOKESPECIAL, "java/lang/Object", "<init>", "()V", false));
+            emptyConstructor.instructions.add(new VarInsnNode(ALOAD, 0));
+            emptyConstructor.instructions.add(new MethodInsnNode(INVOKESTATIC, "com/google/common/collect/Lists", "newLinkedList", "()Ljava/util/LinkedList;", false));
+            emptyConstructor.instructions.add(new FieldInsnNode(PUTFIELD, "cpw/mods/fml/common/discovery/asm/ASMModParser", "annotations", "Ljava/util/LinkedList;"));
+            emptyConstructor.instructions.add(new InsnNode(Opcodes.RETURN));
+            
+            classNode.methods.add(emptyConstructor);
+            
+            ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
+            classNode.accept(writer);
+            return writer.toByteArray();
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+        return bytes;
+    }
 }

@@ -34,10 +34,10 @@ import makamys.coretweaks.JVMArgs;
 import makamys.coretweaks.util.MCUtil;
 
 public class AutoWorldLoad implements IModEventListener {
-	
-	public static AutoWorldLoad instance;
-	
-	public enum PauseStatus { NONE, ENQUEUED, PAUSED, FINISHED }
+    
+    public static AutoWorldLoad instance;
+    
+    public enum PauseStatus { NONE, ENQUEUED, PAUSED, FINISHED }
     
     private int timesSeenMainMenu = 0;
     private int timesWentIngame = 0;
@@ -53,7 +53,7 @@ public class AutoWorldLoad implements IModEventListener {
     
     @Override
     public void onInit(FMLInitializationEvent event) {
-    	mc = Minecraft.getMinecraft();
+        mc = Minecraft.getMinecraft();
         MinecraftForge.EVENT_BUS.register(this);
         FMLCommonHandler.instance().bus().register(this);
     }
@@ -61,53 +61,53 @@ public class AutoWorldLoad implements IModEventListener {
     @SubscribeEvent
     public void onTick(TickEvent.ClientTickEvent event){
         if(event.phase == TickEvent.Phase.START) {
-        	if(pauseStatus == ENQUEUED && pauseWait++ >= Config.pauseWaitLength) {
-        		mc.displayInGameMenu();
-        		pauseStatus = PAUSED;
-        	} else if(pauseStatus == PAUSED && Display.isActive()) {
-        		mc.displayGuiScreen(null);
-        		pauseStatus = FINISHED;
-        	}
-        	
-        	if(guiChanged) {
-            	onGuiChanged(mc.currentScreen);
-        	}
+            if(pauseStatus == ENQUEUED && pauseWait++ >= Config.pauseWaitLength) {
+                mc.displayInGameMenu();
+                pauseStatus = PAUSED;
+            } else if(pauseStatus == PAUSED && Display.isActive()) {
+                mc.displayGuiScreen(null);
+                pauseStatus = FINISHED;
+            }
+            
+            if(guiChanged) {
+                onGuiChanged(mc.currentScreen);
+            }
         }
     }
     
     @SideOnly(Side.CLIENT)
-	@SubscribeEvent
-	public void onGuiOpen(GuiOpenEvent event) {
-    	guiChanged = true;
+    @SubscribeEvent
+    public void onGuiOpen(GuiOpenEvent event) {
+        guiChanged = true;
     }
     
     private void onGuiChanged(GuiScreen gui) {
-    	if(JVMArgs.LAUNCH_WORLD != null && !cancelled) {
-	    	if(gui instanceof GuiMainMenu && timesSeenMainMenu++ == 0) {
-	    	    if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
-	                cancelled = true;
-	                LOGGER.info("Cancelled world auto-load because the Shift key was held down.");
-	                mc.getSoundHandler().playSound(PositionedSoundRecord.func_147674_a(new ResourceLocation("random.break"), 1.0F));
-	            } else {
-	                tryToLoadWorld();
-	            }
-	    	} else if(gui instanceof GuiMainMenu) {
-	    		LOGGER.debug("times seen main menu: " + timesSeenMainMenu);
-	    	}
-	    	if(gui == null && timesWentIngame++ == 0 && !Display.isActive()) {
-	    		if(Config.dingOnWorldEntry) {
-	    			mc.getSoundHandler().playSound(PositionedSoundRecord.func_147674_a(new ResourceLocation("random.orb"), 1.0F));
-	    		}
-	    		if(Config.pauseOnWorldEntry) {
-	    			pauseStatus = ENQUEUED;
-	    		}
-	    	}
-    	}
+        if(JVMArgs.LAUNCH_WORLD != null && !cancelled) {
+            if(gui instanceof GuiMainMenu && timesSeenMainMenu++ == 0) {
+                if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {
+                    cancelled = true;
+                    LOGGER.info("Cancelled world auto-load because the Shift key was held down.");
+                    mc.getSoundHandler().playSound(PositionedSoundRecord.func_147674_a(new ResourceLocation("random.break"), 1.0F));
+                } else {
+                    tryToLoadWorld();
+                }
+            } else if(gui instanceof GuiMainMenu) {
+                LOGGER.debug("times seen main menu: " + timesSeenMainMenu);
+            }
+            if(gui == null && timesWentIngame++ == 0 && !Display.isActive()) {
+                if(Config.dingOnWorldEntry) {
+                    mc.getSoundHandler().playSound(PositionedSoundRecord.func_147674_a(new ResourceLocation("random.orb"), 1.0F));
+                }
+                if(Config.pauseOnWorldEntry) {
+                    pauseStatus = ENQUEUED;
+                }
+            }
+        }
     }
     
     private void tryToLoadWorld() {
-		if(JVMArgs.LAUNCH_WORLD != null) {
-			MCUtil.tryToLoadWorld(JVMArgs.LAUNCH_WORLD);
-		}
+        if(JVMArgs.LAUNCH_WORLD != null) {
+            MCUtil.tryToLoadWorld(JVMArgs.LAUNCH_WORLD);
+        }
     }
 }

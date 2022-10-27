@@ -14,12 +14,12 @@ abstract class MixinWorldRenderer {
 
     @Redirect(method = "updateRenderer", at = @At(value = "INVOKE", target = "LReflector;callBoolean(Ljava/lang/Object;LReflectorMethod;[Ljava/lang/Object;)Z", remap = false), expect = 0)
     public boolean redirectCallBoolean(Object o, @Coerce Object rm, Object... objects) {
-		if(OFUtil.Reflector_ForgeBlock_hasTileEntity.equals(rm)) {
-			return ((Block)o).hasTileEntity((int)objects[0]);
-		} else if(OFUtil.Reflector_ForgeBlock_canRenderInPass.equals(rm)){
-			return ((Block)o).canRenderInPass((int)objects[0]);
-		} else {
-			throw new IllegalStateException("Invalid callBoolean() call in updateRenderer. Unsupported OptiFine version?");
-		}
+        if(OFUtil.Reflector_ForgeBlock_hasTileEntity.equals(rm)) {
+            return ((Block)o).hasTileEntity((int)objects[0]);
+        } else if(OFUtil.Reflector_ForgeBlock_canRenderInPass.equals(rm)){
+            return ((Block)o).canRenderInPass((int)objects[0]);
+        } else {
+            throw new IllegalStateException("Invalid callBoolean() call in updateRenderer. Unsupported OptiFine version?");
+        }
     }
 }
