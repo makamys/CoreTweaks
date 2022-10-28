@@ -24,11 +24,11 @@ public class CoreTweaksPlugin implements IFMLLoadingPlugin {
         if(JarDiscovererCache.isActive()) {
             transformerClasses.add("makamys.coretweaks.asm.ASMModParserTransformer");
         }
-        if(Config.forgeModDiscovererSkipKnownLibraries) {
+        if(Config.forgeModDiscovererSkipKnownLibraries.isActive()) {
             transformerClasses.add("makamys.coretweaks.asm.ModDiscovererTransformer");
         }
         if(!MixinConfigPlugin.isForgeSplashEnabled()) {
-            if(Config.forgeFastProgressBar) {
+            if(Config.forgeFastProgressBar.isActive()) {
                 transformerClasses.add("makamys.coretweaks.asm.FMLFastSplashTransformer");
             }
         }

@@ -129,7 +129,7 @@ public class JarDiscovererCache {
     }
     
     public static boolean isActive() {
-        return Config.jarDiscovererCache;
+        return Config.jarDiscovererCache.isActive();
     }
     
     public static class CachedModInfo {

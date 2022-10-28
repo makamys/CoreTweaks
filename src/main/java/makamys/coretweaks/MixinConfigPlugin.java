@@ -59,7 +59,7 @@ public class MixinConfigPlugin implements IMixinConfigPlugin {
         Phase phase = MixinEnvironment.getCurrentEnvironment().getPhase();
         if(phase == Phase.PREINIT) {
             if(!isForgeSplashEnabled()) {
-                if(Config.forgeFastStepMessageStrip) mixins.add("optimization.fmlmessagestrip.MixinFMLClientHandler");
+                if(Config.forgeFastStepMessageStrip.isActive()) mixins.add("optimization.fmlmessagestrip.MixinFMLClientHandler");
             }
         } else if(phase == Phase.INIT) {
             if(JVMArgs.LAUNCH_MINIMIZED != null) {
@@ -69,37 +69,37 @@ public class MixinConfigPlugin implements IMixinConfigPlugin {
                 mixins.add("tweak.launchondesktop.MixinLinuxDisplay");
             }
         } else if(phase == Phase.DEFAULT) {
-            if(Config.transformerCache == Config.TransformerCache.LITE) {
+            if(Config.transformerCache.isActive() && Config.transformerCacheMode == Config.TransformerCache.LITE) {
                 // At this point the transformer chain is complete, so we can go hook it.
                 TransformerCache.instance.init();
             }
             
-            if(Config.jarDiscovererCache) {
+            if(Config.jarDiscovererCache.isActive()) {
                 // We are now at the end of Launch#launch. FoamFix's transformer has finished constructing, so we can hack it.
                 if(disableFoamFixJarDiscovererTransformer()) {
                     mixins.add("optimization.jardiscoverercache.MixinJarDiscoverer");
                 }
             }
             
-            if(Config.clientChunkMap) mixins.add("optimization.clientchunkmap.MixinChunkProviderClient");
-            if(Config.crashHandler) mixins.add("tweak.crashhandler.MixinMinecraft");
-            if(Config.lightFixStare) mixins.add("tweak.lightfixstare.MixinWorld");
-            if(Config.fixDisplayListDelete) mixins.add("bugfix.displaylistdelete.MixinRenderGlobal");
-            if(Config.fixHeightmapRange) mixins.add("bugfix.heightmaprange.MixinChunk");
-            if(Config.fixSmallEntitySwim) mixins.add("bugfix.smallentityswim.MixinEntity");
-            if(Config.fixForgeChatLinkCrash) mixins.add("bugfix.chatlinkcrash.MixinForgeHooks");
-            if(Config.minFarPlaneDistance >= 0f) mixins.add("tweak.farplane.MixinEntityRenderer");
-            if(Config.ofUnlockCustomSkyMinRenderDistance) mixins.add("tweak.ofcustomsky.MixinOFD6CustomSky");
-            if(Config.disableFog) mixins.add("tweak.disablefog.MixinEntityRenderer");
-            if(Config.uncapCreateWorldGuiTextFieldLength) mixins.add("tweak.newworldguimaxlength.MixinGuiCreateWorld");
+            if(Config.clientChunkMap.isActive()) mixins.add("optimization.clientchunkmap.MixinChunkProviderClient");
+            if(Config.crashHandler.isActive()) mixins.add("tweak.crashhandler.MixinMinecraft");
+            if(Config.lightFixStare.isActive()) mixins.add("tweak.lightfixstare.MixinWorld");
+            if(Config.fixDisplayListDelete.isActive()) mixins.add("bugfix.displaylistdelete.MixinRenderGlobal");
+            if(Config.fixHeightmapRange.isActive()) mixins.add("bugfix.heightmaprange.MixinChunk");
+            if(Config.fixSmallEntitySwim.isActive()) mixins.add("bugfix.smallentityswim.MixinEntity");
+            if(Config.fixForgeChatLinkCrash.isActive()) mixins.add("bugfix.chatlinkcrash.MixinForgeHooks");
+            if(Config.clampFarPlaneDistance.isActive()) mixins.add("tweak.farplane.MixinEntityRenderer");
+            if(Config.ofUnlockCustomSkyMinRenderDistance.isActive()) mixins.add("tweak.ofcustomsky.MixinOFD6CustomSky");
+            if(Config.disableFog.isActive()) mixins.add("tweak.disablefog.MixinEntityRenderer");
+            if(Config.uncapCreateWorldGuiTextFieldLength.isActive()) mixins.add("tweak.newworldguimaxlength.MixinGuiCreateWorld");
             
-            if(Config.forceUncapFramerate) mixins.add("tweak.synctweak.MixinMinecraft");
-            if(Config.ofFixUpdateRenderersReturnValue) mixins.add("tweak.ofupdaterenderersreturn.MixinRenderGlobal");
-            if(Config.ofOptimizeWorldRenderer) mixins.add("optimization.ofupdaterendererreflect.MixinWorldRenderer");
-            if(Config.getPendingBlockUpdates) mixins.add("optimization.getpendingblockupdates.MixinWorldServer");
-            if(Config.restoreTravelSound) mixins.add("bugfix.restoretravelsound.MixinNetHandlerPlayClient");
-            if(Config.cloudHeightCheck != Config.CloudHeightCheck.UNCHANGED) mixins.add("tweak.cloudheightcheck.MixinEntityRenderer");
-            if(Config.fcOptimizeTextureUpload) {
+            if(Config.forceUncapFramerate.isActive()) mixins.add("tweak.synctweak.MixinMinecraft");
+            if(Config.ofFixUpdateRenderersReturnValue.isActive()) mixins.add("tweak.ofupdaterenderersreturn.MixinRenderGlobal");
+            if(Config.ofOptimizeWorldRenderer.isActive()) mixins.add("optimization.ofupdaterendererreflect.MixinWorldRenderer");
+            if(Config.getPendingBlockUpdates.isActive()) mixins.add("optimization.getpendingblockupdates.MixinWorldServer");
+            if(Config.restoreTravelSound.isActive()) mixins.add("bugfix.restoretravelsound.MixinNetHandlerPlayClient");
+            if(Config.tweakCloudHeightCheck.isActive()) mixins.add("tweak.cloudheightcheck.MixinEntityRenderer");
+            if(Config.fcOptimizeTextureUpload.isActive()) {
                 String fcVersion = (String)Launch.blackboard.get("fcVersion");
                 if(fcVersion != null) {
                     boolean ok = true;
@@ -126,15 +126,15 @@ public class MixinConfigPlugin implements IMixinConfigPlugin {
                     }
                 }
             }
-            if(Config.threadedTextureLoader) {
+            if(Config.threadedTextureLoader.isActive()) {
                 mixins.add("optimization.threadedtextureloader.ITextureMap");
                 mixins.add("optimization.threadedtextureloader.MixinTextureMap");
             }
-            if(Config.fastFolderTexturePack) {
+            if(Config.fastFolderTexturePack.isActive()) {
                 mixins.add("optimization.foldertexturepack.MixinFolderResourcePack");
                 mixins.add("optimization.foldertexturepack.MixinDefaultResourcePack");
             }
-            if(Config.tcpNoDelay) {
+            if(Config.tcpNoDelay.isActive()) {
                 mixins.add("optimization.tcpnodelay.MixinChannelInitializers");
             }
             

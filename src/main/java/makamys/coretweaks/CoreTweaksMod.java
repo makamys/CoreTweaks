@@ -54,10 +54,10 @@ public class CoreTweaksMod
                 listeners.forEach(l -> l.onShutdown());
             }}, "CoreTweaks shutdown thread"));
         
-        if(Config.transformerCache == Config.TransformerCache.LITE) {
+        if(Config.transformerCache.isActive() && Config.transformerCacheMode == Config.TransformerCache.LITE) {
             registerListener(TransformerCache.instance);
         }
-        if(Config.mainMenuContinueButton) {
+        if(Config.mainMenuContinueButton.isActive()) {
             registerListener(LoadLastWorldButton.instance = new LoadLastWorldButton());
         }
     }
@@ -73,13 +73,13 @@ public class CoreTweaksMod
     public void init(FMLInitializationEvent event) {
         FMLCommonHandler.instance().bus().register(this);
         
-        if(Config.coreTweaksCommand) {
+        if(Config.coreTweaksCommand.isActive()) {
             ClientCommandHandler.instance.registerCommand(new CoreTweaksCommand());
         }
         if(CoreTweaks.textureLoader != null) {
             FMLCommonHandler.instance().bus().register(CoreTweaks.textureLoader);
         }
-        if(Config.fixDoubleEat) {
+        if(Config.fixDoubleEat.isActive()) {
             FMLCommonHandler.instance().bus().register(new DoubleEatFixer());
         }
         
@@ -121,7 +121,7 @@ public class CoreTweaksMod
     
     @SubscribeEvent
     public void onClientTick(ClientTickEvent event) {
-        if(Config.clientChunkMap) {
+        if(Config.clientChunkMap.isActive()) {
             WorldClient world = Minecraft.getMinecraft().theWorld;
             if(world != null) {
                 IChunkProvider provider = world.getChunkProvider();

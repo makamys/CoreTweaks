@@ -14,7 +14,7 @@ public class MixinEntityRenderer {
     
     @Inject(method = "renderWorld", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/RenderGlobal;sortAndRender(Lnet/minecraft/entity/EntityLivingBase;ID)I"))
     private void preSortAndRender(CallbackInfo ci) {
-        if(Config.disableFog) {
+        if(Config.disableFog.isActive()) {
             GL11.glDisable(GL11.GL_FOG);
         }
     }

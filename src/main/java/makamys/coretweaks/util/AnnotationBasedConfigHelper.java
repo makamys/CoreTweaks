@@ -53,6 +53,7 @@ public class AnnotationBasedConfigHelper {
             ConfigInt configInt = null;
             ConfigFloat configFloat = null;
             ConfigEnum configEnum = null;
+            ConfigFeature configFeature = null;
             ConfigStringList configStringList = null;
             ConfigString configString = null;
             
@@ -67,6 +68,8 @@ public class AnnotationBasedConfigHelper {
                     configBoolean = (ConfigBoolean) an;
                 } else if(an instanceof ConfigEnum) {
                     configEnum = (ConfigEnum) an;
+                } else if(an instanceof ConfigFeature) {
+                    configFeature = (ConfigFeature) an;
                 } else if(an instanceof ConfigStringList) {
                     configStringList = (ConfigStringList) an;
                 }  else if(an instanceof ConfigString) {
@@ -74,7 +77,7 @@ public class AnnotationBasedConfigHelper {
                 }
             }
             
-            if(configBoolean == null && configInt == null && configFloat == null && configEnum == null && configStringList == null && configString == null) continue;
+            if(configBoolean == null && configInt == null && configFloat == null && configEnum == null && configFeature == null && configStringList == null && configString == null) continue;
             
             Object currentValue = null;
             Object newValue = null;
@@ -92,37 +95,42 @@ public class AnnotationBasedConfigHelper {
                 newValue = config.getInt(field.getName(), configInt.cat(), configInt.def(), configInt.min(), configInt.max(), configInt.com()); 
             } else if(configFloat != null) {
                 newValue = config.getFloat(field.getName(), configFloat.cat(), configFloat.def(), configFloat.min(), configFloat.max(), configFloat.com());
-            } else if(configEnum != null) {
-                boolean lowerCase = configEnum.def().codePoints().anyMatch(cp -> Character.isLowerCase(cp));
+            } else if(configEnum != null || configFeature != null) {
+                String annDef = configEnum != null ? configEnum.def() : configFeature.def() ? "true" : "false";
+                String annCat = configEnum != null ? configEnum.cat() : configFeature.cat();
+                String annCom = configEnum != null ? configEnum.com() : configFeature.com();
+                String fieldName = (configFeature != null ? "" : "") + field.getName() + (configFeature != null ? "-" : "");
                 
-                Class<? extends Enum> configClass = configEnum.clazz();
+                boolean lowerCase = annDef.codePoints().anyMatch(cp -> Character.isLowerCase(cp));
+                
+                Class<? extends Enum> configClass = (Class<? extends Enum>) field.getType();
                 Map<String, ? extends Enum> enumMap = EnumUtils.getEnumMap(configClass);
                 String[] valuesStrUpper = (String[])enumMap.keySet().stream().toArray(String[]::new);
                 String[] valuesStr = Arrays.stream(valuesStrUpper).map(s -> lowerCase ? s.toLowerCase() : s).toArray(String[]::new);
                 
                 // allow upgrading boolean to string list
-                ConfigCategory cat = config.getCategory(configEnum.cat().toLowerCase());
-                Property oldProp = cat.get(field.getName());
+                ConfigCategory cat = config.getCategory(annCat.toLowerCase());
+                Property oldProp = cat.get(fieldName);
                 String oldVal = null;
                 if(oldProp != null && oldProp.getType() != Type.STRING) {
                     oldVal = oldProp.getString();
-                    cat.remove(field.getName());
+                    cat.remove(fieldName);
                 }
                 
-                String newValueStr = config.getString(field.getName(), configEnum.cat(),
-                        lowerCase ? configEnum.def().toLowerCase() : configEnum.def().toUpperCase(), configEnum.com(), valuesStr);
+                String newValueStr = config.getString(fieldName, annCat,
+                        lowerCase ? annDef.toLowerCase() : annDef.toUpperCase(), annCom, valuesStr);
                 if(oldVal != null) {
                     newValueStr = oldVal;
                 }
                 if(!enumMap.containsKey(newValueStr.toUpperCase())) {
-                    newValueStr = configEnum.def().toUpperCase();
+                    newValueStr = annDef.toUpperCase();
                     if(lowerCase) {
                         newValueStr = newValueStr.toLowerCase();
                     }
                 }
                 newValue = enumMap.get(newValueStr.toUpperCase());
                 
-                Property newProp = cat.get(field.getName());
+                Property newProp = cat.get(fieldName);
                 if(!newProp.getString().equals(newValueStr)) {
                     newProp.set(newValueStr);
                 }
@@ -258,7 +266,16 @@ public class AnnotationBasedConfigHelper {
         String cat();
         String def();
         String com() default "";
-        Class<? extends Enum> clazz();
+
+    }
+    
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target(ElementType.FIELD)
+    public static @interface ConfigFeature {
+
+        String cat();
+        boolean def();
+        String com() default "";
 
     }
 }

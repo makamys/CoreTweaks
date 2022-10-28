@@ -31,13 +31,13 @@ public class CoreTweaks {
     public static void init(){
         Persistence.loadIfNotLoadedAlready();
         
-        if(Config.threadedTextureLoader) {
+        if(Config.threadedTextureLoader.isActive()) {
                 textureLoader = new ThreadedTextureLoader(
                     Config.threadedTextureLoaderThreadCount != 0 ? Config.threadedTextureLoaderThreadCount
                             : Runtime.getRuntime().availableProcessors());
         }
         
-        if(Config.transformerCache == Config.TransformerCache.FULL) {
+        if(Config.transformerCache.isActive() && Config.transformerCacheMode == Config.TransformerCache.FULL) {
             cachingTransformer = CachingTransformer.register();
         }
         
