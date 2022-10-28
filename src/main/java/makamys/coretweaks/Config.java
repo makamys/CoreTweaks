@@ -10,6 +10,7 @@ import cpw.mods.fml.common.versioning.ComparableVersion;
 import makamys.coretweaks.util.AnnotationBasedConfigHelper;
 import makamys.coretweaks.util.ConfigDumper;
 import net.minecraft.launchwrapper.Launch;
+import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Configuration;
 
 public class Config {
@@ -140,7 +141,7 @@ public class Config {
     @ILoadableClass(enumClass = FeatureSetting.Setting.class)
     public static class FeatureSetting implements ILoadable {
         
-        private static enum Setting {
+        public static enum Setting {
             FALSE, TRUE, FORCE;
         }
         
@@ -174,6 +175,10 @@ public class Config {
                 disable();
             }
         }
+        
+        public void setValue(Setting newValue) {
+            setting = newValue;
+        }
     }
     
     private static AnnotationBasedConfigHelper configHelper = new AnnotationBasedConfigHelper(Config.class, LOGGER);
@@ -201,7 +206,7 @@ public class Config {
         
         String loadedVersion = config.getLoadedConfigVersion();
         if(loadedVersion == null || (!loadedVersion.startsWith("@") && new ComparableVersion(config.getLoadedConfigVersion()).compareTo(new ComparableVersion("0.3")) < 0)) {
-            migrateOldConfig(config);
+            new ConfigMigrator(config).migrate();
         }
         
         if(ConfigDumper.ENABLED) {
@@ -211,10 +216,6 @@ public class Config {
         if(config.hasChanged()) {
             config.save();
         }
-    }
-    
-    private static void migrateOldConfig(Configuration config) {
-        // TODO
     }
     
     private static boolean shouldDisable(FeatureSetting feature) {
