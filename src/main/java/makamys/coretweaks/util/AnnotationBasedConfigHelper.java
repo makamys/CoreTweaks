@@ -165,11 +165,19 @@ public class AnnotationBasedConfigHelper {
                 Object fieldValue = field.get(null);
                 if(!fieldValue.equals(newValue)) {
                     for(String catName : config.getCategoryNames()) {
+                        String propName = field.getName();
+                        Object serializableFieldValue = fieldValue;
+                        if(fieldValue instanceof ILoadable) {
+                            ILoadable loadable = ((ILoadable)fieldValue);
+                            ILoadableClass loadableClass = loadable.getClass().getAnnotation(ILoadableClass.class);
+                            propName += loadableClass.suffix();
+                            serializableFieldValue = loadable.getValue();
+                        }
                         ConfigCategory cat = config.getCategory(catName);
-                        Property prop = cat.get(field.getName());
+                        Property prop = cat.get(propName);
                         if(prop != null) {
                             try {
-                                setProperty(prop, fieldValue);
+                                setProperty(prop, serializableFieldValue);
                             } catch(Exception e) {
                                 logger.error("Failed to save field " + field.getName());
                                 e.printStackTrace();
@@ -201,7 +209,15 @@ public class AnnotationBasedConfigHelper {
             prop.set((Integer)newValue);
             break;
         case STRING:
-            prop.set((String)newValue);
+            if(newValue instanceof String[]) {
+                prop.set((String[])newValue);
+            } else {
+                String val = String.valueOf(newValue);
+                if(newValue instanceof Enum && prop.getDefault().toLowerCase().equals(prop.getDefault())) {
+                    val = val.toLowerCase();
+                }
+                prop.set(val);
+            }
             break;
         default:
             throw new UnsupportedOperationException();
@@ -289,6 +305,7 @@ public class AnnotationBasedConfigHelper {
     }
     
     public static interface ILoadable {
+        public Object getValue();
         public void setValue(Object newValue, Field field, Configuration config);
     }
     

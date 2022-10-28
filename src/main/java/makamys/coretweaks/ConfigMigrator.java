@@ -84,6 +84,13 @@ public class ConfigMigrator {
         migrateFeatureSetting("tweaks", "ofFixUpdateRenderersReturnValue", ofFixUpdateRenderersReturnValue);
         migrateFeatureSetting("tweaks", "ofUnlockCustomSkyMinRenderDistance", ofUnlockCustomSkyMinRenderDistance);
         migrateFeatureSetting("tweaks", "uncapCreateWorldGuiTextFieldLength", uncapCreateWorldGuiTextFieldLength);
+        
+        for(String catName : config.getCategoryNames()) {
+            ConfigCategory cat = config.getCategory(catName);
+            if(cat.isEmpty()) {
+                config.removeCategory(cat);
+            }
+        }
     }
     
     private void migrateFeatureSetting(String cat, String name, FeatureSetting setting) {
@@ -94,9 +101,11 @@ public class ConfigMigrator {
                 Property prop = category.get(name);
                 if(prop.getType() == Type.BOOLEAN) {
                     setting.setValue(prop.getBoolean() ? FeatureSetting.Setting.TRUE : FeatureSetting.Setting.FALSE);
+                    category.remove(name);
                 }
             }
         }
+        
     }
     
     private void migrateInt(String cat, String name, Consumer<Integer> consumer) {
@@ -107,6 +116,7 @@ public class ConfigMigrator {
                 Property prop = category.get(name);
                 if(prop.getType() == Type.INTEGER) {
                     consumer.accept(prop.getInt());
+                    category.remove(name);
                 }
             }
         }
@@ -120,6 +130,7 @@ public class ConfigMigrator {
                 Property prop = category.get(name);
                 if(prop.getType() == Type.STRING) {
                     consumer.accept(prop.getString());
+                    category.remove(name);
                 }
             }
         }
@@ -133,6 +144,7 @@ public class ConfigMigrator {
                 Property prop = category.get(name);
                 if(prop.getType() == Type.DOUBLE) {
                     consumer.accept((float)prop.getDouble());
+                    category.remove(name);
                 }
             }
         }
@@ -146,6 +158,7 @@ public class ConfigMigrator {
                 Property prop = category.get(name);
                 if(prop.getType() == Type.STRING) {
                     consumer.accept(prop.getStringList());
+                    category.remove(name);
                 }
             }
         }
@@ -158,7 +171,8 @@ public class ConfigMigrator {
             if(category.containsKey(name)) {
                 Property prop = category.get(name);
                 if(prop.getType() == Type.STRING) {
-                    consumer.accept((Enum<?>) EnumUtils.getEnumMap(enumClass).get(name.toUpperCase()));
+                    consumer.accept((Enum<?>) EnumUtils.getEnumMap(enumClass).get(prop.getString().toUpperCase()));
+                    category.remove(name);
                 }
             }
         }

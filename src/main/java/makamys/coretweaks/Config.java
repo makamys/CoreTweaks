@@ -169,6 +169,7 @@ public class Config {
         
         @Override
         public void setValue(Object newValue, Field field, Configuration config) {
+            setting = (Setting)newValue;
             ConfigLoadable ann = (ConfigLoadable)field.getAnnotation(ConfigLoadable.class);
             if(!config.getBoolean("enable" + capitalize(ann.cat().toLowerCase().split("\\.")[0]), "_categories", true, "Set this to false to disable all features in the '" + ann.cat().toLowerCase() + "' category.") ||
                     Config.shouldDisable(this)) {
@@ -176,8 +177,22 @@ public class Config {
             }
         }
         
+        @Override
+        public Object getValue() {
+            return setting;
+        }
+        
         public void setValue(Setting newValue) {
             setting = newValue;
+        }
+        
+        @Override
+        public boolean equals(Object obj) {
+            if(obj instanceof FeatureSetting) {
+                FeatureSetting o = (FeatureSetting)obj;
+                return setting == o.setting;
+            }
+            return super.equals(obj);
         }
     }
     
@@ -205,8 +220,9 @@ public class Config {
                 "Options for the lite caching class transformer. (only appliable if it's enabled)");
         
         String loadedVersion = config.getLoadedConfigVersion();
-        if(!config.getDefinedConfigVersion().startsWith("@") && (loadedVersion == null || new ComparableVersion(config.getLoadedConfigVersion()).compareTo(new ComparableVersion("0.3")) < 0)) {
+        if((loadedVersion == null || (!loadedVersion.startsWith("@") && new ComparableVersion(config.getLoadedConfigVersion()).compareTo(new ComparableVersion("0.3")) < 0))) {
             new ConfigMigrator(config).migrate();
+            configHelper.saveFields(config);
         }
         
         if(ConfigDumper.ENABLED) {
