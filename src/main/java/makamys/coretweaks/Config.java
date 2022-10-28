@@ -41,7 +41,6 @@ public class Config {
     @ConfigFeature(cat="Tweaks", def=true, com="If enabled, the condition used to decide whether to render opaque or transparent clouds will be set based on the value of `tweakCloudHeightCheckMode`.")
     public static FeatureSetting tweakCloudHeightCheck;
     @ConfigEnum(cat="Tweaks", def="ALWAYS_TRANSPARENT", com="Lets you tweak the condition used to decide whether to render opaque or transparent clouds.\n" + 
-            "* UNCHANGED: Don't change anything\n" +
             "* VARIABLE_CORRECTED: Keep vanilla behavior of rendering clouds as opaque when the player is below them and transparent otherwise, but with the turning point corrected to match the cloud height even when the world provider has a different cloud height than 128. Also provides a fix for OptiFine's bug where clouds disappear when the player is between Y=128 and the cloud height level when they are raised.\n" +
             "* ALWAYS_TRANSPARENT: Always render clouds as transparent (how it is in b1.7.3 and 1.15+)\n" + 
             "* ALWAYS_OPAQUE: Always render clouds as opaque")
