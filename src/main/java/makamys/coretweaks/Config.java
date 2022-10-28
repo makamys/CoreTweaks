@@ -23,10 +23,10 @@ public class Config {
     public static FeatureSetting ofFixUpdateRenderersReturnValue;
     @ConfigFeature(cat="Tweaks.Mods", def=true, com="Allows custom sky rendering in OptiFine D6 when using a render distance lower than 8.")
     public static FeatureSetting ofUnlockCustomSkyMinRenderDistance;
-    @ConfigFeature(cat="Tweaks", def=true, com="If enabled, the distance of the view fustrum's far plane will be clamped above `clampFarPlaneDistanceMin`. Setting it to 180 or higher fixes clipping in OptiFine's custom skybox that happens when using lower render distances.")
+    @ConfigFeature(cat="Tweaks", def=true, com="If enabled, the distance of the view fustrum's far plane will be clamped above `clampFarPlaneDistance_min`. Setting it to 180 or higher fixes clipping in OptiFine's custom skybox that happens when using lower render distances.")
     public static FeatureSetting clampFarPlaneDistance;
     @ConfigFloat(cat="Tweaks", def=180f, min=0f, max=Float.MAX_VALUE, com="See `clampFarPlaneDistance`.")
-    public static float clampFarPlaneDistance_minDistance;
+    public static float clampFarPlaneDistance_min;
     @ConfigFeature(cat="Tweaks", def=false, com="Disables fog. Simple as.")
     public static FeatureSetting disableFog;
     @ConfigFeature(cat="Tweaks", def=false, com="Uncap max length for world name and world seed in the world creation GUI. (By default, it's capped at 32.)")
@@ -83,10 +83,10 @@ public class Config {
     public static FeatureSetting threadedTextureLoader = FeatureSetting.FALSE;
     @ConfigFeature(cat="Optimizations", def=true, com="Enable class transformer cache.")
     public static FeatureSetting transformerCache;
-    @ConfigEnum(cat="Optimizations", def="LITE", com="The type of transformer caching to use.\n"
+    @ConfigEnum(cat="Optimizations.transformerCache", def="LITE", com="The type of transformer caching to use.\n"
                     + "* LITE: Cache individual transformations of select transformers. Reduces startup time. Safe.\n"
                     + "* FULL: Cache the entire transformer chain. Reduces startup time further, but breaks with many mods.")
-    public static TransformerCache transformerCacheMode;
+    public static TransformerCache transformerCache_mode;
     @ConfigFeature(cat="Optimizations", def=true, com="Cache the file paths contained in folder resource packs. Fixes the immense slowdown they add to the loading of large modpacks.")
     public static FeatureSetting fastFolderTexturePack;
             
@@ -150,7 +150,7 @@ public class Config {
         @Override
         public void postValueLoaded(Field field, Configuration config) {
             ConfigFeature ann = (ConfigFeature)field.getAnnotation(ConfigFeature.class);
-            if(!config.getBoolean(ann.cat().toLowerCase().split("\\.")[0], "_categories", true, "Set this to false to disable all features in the '" + ann.cat().toLowerCase() + "' category.")) {
+            if(!config.getBoolean("enable" + capitalize(ann.cat().toLowerCase().split("\\.")[0]), "_categories", true, "Set this to false to disable all features in the '" + ann.cat().toLowerCase() + "' category.")) {
                 disable();
             }
         }
@@ -204,6 +204,10 @@ public class Config {
     private static boolean shouldDisableFixForgeChatLinkCrash() {
         // TODO
         return false;
+    }
+    
+    private static String capitalize(String s) {
+        return s.substring(0, 1).toUpperCase() + s.substring(1);
     }
     
 }
