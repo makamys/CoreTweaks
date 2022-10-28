@@ -167,7 +167,9 @@ task listFiles {
 }
 
 def getBuildArgumentSets(ver) {
-	project.gameVersionsMap[ver].keySet().contains("flags") ? project.gameVersionsMap[ver]["flags"] : [""]
+	def projectConfig = new Properties()
+	projectConfig.load(file("../gradle.properties").newReader())
+	return projectConfig.enable_mixin ? ["", "-Pnomixin"] : [""]
 }
 
 project.gameVersions.each { ver ->
