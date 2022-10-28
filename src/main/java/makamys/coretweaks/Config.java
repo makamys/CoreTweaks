@@ -173,11 +173,6 @@ public class Config {
                 "\n" +
                 "For convenience, the '_categories' category contains toggles that can be used to disable all features in a category.");
         
-        config.addCustomCategoryComment("Tweaks", "In addition to these settings, there are some tweaks that are activated via JVM flags:\n" +
-        "* -Dcoretweaks.launchWorld=WORLD : Automatically loads the world with the folder name WORLD once the main menu is reached. WORLD can be left blank, in this case the most recently played world will be loaded. Hold down shift when the main menu appears to cancel the automatic loading.\n" +
-        "* -Dcoretweaks.launchMinimized : Launch Minecraft minimized. Only implemented on Windows at the moment.\n" +
-        "* -Dcoretweaks.launchOnDesktop=NUMBER : Launch Minecraft on the virtual desktop with ordinal NUMBER. Only implemented on Linux at the moment. xprop has to be installed for it to work. Only tested on Openbox.");
-        
         config.setCategoryComment("Optimizations.transformerCache.full", 
                 "Options for the full caching class transformer. (only appliable if it's enabled)");
         

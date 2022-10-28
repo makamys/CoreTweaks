@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Optional;
 
 import cpw.mods.fml.client.FMLClientHandler;
-import makamys.coretweaks.JVMArgs;
 import net.minecraft.block.Block;
 import net.minecraft.client.LoadingScreenRenderer;
 import net.minecraft.client.Minecraft;
