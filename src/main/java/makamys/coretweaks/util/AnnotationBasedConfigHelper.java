@@ -108,14 +108,17 @@ public class AnnotationBasedConfigHelper {
                 
                 boolean lowerCase = annDef.codePoints().anyMatch(cp -> Character.isLowerCase(cp));
                 
-                Class<? extends Enum> configClass = (Class<? extends Enum>) (configEnum != null ? field.getType() : ((ILoadableClass)field.getType().getAnnotation(ILoadableClass.class)).enumClass());
+                ILoadableClass loadableAnn = ((ILoadableClass)field.getType().getAnnotation(ILoadableClass.class));
+                String suffix = loadableAnn == null ? "" : loadableAnn.suffix();
+                
+                Class<? extends Enum> configClass = (Class<? extends Enum>) (configEnum != null ? field.getType() : loadableAnn.enumClass());
                 Map<String, ? extends Enum> enumMap = EnumUtils.getEnumMap(configClass);
                 String[] valuesStrUpper = (String[])enumMap.keySet().stream().toArray(String[]::new);
                 String[] valuesStr = Arrays.stream(valuesStrUpper).map(s -> lowerCase ? s.toLowerCase() : s).toArray(String[]::new);
                 
                 // allow upgrading boolean to string list
                 ConfigCategory cat = config.getCategory(annCat.toLowerCase());
-                String propName = cat.keySet().stream().filter(k -> k.replaceAll("-", "").equals(fieldName)).findFirst().get();
+                String propName = fieldName + suffix;
                 Property oldProp = cat.get(propName);
                 String oldVal = null;
                 if(oldProp != null && oldProp.getType() != Type.STRING) {
@@ -294,6 +297,7 @@ public class AnnotationBasedConfigHelper {
     public static @interface ILoadableClass {
 
         Class<? extends Enum<?>> enumClass();
+        String suffix() default "";
 
     }
     

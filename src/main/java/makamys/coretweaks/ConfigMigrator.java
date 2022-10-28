@@ -1,6 +1,7 @@
 package makamys.coretweaks;
 
 import static makamys.coretweaks.Config.*;
+import static makamys.coretweaks.CoreTweaks.LOGGER;
 
 import java.util.function.Consumer;
 
@@ -24,6 +25,8 @@ public class ConfigMigrator {
     }
     
     public void migrate() {
+        LOGGER.info("Migrating config from 0.2 to 0.3");
+        
         migrateFeatureSetting("bugfixes", "fixDisplayListDelete", fixDisplayListDelete);
         migrateFeatureSetting("bugfixes", "fixDoubleEat", fixDoubleEat);
         migrateFeatureSetting("bugfixes", "fixForgeChatLinkCrash", fixForgeChatLinkCrash);

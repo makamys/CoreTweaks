@@ -138,7 +138,7 @@ public class Config {
         FULL
     }
     
-    @ILoadableClass(enumClass = FeatureSetting.Setting.class)
+    @ILoadableClass(enumClass = FeatureSetting.Setting.class, suffix = "-")
     public static class FeatureSetting implements ILoadable {
         
         public static enum Setting {
@@ -205,7 +205,7 @@ public class Config {
                 "Options for the lite caching class transformer. (only appliable if it's enabled)");
         
         String loadedVersion = config.getLoadedConfigVersion();
-        if(loadedVersion == null || (!loadedVersion.startsWith("@") && new ComparableVersion(config.getLoadedConfigVersion()).compareTo(new ComparableVersion("0.3")) < 0)) {
+        if(!config.getDefinedConfigVersion().startsWith("@") && (loadedVersion == null || new ComparableVersion(config.getLoadedConfigVersion()).compareTo(new ComparableVersion("0.3")) < 0)) {
             new ConfigMigrator(config).migrate();
         }
         
