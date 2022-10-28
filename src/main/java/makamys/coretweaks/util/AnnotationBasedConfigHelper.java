@@ -9,7 +9,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.Map;
-import java.util.function.BiConsumer;
 
 import org.apache.commons.lang3.EnumUtils;
 import org.apache.logging.log4j.Logger;
@@ -33,16 +32,19 @@ public class AnnotationBasedConfigHelper {
         return iterateOverConfigAnd(config, this::setConfigClassField);
     }
     
-    private void setConfigClassField(Field field, Object newValue) {
+    private void setConfigClassField(Field field, Object newValue, Configuration config) {
         try {
             field.set(null, newValue);
+            if(newValue instanceof ILoadListener) {
+                ((ILoadListener)newValue).postValueLoaded(field, config);
+            }
         } catch (Exception e) {
             logger.error("Failed to set value of field " + field.getName());
             e.printStackTrace();
         }
     }
     
-    private boolean iterateOverConfigAnd(Configuration config, BiConsumer<Field, Object> callback) {
+    private boolean iterateOverConfigAnd(Configuration config, TriConsumer<Field, Object, Configuration> callback) {
         boolean needReload = false;
         
         for(Field field : theConfigClass.getFields()) {
@@ -144,14 +146,14 @@ public class AnnotationBasedConfigHelper {
                 needReload = true;
             }
             
-            callback.accept(field, newValue);
+            callback.accept(field, newValue, config);
         }
         
         return needReload;
     }
     
     public void saveFields(Configuration config) {
-        iterateOverConfigAnd(config, (field, newValue) -> {
+        iterateOverConfigAnd(config, (field, newValue, conf) -> {
             try {
                 Object fieldValue = field.get(null);
                 if(!fieldValue.equals(newValue)) {
@@ -277,5 +279,14 @@ public class AnnotationBasedConfigHelper {
         boolean def();
         String com() default "";
 
+    }
+    
+    public static interface ILoadListener {
+        public void postValueLoaded(Field field, Configuration config);
+    }
+    
+    @FunctionalInterface
+    private static interface TriConsumer<A, B, C> {
+        void accept(A a, B b, C c);
     }
 }

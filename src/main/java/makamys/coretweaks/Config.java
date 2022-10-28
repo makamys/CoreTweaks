@@ -4,6 +4,7 @@ import static makamys.coretweaks.util.AnnotationBasedConfigHelper.*;
 import static makamys.coretweaks.CoreTweaks.LOGGER;
 
 import java.io.File;
+import java.lang.reflect.Field;
 
 import makamys.coretweaks.util.AnnotationBasedConfigHelper;
 import makamys.coretweaks.util.ConfigDumper;
@@ -133,17 +134,25 @@ public class Config {
         FULL
     }
     
-    public static enum FeatureSetting {
+    public static enum FeatureSetting implements ILoadListener {
         FALSE, TRUE, FORCE;
         
         private boolean disabled;
         
-        public void setDisabled(boolean disabled) {
-            this.disabled = disabled;
+        public void disable() {
+            disabled = true;
         }
         
         public boolean isActive() {
             return this != FALSE && (this == FORCE || (this == TRUE && !disabled));
+        }
+        
+        @Override
+        public void postValueLoaded(Field field, Configuration config) {
+            ConfigFeature ann = (ConfigFeature)field.getAnnotation(ConfigFeature.class);
+            if(!config.getBoolean(ann.cat().toLowerCase().split("\\.")[0], "_categories", true, "Set this to false to disable all features in the '" + ann.cat().toLowerCase() + "' category.")) {
+                disable();
+            }
         }
     }
     
@@ -154,6 +163,15 @@ public class Config {
         
         config.load();
         configHelper.loadFields(config);
+        
+        config.setCategoryComment("_categories", 
+                "In this config file, feature toggles have names that end in a '-' character.\n" +
+                "A feature toggle can be set to the following values. If a different value is provided, the setting will be reverted to the default setting on next start.\n" +
+                "* false: Disable the feature\n" +
+                "* true: Enable the feature if it doesn't cause an incompatibility\n" +
+                "* force: Enable feature unconditionally (for special use cases)\n" +
+                "\n" +
+                "For convenience, the '_categories' category contains toggles that can be used to disable all features in a category.");
         
         config.addCustomCategoryComment("Tweaks", "In addition to these settings, there are some tweaks that are activated via JVM flags:\n" +
         "* -Dcoretweaks.launchWorld=WORLD : Automatically loads the world with the folder name WORLD once the main menu is reached. WORLD can be left blank, in this case the most recently played world will be loaded. Hold down shift when the main menu appears to cancel the automatic loading.\n" +
@@ -166,8 +184,8 @@ public class Config {
         config.setCategoryComment("Optimizations.transformerCache.lite", 
                 "Options for the lite caching class transformer. (only appliable if it's enabled)");
         
-        crashHandler.setDisabled(shouldDisableCrashHandler());
-        fixForgeChatLinkCrash.setDisabled(shouldDisableFixForgeChatLinkCrash());
+        if(shouldDisableCrashHandler()) crashHandler.disable();
+        if(shouldDisableFixForgeChatLinkCrash()) fixForgeChatLinkCrash.disable();
         
         if(ConfigDumper.ENABLED) {
             ConfigDumper.dumpConfig(config);
