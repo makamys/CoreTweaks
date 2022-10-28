@@ -61,7 +61,7 @@ public class AutoWorldLoad implements IModEventListener {
     @SubscribeEvent
     public void onTick(TickEvent.ClientTickEvent event){
         if(event.phase == TickEvent.Phase.START) {
-            if(pauseStatus == ENQUEUED && pauseWait++ >= Config.pauseWaitLength) {
+            if(pauseStatus == ENQUEUED && pauseWait++ >= Config.autoLoadPauseWaitLength) {
                 mc.displayInGameMenu();
                 pauseStatus = PAUSED;
             } else if(pauseStatus == PAUSED && Display.isActive()) {
@@ -95,10 +95,10 @@ public class AutoWorldLoad implements IModEventListener {
                 LOGGER.debug("times seen main menu: " + timesSeenMainMenu);
             }
             if(gui == null && timesWentIngame++ == 0 && !Display.isActive()) {
-                if(Config.dingOnWorldEntry) {
+                if(Config.autoLoadDingOnWorldEntry) {
                     mc.getSoundHandler().playSound(PositionedSoundRecord.func_147674_a(new ResourceLocation("random.orb"), 1.0F));
                 }
-                if(Config.pauseOnWorldEntry) {
+                if(Config.autoLoadPauseOnWorldEntry) {
                     pauseStatus = ENQUEUED;
                 }
             }
