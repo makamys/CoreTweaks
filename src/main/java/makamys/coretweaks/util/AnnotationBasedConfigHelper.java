@@ -34,9 +34,12 @@ public class AnnotationBasedConfigHelper {
     
     private void setConfigClassField(Field field, Object newValue, Configuration config) {
         try {
-            field.set(null, newValue);
-            if(newValue instanceof ILoadListener) {
-                ((ILoadListener)newValue).postValueLoaded(field, config);
+            if(ILoadable.class.isAssignableFrom(field.getType())) {
+                ILoadable instance = (ILoadable)field.getType().newInstance();
+                instance.setValue(newValue, field, config);
+                field.set(null, instance);
+            } else {
+                field.set(null, newValue);
             }
         } catch (Exception e) {
             logger.error("Failed to set value of field " + field.getName());
@@ -55,9 +58,9 @@ public class AnnotationBasedConfigHelper {
             ConfigInt configInt = null;
             ConfigFloat configFloat = null;
             ConfigEnum configEnum = null;
-            ConfigFeature configFeature = null;
             ConfigStringList configStringList = null;
             ConfigString configString = null;
+            ConfigLoadable configLoadable = null;
             
             for(Annotation an : field.getAnnotations()) {
                 if(an instanceof NeedsReload) {
@@ -70,16 +73,16 @@ public class AnnotationBasedConfigHelper {
                     configBoolean = (ConfigBoolean) an;
                 } else if(an instanceof ConfigEnum) {
                     configEnum = (ConfigEnum) an;
-                } else if(an instanceof ConfigFeature) {
-                    configFeature = (ConfigFeature) an;
                 } else if(an instanceof ConfigStringList) {
                     configStringList = (ConfigStringList) an;
                 }  else if(an instanceof ConfigString) {
                     configString = (ConfigString) an;
+                }  else if(an instanceof ConfigLoadable) {
+                    configLoadable = (ConfigLoadable) an;
                 }
             }
             
-            if(configBoolean == null && configInt == null && configFloat == null && configEnum == null && configFeature == null && configStringList == null && configString == null) continue;
+            if(configBoolean == null && configInt == null && configFloat == null && configEnum == null && configLoadable == null && configStringList == null && configString == null) continue;
             
             Object currentValue = null;
             Object newValue = null;
@@ -97,29 +100,30 @@ public class AnnotationBasedConfigHelper {
                 newValue = config.getInt(field.getName(), configInt.cat(), configInt.def(), configInt.min(), configInt.max(), configInt.com()); 
             } else if(configFloat != null) {
                 newValue = config.getFloat(field.getName(), configFloat.cat(), configFloat.def(), configFloat.min(), configFloat.max(), configFloat.com());
-            } else if(configEnum != null || configFeature != null) {
-                String annDef = configEnum != null ? configEnum.def() : configFeature.def() ? "true" : "false";
-                String annCat = configEnum != null ? configEnum.cat() : configFeature.cat();
-                String annCom = configEnum != null ? configEnum.com() : configFeature.com();
-                String fieldName = (configFeature != null ? "" : "") + field.getName() + (configFeature != null ? "-" : "");
+            } else if(configEnum != null || configLoadable != null) {
+                String annDef = configEnum != null ? configEnum.def() : configLoadable.def();
+                String annCat = configEnum != null ? configEnum.cat() : configLoadable.cat();
+                String annCom = configEnum != null ? configEnum.com() : configLoadable.com();
+                String fieldName = field.getName();
                 
                 boolean lowerCase = annDef.codePoints().anyMatch(cp -> Character.isLowerCase(cp));
                 
-                Class<? extends Enum> configClass = (Class<? extends Enum>) field.getType();
+                Class<? extends Enum> configClass = (Class<? extends Enum>) (configEnum != null ? field.getType() : ((ILoadableClass)field.getType().getAnnotation(ILoadableClass.class)).enumClass());
                 Map<String, ? extends Enum> enumMap = EnumUtils.getEnumMap(configClass);
                 String[] valuesStrUpper = (String[])enumMap.keySet().stream().toArray(String[]::new);
                 String[] valuesStr = Arrays.stream(valuesStrUpper).map(s -> lowerCase ? s.toLowerCase() : s).toArray(String[]::new);
                 
                 // allow upgrading boolean to string list
                 ConfigCategory cat = config.getCategory(annCat.toLowerCase());
-                Property oldProp = cat.get(fieldName);
+                String propName = cat.keySet().stream().filter(k -> k.replaceAll("-", "").equals(fieldName)).findFirst().get();
+                Property oldProp = cat.get(propName);
                 String oldVal = null;
                 if(oldProp != null && oldProp.getType() != Type.STRING) {
                     oldVal = oldProp.getString();
-                    cat.remove(fieldName);
+                    cat.remove(propName);
                 }
                 
-                String newValueStr = config.getString(fieldName, annCat,
+                String newValueStr = config.getString(propName, annCat,
                         lowerCase ? annDef.toLowerCase() : annDef.toUpperCase(), annCom, valuesStr);
                 if(oldVal != null) {
                     newValueStr = oldVal;
@@ -132,7 +136,7 @@ public class AnnotationBasedConfigHelper {
                 }
                 newValue = enumMap.get(newValueStr.toUpperCase());
                 
-                Property newProp = cat.get(fieldName);
+                Property newProp = cat.get(propName);
                 if(!newProp.getString().equals(newValueStr)) {
                     newProp.set(newValueStr);
                 }
@@ -273,16 +277,24 @@ public class AnnotationBasedConfigHelper {
     
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.FIELD)
-    public static @interface ConfigFeature {
+    public static @interface ConfigLoadable {
 
         String cat();
-        boolean def();
+        String def();
         String com() default "";
 
     }
     
-    public static interface ILoadListener {
-        public void postValueLoaded(Field field, Configuration config);
+    public static interface ILoadable {
+        public void setValue(Object newValue, Field field, Configuration config);
+    }
+    
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target(ElementType.TYPE)
+    public static @interface ILoadableClass {
+
+        Class<? extends Enum<?>> enumClass();
+
     }
     
     @FunctionalInterface
