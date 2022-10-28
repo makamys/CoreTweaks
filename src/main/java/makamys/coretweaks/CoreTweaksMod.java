@@ -20,16 +20,11 @@ import cpw.mods.fml.common.gameevent.TickEvent;
 import cpw.mods.fml.common.gameevent.TickEvent.ClientTickEvent;
 import makamys.coretweaks.bugfix.DoubleEatFixer;
 import makamys.coretweaks.command.CoreTweaksCommand;
-import makamys.coretweaks.diagnostics.FrameProfiler;
-import makamys.coretweaks.diagnostics.MethodProfiler;
-import makamys.coretweaks.diagnostics.ServerRunTimePrinter;
-import makamys.coretweaks.diagnostics.WAIAA;
 import makamys.coretweaks.ducks.IChunkProviderClient;
 import makamys.coretweaks.optimization.ClientChunkMap;
 import makamys.coretweaks.optimization.JarDiscovererCache;
 import makamys.coretweaks.optimization.transformercache.lite.TransformerCache;
 import makamys.coretweaks.tweak.LoadLastWorldButton;
-import makamys.coretweaks.tweak.automation.AutoWorldLoad;
 import makamys.coretweaks.tweak.crashhandler.Crasher;
 import makamys.coretweaks.util.KeyboardUtil;
 import makamys.mclib.core.MCLib;
@@ -59,18 +54,8 @@ public class CoreTweaksMod
                 listeners.forEach(l -> l.onShutdown());
             }}, "CoreTweaks shutdown thread"));
         
-        if(Config.crasher) {
-            registerListener(Crasher.instance = new Crasher());
-        }
-        if(Config.serverRunTimePrinter) {
-            registerListener(ServerRunTimePrinter.instance = new ServerRunTimePrinter());
-        }
         if(Config.transformerCache == Config.TransformerCache.LITE) {
             registerListener(TransformerCache.instance);
-        }
-        registerListener(FrameProfiler.instance = new FrameProfiler());
-        if(JVMArgs.LAUNCH_WORLD != null) {
-            registerListener(AutoWorldLoad.instance = new AutoWorldLoad());
         }
         if(Config.mainMenuContinueButton) {
             registerListener(LoadLastWorldButton.instance = new LoadLastWorldButton());
@@ -90,16 +75,12 @@ public class CoreTweaksMod
         
         if(Config.coreTweaksCommand) {
             ClientCommandHandler.instance.registerCommand(new CoreTweaksCommand());
-            WAIAA.instance = new WAIAA();
         }
         if(CoreTweaks.textureLoader != null) {
             FMLCommonHandler.instance().bus().register(CoreTweaks.textureLoader);
         }
         if(Config.fixDoubleEat) {
             FMLCommonHandler.instance().bus().register(new DoubleEatFixer());
-        }
-        if(MethodProfiler.isActive()) {
-            FMLCommonHandler.instance().bus().register(MethodProfiler.instance);
         }
         
         listeners.forEach(l -> l.onInit(event));

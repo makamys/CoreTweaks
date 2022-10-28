@@ -31,13 +31,6 @@ public class Config {
     @ConfigBoolean(cat="Tweaks", def=false, com="Add a button to the main menu that loads the last played world.")
     public static boolean mainMenuContinueButton;
             
-    @ConfigBoolean(cat="Tweaks", def=true, com="Pause some ticks after auto-loaded world is loaded.\nDelaying the pausing can be useful because some initialization like chunk updates won't happen while the game is paused.")
-    public static boolean autoLoadPauseOnWorldEntry;
-    @ConfigBoolean(cat="Tweaks", def=true, com="Ding once auto-loaded world is loaded.")
-    public static boolean autoLoadDingOnWorldEntry;
-    @ConfigInt(cat="Tweaks", def=20, min=0, max=Integer.MAX_VALUE, com="How many ticks to wait before pausing an auto-loaded world.")
-    public static int autoLoadPauseWaitLength;
-            
     @ConfigBoolean(cat="Bugfixes", def=true, com="Restore interdimensional travel sound (travel.ogg). Fixes MC-233, fixed in 1.9")
     public static boolean restoreTravelSound;
     @ConfigBoolean(cat="Bugfixes", def=true, com="Fixes bug in entity swimming code resulting in small entities (ones with hitboxes less than 0.8 units tall, such as DMod's foxes) being prone to drowning.")
@@ -78,24 +71,8 @@ public class Config {
     @ConfigBoolean(cat="Optimizations", def=true, com="Sets TCP_NODELAY to true, reducing network latency in multiplayer. Works on server as well as client. From Minecraft 1.12 (added in 1.8.1).")
     public static boolean tcpNoDelay;
             
-    @ConfigBoolean(cat="Diagnostics", def=true, com="Enables the /coretweaks command, used to access various diagnostics. Invoke it in-game for additional information.")
+    //@ConfigBoolean(cat="Diagnostics", def=true, com="Enables the /coretweaks command, used to access various diagnostics. Invoke it in-game for additional information.")
     public static boolean coreTweaksCommand;
-    @ConfigString(cat="Diagnostics", def="", com="Comma-separated list of methods to profile. The results will be written to ./coretweaks/out/profiler-<timestamp>.csv. Currently only the call count is measured. Method names have the syntax of `<canonical class name>.<method name>`, like `some.package.SomeClass.method`.")
-    public static String profilerMethods;
-    @ConfigBoolean(cat="Diagnostics", def=false, com="Automatically start frame profiler as soon as the game starts.")
-    public static boolean frameProfilerStartEnabled;
-    @ConfigBoolean(cat="Diagnostics", def=false, com="Insert hooks that lets the frame profiler profile various parts of frame rendering. If this is disabled, the frame profiler will only be able to show very limited information.")
-    public static boolean frameProfilerHooks;
-    @ConfigBoolean(cat="Diagnostics", def=false, com="Print render tick times to log periodically.")
-    public static boolean frameProfilerPrint;
-    @ConfigBoolean(cat="Diagnostics", def=false, com="Creates a report of how long each step of startup loading took in ./coretweaks/out/fml_bar_profiler.csv.")
-    public static boolean forgeBarProfiler;
-    @ConfigBoolean(cat="Diagnostics", def=false, com="Enables debug feature that crashes the game when pressing certain key combinations.")
-    public static boolean crasher;
-    @ConfigBoolean(cat="Diagnostics", def=false, com="Prints server run time.")
-    public static boolean serverRunTimePrinter;
-    @ConfigBoolean(cat="Diagnostics", def=false, com="Render world in wireframe mode. Tip: If this is enabled when the game is started, you will be able to toggle it without restarting the game, only the world needs to be reloaded.")
-    public static boolean wireframe;
             
     //@ConfigBoolean(cat="Optimizations", def=false, com="Use multi-threaded texture loading when stitching textures? Placebo.")
     public static boolean threadedTextureLoader;

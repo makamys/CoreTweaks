@@ -5,7 +5,6 @@ import java.io.File;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import makamys.coretweaks.diagnostics.FMLBarProfiler;
 import makamys.coretweaks.optimization.FastDeobfuscationRemapper;
 import makamys.coretweaks.optimization.ThreadedTextureLoader;
 import makamys.coretweaks.optimization.transformercache.full.CachingTransformer;
@@ -40,10 +39,6 @@ public class CoreTweaks {
         
         if(Config.transformerCache == Config.TransformerCache.FULL) {
             cachingTransformer = CachingTransformer.register();
-        }
-        
-        if(FMLBarProfiler.isActive()) {
-            FMLBarProfiler.instance().init();
         }
         
         if(FastDeobfuscationRemapper.isActive()) {

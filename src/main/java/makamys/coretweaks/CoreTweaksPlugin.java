@@ -7,8 +7,6 @@ import java.util.List;
 import java.util.Map;
 
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
-import makamys.coretweaks.diagnostics.FMLBarProfiler;
-import makamys.coretweaks.diagnostics.MethodProfiler;
 import makamys.coretweaks.optimization.JarDiscovererCache;
 
 @IFMLLoadingPlugin.SortingIndex(1001) // Run after deobf (FMLDeobfTweaker has an index of 1000)
@@ -26,14 +24,8 @@ public class CoreTweaksPlugin implements IFMLLoadingPlugin {
         if(JarDiscovererCache.isActive()) {
             transformerClasses.add("makamys.coretweaks.asm.ASMModParserTransformer");
         }
-        if(MethodProfiler.isActive()) {
-            transformerClasses.add("makamys.coretweaks.asm.ProfilerTransformer");
-        }
         if(Config.forgeModDiscovererSkipKnownLibraries) {
             transformerClasses.add("makamys.coretweaks.asm.ModDiscovererTransformer");
-        }
-        if(FMLBarProfiler.isActive()) {
-            transformerClasses.add("makamys.coretweaks.asm.FMLBarProfilerTransformer");
         }
         if(!MixinConfigPlugin.isForgeSplashEnabled()) {
             if(Config.forgeFastProgressBar) {
@@ -54,9 +46,6 @@ public class CoreTweaksPlugin implements IFMLLoadingPlugin {
     public String getSetupClass() {
         if(JarDiscovererCache.isActive()) {
             JarDiscovererCache.load();
-        }
-        if(MethodProfiler.isActive()) {
-            MethodProfiler.instance.init();
         }
         return null;
     }

@@ -92,7 +92,6 @@ public class MixinConfigPlugin implements IMixinConfigPlugin {
             if(Config.ofUnlockCustomSkyMinRenderDistance) mixins.add("tweak.ofcustomsky.MixinOFD6CustomSky");
             if(Config.disableFog) mixins.add("tweak.disablefog.MixinEntityRenderer");
             if(Config.uncapCreateWorldGuiTextFieldLength) mixins.add("tweak.newworldguimaxlength.MixinGuiCreateWorld");
-            if(Config.wireframe) mixins.add("diagnostics.wireframe.MixinEntityRenderer");
             
             if(Config.forceUncapFramerate) mixins.add("tweak.synctweak.MixinMinecraft");
             if(Config.ofFixUpdateRenderersReturnValue) mixins.add("tweak.ofupdaterenderersreturn.MixinRenderGlobal");
@@ -100,8 +99,6 @@ public class MixinConfigPlugin implements IMixinConfigPlugin {
             if(Config.getPendingBlockUpdates) mixins.add("optimization.getpendingblockupdates.MixinWorldServer");
             if(Config.restoreTravelSound) mixins.add("bugfix.restoretravelsound.MixinNetHandlerPlayClient");
             if(Config.cloudHeightCheck != Config.CloudHeightCheck.UNCHANGED) mixins.add("tweak.cloudheightcheck.MixinEntityRenderer");
-            if(Config.frameProfilerHooks) mixins.addAll(Arrays.asList("diagnostics.frameprofiler.MixinEntityRenderer",
-                                                                        "diagnostics.frameprofiler.MixinMinecraft"));
             if(Config.fcOptimizeTextureUpload) {
                 String fcVersion = (String)Launch.blackboard.get("fcVersion");
                 if(fcVersion != null) {
