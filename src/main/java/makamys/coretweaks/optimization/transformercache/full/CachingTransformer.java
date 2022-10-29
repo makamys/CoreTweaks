@@ -100,6 +100,8 @@ public class CachingTransformer implements IClassTransformer, MapAddListener<Str
     private static final File CLASS_CACHE_DAT = Util.childFile(CoreTweaks.CACHE_DIR, "classCache.dat");
     private static final File CLASS_CACHE_DAT_TMP = Util.childFile(CoreTweaks.CACHE_DIR, "classCache.dat~");
     
+    private static final boolean FORCE_REBUILD_CACHE = Boolean.parseBoolean(System.getProperty("coretweaks.transformerCache.full.forceRebuild", "false"));
+    
     public CachingTransformer(List<IClassTransformer> transformers, WrappedTransformerList<IClassTransformer> wrappedTransformers, WrappedAddListenableMap<String, Class<?>> wrappedCachedClasses) {
         LOGGER.info("Initializing cache transformer");
         
@@ -107,20 +109,12 @@ public class CachingTransformer implements IClassTransformer, MapAddListener<Str
         this.wrappedCachedClasses = wrappedCachedClasses;
         wrappedCachedClasses.addListener(this);
         
-        if(isDevEnvironment() || Persistence.modsChanged()) {
-            clearCache(isDevEnvironment() ? "this is a dev environment." : "mods have changed.");
+        if(FORCE_REBUILD_CACHE || Persistence.modsChanged()) {
+            clearCache(FORCE_REBUILD_CACHE ? "forceRebuild JVM flag was set." : "mods have changed.");
         } else {
             loadCache();
         }
         saveThread.start();
-    }
-    
-    private static boolean isDevEnvironment() {
-        try {
-            return Launch.classLoader.getClassBytes("net.minecraft.world.World") != null;
-        } catch (IOException e) {
-            return false;
-        }
     }
     
     private void clearCache(String reason) {
