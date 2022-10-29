@@ -30,7 +30,7 @@ public class Config {
     public static FeatureSetting ofFixUpdateRenderersReturnValue;
     @ConfigWrappedEnum(cat="Tweaks.Mods", def=TRUE, com="Allows custom sky rendering in OptiFine D6 when using a render distance lower than 8.")
     public static FeatureSetting ofUnlockCustomSkyMinRenderDistance;
-    @ConfigWrappedEnum(cat="Tweaks", def=TRUE, com="If enabled, the distance of the view fustrum's far plane will be clamped above `clampFarPlaneDistance_min`. Setting it to 180 or higher fixes clipping in OptiFine's custom skybox that happens when using lower render distances.")
+    @ConfigWrappedEnum(cat="Tweaks", def=TRUE, com="If enabled, the distance of the view fustrum's far plane will be clamped above `minFarPlaneDistance`. Setting it to 180 or higher fixes clipping in OptiFine's custom skybox that happens when using lower render distances.")
     public static FeatureSetting clampFarPlaneDistance;
     @ConfigFloat(cat="Tweaks.clampFarPlaneDistance", def=180f, min=0f, max=Float.MAX_VALUE, com="See `clampFarPlaneDistance`.")
     public static float minFarPlaneDistance;
@@ -45,7 +45,7 @@ public class Config {
     public static FeatureSetting restoreTravelSound;
     @ConfigWrappedEnum(cat="Bugfixes", def=TRUE, com="Fixes bug in entity swimming code resulting in small entities (ones with hitboxes less than 0.8 units tall, such as DMod's foxes) being prone to drowning.")
     public static FeatureSetting fixSmallEntitySwim;
-    @ConfigWrappedEnum(cat="Tweaks", def=TRUE, com="If enabled, the condition used to decide whether to render opaque or transparent clouds will be set based on the value of `tweakCloudHeightCheckMode`.")
+    @ConfigWrappedEnum(cat="Tweaks", def=TRUE, com="If enabled, the condition used to decide whether to render opaque or transparent clouds will be set based on the value of `cloudHeightCheckMode`.")
     public static FeatureSetting tweakCloudHeightCheck;
     @ConfigEnum(cat="Tweaks.tweakCloudHeightCheck", def="ALWAYS_TRANSPARENT", com="Lets you tweak the condition used to decide whether to render opaque or transparent clouds.\n" + 
             "* VARIABLE_CORRECTED: Keep vanilla behavior of rendering clouds as opaque when the player is below them and transparent otherwise, but with the turning point corrected to match the cloud height even when the world provider has a different cloud height than 128. Also provides a fix for OptiFine's bug where clouds disappear when the player is between Y=128 and the cloud height level when they are raised.\n" +
@@ -205,7 +205,7 @@ public class Config {
         configHelper.loadFields(config);
         
         config.setCategoryComment("_categories", 
-                "In this config file, feature toggles have names that end in a '-' character.\n" +
+                "In this config file, every feature toggle has the name of '_enabled'.\n" +
                 "A feature toggle can be set to the following values. If a different value is provided, the setting will be reverted to the default setting on next start.\n" +
                 "* false: Disable the feature\n" +
                 "* true: Enable the feature if it doesn't cause an incompatibility\n" +
