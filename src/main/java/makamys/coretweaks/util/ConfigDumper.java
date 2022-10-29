@@ -17,18 +17,43 @@ public class ConfigDumper {
         File outFile = new File(Launch.minecraftHome, "config-export-" + config.getConfigFile().getName() + ".md");
         try(FileWriter fw = new FileWriter(outFile)){
             for(String category : config.getCategoryNames()) {
+                String outTitle = "";
+                String outBody = "";
+                
                 ConfigCategory cat = config.getCategory(category);
-                fw.write("# " + cat.getName() + "\n\n");
+                String catName = cat.getQualifiedName();
+                
+                if(catName.startsWith("_")) {
+                    continue;
+                }
+                
+                if(catName.contains(".")) {
+                    catName = catName.substring(catName.indexOf(".") + 1);
+                    outTitle += "#";
+                    
+                    if(!cat.containsKey("_enabled")) {
+                        outTitle += "#";
+                    }
+                }
+                outTitle += "# " + catName + "\n\n";
                 
                 String comment = cat.getComment();
                 
                 if(comment != null) {
-                    fw.write(commentToMarkdown(cat.getComment()));
-                    fw.write("\n\n");
+                    outBody += commentToMarkdown(cat.getComment());
+                    outBody += "\n\n";
                 }
                 
                 for(Property prop : cat.getValues().values()) {
-                    fw.write("### " + prop.getName() + "\n" + commentToMarkdown(prop.comment) + "\n\n");
+                    if(!prop.getName().equals("_enabled")) {
+                        outBody += "### " + catName + "." + prop.getName() + "\n";
+                    }
+                    outBody += commentToMarkdown(prop.comment) + "\n\n";
+                }
+                
+                if(!cat.getQualifiedName().contains(".") || !outBody.isEmpty()) {
+                    fw.write(outTitle);
+                    fw.write(outBody);
                 }
             }
         } catch(IOException e) {
