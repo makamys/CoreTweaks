@@ -5,6 +5,8 @@ import static makamys.coretweaks.CoreTweaks.LOGGER;
 
 import java.io.File;
 import java.lang.reflect.Field;
+import java.util.Collections;
+import java.util.List;
 
 import cpw.mods.fml.common.versioning.ComparableVersion;
 import makamys.coretweaks.util.AnnotationBasedConfigHelper;
@@ -225,12 +227,47 @@ public class Config {
             configHelper.saveFields(config);
         }
         
+        sortCategories(config);
+        
         if(ConfigDumper.ENABLED) {
             ConfigDumper.dumpConfig(config);
         }
         
         if(config.hasChanged()) {
             config.save();
+        }
+    }
+    
+    /** Forge keeps categories in the order they were added. I want them to be sorted alphabetically,
+     * with the extra condition that the string 'mods' should come last. */ 
+    private static void sortCategories(Configuration config) {
+        Field childrenF = null;
+        try {
+            childrenF = ConfigCategory.class.getDeclaredField("children");
+            childrenF.setAccessible(true);
+            
+            for(String category : config.getCategoryNames()) {
+                ConfigCategory cat = config.getCategory(category);
+                
+                @SuppressWarnings("unchecked")
+                List<ConfigCategory> children = (List<ConfigCategory>) childrenF.get(cat);
+                
+                Collections.sort(children, (catA, catB) -> {
+                    String nameA = catA.getName();
+                    String nameB = catB.getName();
+                    if(nameA.equals("mods") && !nameB.equals("mods")) {
+                        return 1;
+                    } else if(!nameA.equals("mods") && nameB.equals("mods")) {
+                        return -1;
+                    } else if(nameA.equals("mods") && nameB.equals("mods")) {
+                        return 0;
+                    } else {
+                        return nameA.compareTo(nameB);
+                    }
+                });
+            }
+        } catch (Exception e) {
+            LOGGER.info("Failed to sort config categories");
         }
     }
     
