@@ -60,7 +60,7 @@ public class MixinConfigPlugin implements IMixinConfigPlugin {
         } else if(phase == Phase.INIT) {
             
         } else if(phase == Phase.DEFAULT) {
-            if(Config.transformerCache.isActive() && Config.transformerCache_mode == Config.TransformerCache.LITE) {
+            if(Config.transformerCache.isActive() && Config.transformerCacheMode == Config.TransformerCache.LITE) {
                 // At this point the transformer chain is complete, so we can go hook it.
                 TransformerCache.instance.init();
             }

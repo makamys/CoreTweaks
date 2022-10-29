@@ -48,12 +48,12 @@ public class ConfigMigrator {
         migrateInt("optimizations", "threadedTextureLoaderThreadCount", (x) -> threadedTextureLoaderThreadCount = x);
         migrateEnum("optimizations", "transformerCache", (x) -> {
             if(x != null) {
-                transformerCache_mode = (TransformerCache)x;
+                transformerCacheMode = (TransformerCache)x;
                 transformerCache.setValue(Setting.TRUE);
             } else {
                 transformerCache.setValue(Setting.FALSE);
             }
-        },  transformerCache_mode.getClass());
+        },  transformerCacheMode.getClass());
         
         migrateString("transformer_cache_full", "badClasses", (x) -> badClasses = x);
         migrateString("transformer_cache_full", "badTransformers", (x) -> badTransformers = x);
@@ -65,20 +65,20 @@ public class ConfigMigrator {
         
         migrateEnum("tweaks", "cloudHeightCheck", (x) -> {
             if(x != null) {
-                tweakCloudHeightCheck_mode = (CloudHeightCheck)x;
+                tweakCloudHeightCheckMode = (CloudHeightCheck)x;
                 tweakCloudHeightCheck.setValue(Setting.TRUE);
             } else {
                 tweakCloudHeightCheck.setValue(Setting.FALSE);
             }
             
-        }, tweakCloudHeightCheck_mode.getClass());
+        }, tweakCloudHeightCheckMode.getClass());
         migrateFeatureSetting("tweaks", "crashHandler", crashHandler);
         migrateFeatureSetting("tweaks", "disableFog", disableFog);
         migrateFeatureSetting("tweaks", "forceUncapFramerate", forceUncapFramerate);
         migrateFeatureSetting("tweaks", "lightFixStare", lightFixStare);
         migrateFeatureSetting("tweaks", "mainMenuContinueButton", mainMenuContinueButton);
         migrateFloat("tweaks", "minFarPlaneDistance", (x) -> {
-            clampFarPlaneDistance_min = Math.max(0, x);
+            clampFarPlaneDistanceMin = Math.max(0, x);
             clampFarPlaneDistance.setValue(x >= 0 ? FeatureSetting.Setting.TRUE : FeatureSetting.Setting.FALSE);
         });
         migrateFeatureSetting("tweaks", "ofFixUpdateRenderersReturnValue", ofFixUpdateRenderersReturnValue);

@@ -30,8 +30,8 @@ public class Config {
     public static FeatureSetting ofUnlockCustomSkyMinRenderDistance;
     @ConfigLoadable(cat="Tweaks", def=TRUE, com="If enabled, the distance of the view fustrum's far plane will be clamped above `clampFarPlaneDistance_min`. Setting it to 180 or higher fixes clipping in OptiFine's custom skybox that happens when using lower render distances.")
     public static FeatureSetting clampFarPlaneDistance;
-    @ConfigFloat(cat="Tweaks", def=180f, min=0f, max=Float.MAX_VALUE, com="See `clampFarPlaneDistance`.")
-    public static float clampFarPlaneDistance_min;
+    @ConfigFloat(cat="Tweaks.clampFarPlaneDistance", def=180f, min=0f, max=Float.MAX_VALUE, com="See `clampFarPlaneDistance`.")
+    public static float clampFarPlaneDistanceMin;
     @ConfigLoadable(cat="Tweaks", def=FALSE, com="Disables fog. Simple as.")
     public static FeatureSetting disableFog;
     @ConfigLoadable(cat="Tweaks", def=FALSE, com="Uncap max length for world name and world seed in the world creation GUI. (By default, it's capped at 32.)")
@@ -45,11 +45,11 @@ public class Config {
     public static FeatureSetting fixSmallEntitySwim;
     @ConfigLoadable(cat="Tweaks", def=TRUE, com="If enabled, the condition used to decide whether to render opaque or transparent clouds will be set based on the value of `tweakCloudHeightCheckMode`.")
     public static FeatureSetting tweakCloudHeightCheck;
-    @ConfigEnum(cat="Tweaks", def="ALWAYS_TRANSPARENT", com="Lets you tweak the condition used to decide whether to render opaque or transparent clouds.\n" + 
+    @ConfigEnum(cat="Tweaks.tweakCloudHeightCheck", def="ALWAYS_TRANSPARENT", com="Lets you tweak the condition used to decide whether to render opaque or transparent clouds.\n" + 
             "* VARIABLE_CORRECTED: Keep vanilla behavior of rendering clouds as opaque when the player is below them and transparent otherwise, but with the turning point corrected to match the cloud height even when the world provider has a different cloud height than 128. Also provides a fix for OptiFine's bug where clouds disappear when the player is between Y=128 and the cloud height level when they are raised.\n" +
             "* ALWAYS_TRANSPARENT: Always render clouds as transparent (how it is in b1.7.3 and 1.15+)\n" + 
             "* ALWAYS_OPAQUE: Always render clouds as opaque")
-    public static CloudHeightCheck tweakCloudHeightCheck_mode;
+    public static CloudHeightCheck tweakCloudHeightCheckMode;
     @ConfigLoadable(cat="Bugfixes", def=TRUE, com="Fixes graphical glitches that happen after recovering from a game crash, caused by world renderer display lists getting deleted but never reallocated. From 1.12.")
     public static FeatureSetting fixDisplayListDelete;
     @ConfigLoadable(cat="Bugfixes", def=TRUE, com="Fixes heightmap calculation not including the top layer of 16x16x16 regions, causing lighting errors (MC-7508)")
@@ -90,7 +90,7 @@ public class Config {
     @ConfigEnum(cat="Optimizations.transformerCache", def="LITE", com="The type of transformer caching to use.\n"
                     + "* LITE: Cache individual transformations of select transformers. Reduces startup time. Safe.\n"
                     + "* FULL: Cache the entire transformer chain. Reduces startup time further, but breaks with many mods.")
-    public static TransformerCache transformerCache_mode;
+    public static TransformerCache transformerCacheMode;
     @ConfigLoadable(cat="Optimizations", def=TRUE, com="Cache the file paths contained in folder resource packs. Fixes the immense slowdown they add to the loading of large modpacks.")
     public static FeatureSetting fastFolderTexturePack;
             

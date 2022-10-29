@@ -37,7 +37,7 @@ public class CoreTweaks {
                             : Runtime.getRuntime().availableProcessors());
         }
         
-        if(Config.transformerCache.isActive() && Config.transformerCache_mode == Config.TransformerCache.FULL) {
+        if(Config.transformerCache.isActive() && Config.transformerCacheMode == Config.TransformerCache.FULL) {
             cachingTransformer = CachingTransformer.register();
         }
         

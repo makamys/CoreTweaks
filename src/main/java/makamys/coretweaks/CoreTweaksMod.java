@@ -54,7 +54,7 @@ public class CoreTweaksMod
                 listeners.forEach(l -> l.onShutdown());
             }}, "CoreTweaks shutdown thread"));
         
-        if(Config.transformerCache.isActive() && Config.transformerCache_mode == Config.TransformerCache.LITE) {
+        if(Config.transformerCache.isActive() && Config.transformerCacheMode == Config.TransformerCache.LITE) {
             registerListener(TransformerCache.instance);
         }
         if(Config.mainMenuContinueButton.isActive()) {

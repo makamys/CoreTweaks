@@ -24,7 +24,7 @@ abstract class MixinEntityRenderer {
     
     /** Returns the height above which clouds should be rendered as transparent. */
     private double getCloudHeight(double original, boolean addOF) {
-        switch(Config.tweakCloudHeightCheck_mode) {
+        switch(Config.tweakCloudHeightCheckMode) {
         case VARIABLE_CORRECTED:
             // OptiFine has a bug where it only adds ofCloudsHeight*128 to the second height check.
             // To fix this, we add it to the first one here.
