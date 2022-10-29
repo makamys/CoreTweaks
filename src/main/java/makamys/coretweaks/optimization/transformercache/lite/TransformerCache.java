@@ -45,8 +45,9 @@ public class TransformerCache implements IModEventListener {
     private List<IClassTransformer> myTransformers = new ArrayList<>();
     private Map<String, TransformerData> transformerMap = new HashMap<>();
     
-    private static final File DAT = Util.childFile(CoreTweaks.CACHE_DIR, "transformerCache.dat");
-    private static final File DAT_ERRORED = Util.childFile(CoreTweaks.CACHE_DIR, "transformerCache.dat.errored");
+    private static final File DAT_OLD = Util.childFile(CoreTweaks.CACHE_DIR, "transformerCache.dat");
+    private static final File DAT = Util.childFile(CoreTweaks.CACHE_DIR, "classTransformerLite.cache");
+    private static final File DAT_ERRORED = Util.childFile(CoreTweaks.CACHE_DIR, "classTransformerLite.cache.errored");
     private static final File TRANSFORMERCACHE_PROFILER_CSV = Util.childFile(CoreTweaks.OUT_DIR, "transformercache_profiler.csv");
     private final Kryo kryo = new Kryo();
     
@@ -89,6 +90,11 @@ public class TransformerCache implements IModEventListener {
     
     private void loadData() {
         kryo.setRegistrationRequired(false);
+        
+        if(DAT_OLD.exists() && !DAT.exists()) {
+            LOGGER.info("Migrating class cache: " + DAT_OLD + " -> " + DAT);
+            DAT_OLD.renameTo(DAT);
+        }
         
         if(DAT.exists()) {
             try(Input is = new UnsafeInput(new BufferedInputStream(new FileInputStream(DAT)))) {

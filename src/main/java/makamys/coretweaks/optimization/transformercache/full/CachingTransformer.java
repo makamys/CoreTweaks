@@ -99,9 +99,10 @@ public class CachingTransformer implements IClassTransformer, MapAddListener<Str
     private int lastSaveSize = 0;
     private BlockingQueue<String> dirtyClasses = new LinkedBlockingQueue<String>();
     
-    private static final File CLASS_CACHE_DAT = Util.childFile(CoreTweaks.CACHE_DIR, "classCache.dat");
-    private static final File CLASS_CACHE_DAT_ERRORED = Util.childFile(CoreTweaks.CACHE_DIR, "classCache.dat.errored");
-    private static final File CLASS_CACHE_DAT_TMP = Util.childFile(CoreTweaks.CACHE_DIR, "classCache.dat~");
+    private static final File CLASS_CACHE_DAT_OLD = Util.childFile(CoreTweaks.CACHE_DIR, "classCache.dat");
+    private static final File CLASS_CACHE_DAT = Util.childFile(CoreTweaks.CACHE_DIR, "classTransformerFull.cache");
+    private static final File CLASS_CACHE_DAT_ERRORED = Util.childFile(CoreTweaks.CACHE_DIR, "classTransformerFull.cache.errored");
+    private static final File CLASS_CACHE_DAT_TMP = Util.childFile(CoreTweaks.CACHE_DIR, "classTransformerFull.cache~");
     
     private static final boolean FORCE_REBUILD_CACHE = Boolean.parseBoolean(System.getProperty("coretweaks.transformerCache.full.forceRebuild", "false"));
     
@@ -134,6 +135,11 @@ public class CachingTransformer implements IClassTransformer, MapAddListener<Str
     
     private void loadCache() {
         File inFile = CLASS_CACHE_DAT;
+        
+        if(CLASS_CACHE_DAT_OLD.exists() && !CLASS_CACHE_DAT.exists()) {
+            LOGGER.info("Migrating class cache: " + CLASS_CACHE_DAT_OLD + " -> " + CLASS_CACHE_DAT);
+            CLASS_CACHE_DAT_OLD.renameTo(CLASS_CACHE_DAT);
+        }
         
         if(inFile.exists()) {
             LOGGER.info("Loading class cache.");

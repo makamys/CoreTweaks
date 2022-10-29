@@ -39,8 +39,9 @@ public class JarDiscovererCache {
     private static Map<String, CachedModInfo> cache = new HashMap<>();
     private static Map<String, CachedModInfo> dirtyCache = new HashMap<>();
     
-    private static final File DAT = Util.childFile(CoreTweaks.CACHE_DIR, "jarDiscovererCache.dat");
-    private static final File DAT_ERRORED = Util.childFile(CoreTweaks.CACHE_DIR, "jarDiscovererCache.dat.errored");
+    private static final File DAT_OLD = Util.childFile(CoreTweaks.CACHE_DIR, "jarDiscovererCache.dat");
+    private static final File DAT = Util.childFile(CoreTweaks.CACHE_DIR, "jarDiscoverer.cache");
+    private static final File DAT_ERRORED = Util.childFile(CoreTweaks.CACHE_DIR, "jarDiscoverer.cache.errored");
     
     private static final Kryo kryo = new Kryo();
     
@@ -51,6 +52,10 @@ public class JarDiscovererCache {
         kryo.register(EnumHolder.class, new EnumHolderSerializer());
         kryo.setRegistrationRequired(false);
         
+        if(DAT_OLD.exists() && !DAT.exists()) {
+            LOGGER.info("Migrating jar discoverer cache: " + DAT_OLD + " -> " + DAT);
+            DAT_OLD.renameTo(DAT);
+        }
         
         if(DAT.exists()) {
             try(Input is = new UnsafeInput(new BufferedInputStream(new FileInputStream(DAT)))) {
