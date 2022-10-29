@@ -34,8 +34,8 @@ public class AnnotationBasedConfigHelper {
     
     private void setConfigClassField(Field field, Object newValue, Configuration config) {
         try {
-            if(ILoadable.class.isAssignableFrom(field.getType())) {
-                ILoadable instance = (ILoadable)field.getType().newInstance();
+            if(IWrappedEnum.class.isAssignableFrom(field.getType())) {
+                IWrappedEnum instance = (IWrappedEnum)field.getType().newInstance();
                 instance.setValue(newValue, field, config);
                 field.set(null, instance);
             } else {
@@ -60,7 +60,7 @@ public class AnnotationBasedConfigHelper {
             ConfigEnum configEnum = null;
             ConfigStringList configStringList = null;
             ConfigString configString = null;
-            ConfigFeature configFeature = null;
+            ConfigWrappedEnum configWrappedEnum = null;
             
             for(Annotation an : field.getAnnotations()) {
                 if(an instanceof NeedsReload) {
@@ -77,12 +77,12 @@ public class AnnotationBasedConfigHelper {
                     configStringList = (ConfigStringList) an;
                 }  else if(an instanceof ConfigString) {
                     configString = (ConfigString) an;
-                }  else if(an instanceof ConfigFeature) {
-                    configFeature = (ConfigFeature) an;
+                }  else if(an instanceof ConfigWrappedEnum) {
+                    configWrappedEnum = (ConfigWrappedEnum) an;
                 }
             }
             
-            if(configBoolean == null && configInt == null && configFloat == null && configEnum == null && configFeature == null && configStringList == null && configString == null) continue;
+            if(configBoolean == null && configInt == null && configFloat == null && configEnum == null && configWrappedEnum == null && configStringList == null && configString == null) continue;
             
             Object currentValue = null;
             Object newValue = null;
@@ -100,28 +100,28 @@ public class AnnotationBasedConfigHelper {
                 newValue = config.getInt(field.getName(), snakeifyCategory(configInt.cat()), configInt.def(), configInt.min(), configInt.max(), configInt.com()); 
             } else if(configFloat != null) {
                 newValue = config.getFloat(field.getName(), snakeifyCategory(configFloat.cat()), configFloat.def(), configFloat.min(), configFloat.max(), configFloat.com());
-            } else if(configEnum != null || configFeature != null) {
-                String annDef = configEnum != null ? configEnum.def() : configFeature.def();
-                String annCat = configEnum != null ? configEnum.cat() : configFeature.cat();
-                String annCom = configEnum != null ? configEnum.com() : configFeature.com();
+            } else if(configEnum != null || configWrappedEnum != null) {
+                String annDef = configEnum != null ? configEnum.def() : configWrappedEnum.def();
+                String annCat = configEnum != null ? configEnum.cat() : configWrappedEnum.cat();
+                String annCom = configEnum != null ? configEnum.com() : configWrappedEnum.com();
                 String fieldName = field.getName();
+                
+                WrappedEnum loadableAnn = ((WrappedEnum)field.getType().getAnnotation(WrappedEnum.class));
+                String categoryProperty = loadableAnn == null ? "" : loadableAnn.categoryProperty();
                 
                 String[] parts = fieldName.split("_");
                 if(parts.length > 1) {
                     fieldName = parts[parts.length - 1];
                     annCat += "." + String.join(".", Arrays.copyOf(parts, parts.length - 1));
                 }
-                if(configFeature != null) {
+                if(!categoryProperty.equals("")) {
                     annCat += "." + fieldName;
-                    fieldName = "_enabled";
+                    fieldName = categoryProperty;
                 }
                 
                 annCat = snakeifyCategory(annCat);
                 
                 boolean lowerCase = annDef.codePoints().anyMatch(cp -> Character.isLowerCase(cp));
-                
-                ILoadableClass loadableAnn = ((ILoadableClass)field.getType().getAnnotation(ILoadableClass.class));
-                String suffix = loadableAnn == null ? "" : loadableAnn.suffix();
                 
                 Class<? extends Enum> configClass = (Class<? extends Enum>) (configEnum != null ? field.getType() : loadableAnn.enumClass());
                 Map<String, ? extends Enum> enumMap = EnumUtils.getEnumMap(configClass);
@@ -130,7 +130,7 @@ public class AnnotationBasedConfigHelper {
                 
                 // allow upgrading boolean to string list
                 ConfigCategory cat = config.getCategory(annCat.toLowerCase());
-                String propName = fieldName + suffix;
+                String propName = fieldName;
                 Property oldProp = cat.get(propName);
                 String oldVal = null;
                 if(oldProp != null && oldProp.getType() != Type.STRING) {
@@ -205,24 +205,29 @@ public class AnnotationBasedConfigHelper {
                     for(String catName : config.getCategoryNames()) {
                         String propName = field.getName();
                         Object serializableFieldValue = fieldValue;
-                        if(fieldValue instanceof ILoadable) {
-                            // TODO save and migrate feature toggles
-                            ILoadable loadable = ((ILoadable)fieldValue);
-                            ILoadableClass loadableClass = loadable.getClass().getAnnotation(ILoadableClass.class);
-                            propName += loadableClass.suffix();
-                            serializableFieldValue = loadable.getValue();
-                        }
-                        ConfigCategory cat = config.getCategory(snakeifyCategory(catName));
-                        Property prop = cat.get(propName);
-                        if(prop != null) {
-                            try {
-                                setProperty(prop, serializableFieldValue);
-                            } catch(Exception e) {
-                                logger.error("Failed to save field " + field.getName());
-                                e.printStackTrace();
+                        if(fieldValue instanceof IWrappedEnum) {
+                            IWrappedEnum wrappedEnum = ((IWrappedEnum)fieldValue);
+                            WrappedEnum wrappedEnumAnn = wrappedEnum.getClass().getAnnotation(WrappedEnum.class);
+                            if(!wrappedEnumAnn.categoryProperty().isEmpty()) {
+                                propName = wrappedEnumAnn.categoryProperty();
+                                catName += "." + field.getName();
                             }
-                            return;
-                        }   
+                            serializableFieldValue = wrappedEnum.getValue();
+                        }
+                        String snakeifiedCatName = snakeifyCategory(catName);
+                        if(config.getCategoryNames().contains(snakeifiedCatName)) {
+                            ConfigCategory cat = config.getCategory(snakeifiedCatName);
+                            Property prop = cat.get(propName);
+                            if(prop != null) {
+                                try {
+                                    setProperty(prop, serializableFieldValue);
+                                } catch(Exception e) {
+                                    logger.error("Failed to save field " + field.getName());
+                                    e.printStackTrace();
+                                }
+                                return;
+                            }   
+                        }
                     }
                     logger.error("Couldn't find property named " + field.getName() + ", can't save new value");
                 }
@@ -335,7 +340,7 @@ public class AnnotationBasedConfigHelper {
     
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.FIELD)
-    public static @interface ConfigFeature {
+    public static @interface ConfigWrappedEnum {
 
         String cat();
         String def();
@@ -343,26 +348,22 @@ public class AnnotationBasedConfigHelper {
 
     }
     
-    public static interface ILoadable {
+    public static interface IWrappedEnum {
         public Object getValue();
         public void setValue(Object newValue, Field field, Configuration config);
     }
     
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.TYPE)
-    public static @interface ILoadableClass {
+    public static @interface WrappedEnum {
 
         Class<? extends Enum<?>> enumClass();
-        String suffix() default "";
+        String categoryProperty() default "";
 
     }
     
     @FunctionalInterface
     private static interface TriConsumer<A, B, C> {
         void accept(A a, B b, C c);
-    }
-    
-    private static String getLast(String[] arr) {
-        return arr[arr.length - 1];
     }
 }

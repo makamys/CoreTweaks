@@ -142,7 +142,8 @@ public class ConfigMigrator {
             
             if(category.containsKey(name)) {
                 Property prop = category.get(name);
-                if(prop.getType() == Type.DOUBLE) {
+                // Forge stores floats as strings for some reason
+                if(prop.getType() == Type.STRING) {
                     consumer.accept((float)prop.getDouble());
                     category.remove(name);
                 }
