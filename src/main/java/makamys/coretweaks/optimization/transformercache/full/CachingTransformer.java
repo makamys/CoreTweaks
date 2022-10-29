@@ -25,6 +25,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.stream.Collectors;
 
+import javax.lang.model.SourceVersion;
+
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.io.Files;
@@ -98,6 +100,7 @@ public class CachingTransformer implements IClassTransformer, MapAddListener<Str
     private BlockingQueue<String> dirtyClasses = new LinkedBlockingQueue<String>();
     
     private static final File CLASS_CACHE_DAT = Util.childFile(CoreTweaks.CACHE_DIR, "classCache.dat");
+    private static final File CLASS_CACHE_DAT_ERRORED = Util.childFile(CoreTweaks.CACHE_DIR, "classCache.dat.errored");
     private static final File CLASS_CACHE_DAT_TMP = Util.childFile(CoreTweaks.CACHE_DIR, "classCache.dat~");
     
     private static final boolean FORCE_REBUILD_CACHE = Boolean.parseBoolean(System.getProperty("coretweaks.transformerCache.full.forceRebuild", "false"));
@@ -136,8 +139,6 @@ public class CachingTransformer implements IClassTransformer, MapAddListener<Str
             LOGGER.info("Loading class cache.");
             cache.clear();
             
-            boolean foundCorruption = false;
-            
             try (DataInputStream in = new DataInputStream(new BufferedInputStream(new FileInputStream(inFile)))){
                 try {
                     while(true) { // EOFException should break the loop
@@ -146,28 +147,26 @@ public class CachingTransformer implements IClassTransformer, MapAddListener<Str
                         byte[] classData = new byte[classLength];
                         int bytesRead = in.read(classData, 0, classLength);
                         
-                        if(bytesRead == classLength) {
+                        if(!SourceVersion.isName(className)) {
+                            throw new RuntimeException("Invalid class name");
+                        } else if(bytesRead != classLength) {
+                            throw new RuntimeException("Length of " + className + " doesn't match advertised length.");
+                        } else {
                             cache.put(className, Optional.of(classData));
                             
                             superDebug("Loaded " + className);
-                        } else {
-                            LOGGER.warn("Length of " + className + " doesn't match advertised length. Skipping.");
-                            foundCorruption = true;
                         }
                     }
                 } catch(EOFException eof) {}
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
+            } catch (Exception e) {
+                CoreTweaks.LOGGER.error("There was an error reading the transformer cache. A new one will be created. The previous one has been saved as " + CLASS_CACHE_DAT_ERRORED.getName() + " for inspection.");
+                CLASS_CACHE_DAT.renameTo(CLASS_CACHE_DAT_ERRORED);
                 e.printStackTrace();
+                cache.clear();
             }
             LOGGER.info("Loaded " + cache.size() + " cached classes.");
             
             lastSaveSize = cache.size();
-            
-            if(foundCorruption) {
-                LOGGER.warn("There was data corruption present in the cache file. Doing full save to restore integrity.");
-                saveCacheFully();
-            }
         } else {
             LOGGER.info("Couldn't find class cache file");
         }
