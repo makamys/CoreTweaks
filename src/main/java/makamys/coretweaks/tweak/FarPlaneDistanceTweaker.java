@@ -5,7 +5,7 @@ import makamys.coretweaks.Config;
 public class FarPlaneDistanceTweaker {
     
     public static float modifyFarPlane(float original) {
-        return Math.max(Config.clampFarPlaneDistanceMin, original);
+        return Math.max(Config.minFarPlaneDistance, original);
     }
     
 }

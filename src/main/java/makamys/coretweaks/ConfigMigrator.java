@@ -65,20 +65,20 @@ public class ConfigMigrator {
         
         migrateEnum("tweaks", "cloudHeightCheck", (x) -> {
             if(x != null) {
-                tweakCloudHeightCheckMode = (CloudHeightCheck)x;
+                cloudHeightCheckMode = (CloudHeightCheck)x;
                 tweakCloudHeightCheck.setValue(Setting.TRUE);
             } else {
                 tweakCloudHeightCheck.setValue(Setting.FALSE);
             }
             
-        }, tweakCloudHeightCheckMode.getClass());
+        }, cloudHeightCheckMode.getClass());
         migrateFeatureSetting("tweaks", "crashHandler", crashHandler);
         migrateFeatureSetting("tweaks", "disableFog", disableFog);
         migrateFeatureSetting("tweaks", "forceUncapFramerate", forceUncapFramerate);
         migrateFeatureSetting("tweaks", "lightFixStare", lightFixStare);
         migrateFeatureSetting("tweaks", "mainMenuContinueButton", mainMenuContinueButton);
         migrateFloat("tweaks", "minFarPlaneDistance", (x) -> {
-            clampFarPlaneDistanceMin = Math.max(0, x);
+            minFarPlaneDistance = Math.max(0, x);
             clampFarPlaneDistance.setValue(x >= 0 ? FeatureSetting.Setting.TRUE : FeatureSetting.Setting.FALSE);
         });
         migrateFeatureSetting("tweaks", "ofFixUpdateRenderersReturnValue", ofFixUpdateRenderersReturnValue);

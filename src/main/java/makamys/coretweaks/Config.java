@@ -18,66 +18,66 @@ public class Config {
     private static final String TRUE = "true";
     private static final String FALSE = "false";
     
-    @ConfigLoadable(cat="Tweaks", def=TRUE, com="Lets you survive crashes without the game exiting, usually. Not compatible with other mods that do the same thing.")
+    @ConfigFeature(cat="Tweaks", def=TRUE, com="Lets you survive crashes without the game exiting, usually. Not compatible with other mods that do the same thing.")
     public static FeatureSetting crashHandler;
-    @ConfigLoadable(cat="Tweaks", def=TRUE, com="Causes lighting updates around the block the player is looking at. A workaround for lighting errors that lets you fix them by staring at them. Useful in the Nether.")
+    @ConfigFeature(cat="Tweaks", def=TRUE, com="Causes lighting updates around the block the player is looking at. A workaround for lighting errors that lets you fix them by staring at them. Useful in the Nether.")
     public static FeatureSetting lightFixStare;
-    @ConfigLoadable(cat="Tweaks", def=FALSE, com="EXPERIMENTAL: Uncaps framerate even when framelimiter is enabled. The framerate limit will only be used to decide how much time to spend updating chunks each frame. Vanilla Beta 1.7.3 behavior. It seems to make things worse though, at least with OptiFine.")
+    @ConfigFeature(cat="Tweaks", def=FALSE, com="EXPERIMENTAL: Uncaps framerate even when framelimiter is enabled. The framerate limit will only be used to decide how much time to spend updating chunks each frame. Vanilla Beta 1.7.3 behavior. It seems to make things worse though, at least with OptiFine.")
     public static FeatureSetting forceUncapFramerate;
-    @ConfigLoadable(cat="Tweaks.Mods", def=FALSE, com="Fixes OptiFine's implementation of updateRenderers returning the opposite value of what it should (probably a bug). Only effective when framerate limiter is enabled. Speeds up chunk updates significantly, and increases framerate when there aren't many chunk updates. However, during heavy chunk updating (e.g. when loading a world) it decreases the framerate as a side effect of not being as lazy.")
+    @ConfigFeature(cat="Tweaks.Mods", def=FALSE, com="Fixes OptiFine's implementation of updateRenderers returning the opposite value of what it should (probably a bug). Only effective when framerate limiter is enabled. Speeds up chunk updates significantly, and increases framerate when there aren't many chunk updates. However, during heavy chunk updating (e.g. when loading a world) it decreases the framerate as a side effect of not being as lazy.")
     public static FeatureSetting ofFixUpdateRenderersReturnValue;
-    @ConfigLoadable(cat="Tweaks.Mods", def=TRUE, com="Allows custom sky rendering in OptiFine D6 when using a render distance lower than 8.")
+    @ConfigFeature(cat="Tweaks.Mods", def=TRUE, com="Allows custom sky rendering in OptiFine D6 when using a render distance lower than 8.")
     public static FeatureSetting ofUnlockCustomSkyMinRenderDistance;
-    @ConfigLoadable(cat="Tweaks", def=TRUE, com="If enabled, the distance of the view fustrum's far plane will be clamped above `clampFarPlaneDistance_min`. Setting it to 180 or higher fixes clipping in OptiFine's custom skybox that happens when using lower render distances.")
+    @ConfigFeature(cat="Tweaks", def=TRUE, com="If enabled, the distance of the view fustrum's far plane will be clamped above `clampFarPlaneDistance_min`. Setting it to 180 or higher fixes clipping in OptiFine's custom skybox that happens when using lower render distances.")
     public static FeatureSetting clampFarPlaneDistance;
     @ConfigFloat(cat="Tweaks.clampFarPlaneDistance", def=180f, min=0f, max=Float.MAX_VALUE, com="See `clampFarPlaneDistance`.")
-    public static float clampFarPlaneDistanceMin;
-    @ConfigLoadable(cat="Tweaks", def=FALSE, com="Disables fog. Simple as.")
+    public static float minFarPlaneDistance;
+    @ConfigFeature(cat="Tweaks", def=FALSE, com="Disables fog. Simple as.")
     public static FeatureSetting disableFog;
-    @ConfigLoadable(cat="Tweaks", def=FALSE, com="Uncap max length for world name and world seed in the world creation GUI. (By default, it's capped at 32.)")
+    @ConfigFeature(cat="Tweaks", def=FALSE, com="Uncap max length for world name and world seed in the world creation GUI. (By default, it's capped at 32.)")
     public static FeatureSetting uncapCreateWorldGuiTextFieldLength;
-    @ConfigLoadable(cat="Tweaks", def=FALSE, com="Add a button to the main menu that loads the last played world.")
+    @ConfigFeature(cat="Tweaks", def=FALSE, com="Add a button to the main menu that loads the last played world.")
     public static FeatureSetting mainMenuContinueButton;
             
-    @ConfigLoadable(cat="Bugfixes", def=TRUE, com="Restore interdimensional travel sound (travel.ogg). Fixes MC-233, fixed in 1.9")
+    @ConfigFeature(cat="Bugfixes", def=TRUE, com="Restore interdimensional travel sound (travel.ogg). Fixes MC-233, fixed in 1.9")
     public static FeatureSetting restoreTravelSound;
-    @ConfigLoadable(cat="Bugfixes", def=TRUE, com="Fixes bug in entity swimming code resulting in small entities (ones with hitboxes less than 0.8 units tall, such as DMod's foxes) being prone to drowning.")
+    @ConfigFeature(cat="Bugfixes", def=TRUE, com="Fixes bug in entity swimming code resulting in small entities (ones with hitboxes less than 0.8 units tall, such as DMod's foxes) being prone to drowning.")
     public static FeatureSetting fixSmallEntitySwim;
-    @ConfigLoadable(cat="Tweaks", def=TRUE, com="If enabled, the condition used to decide whether to render opaque or transparent clouds will be set based on the value of `tweakCloudHeightCheckMode`.")
+    @ConfigFeature(cat="Tweaks", def=TRUE, com="If enabled, the condition used to decide whether to render opaque or transparent clouds will be set based on the value of `tweakCloudHeightCheckMode`.")
     public static FeatureSetting tweakCloudHeightCheck;
     @ConfigEnum(cat="Tweaks.tweakCloudHeightCheck", def="ALWAYS_TRANSPARENT", com="Lets you tweak the condition used to decide whether to render opaque or transparent clouds.\n" + 
             "* VARIABLE_CORRECTED: Keep vanilla behavior of rendering clouds as opaque when the player is below them and transparent otherwise, but with the turning point corrected to match the cloud height even when the world provider has a different cloud height than 128. Also provides a fix for OptiFine's bug where clouds disappear when the player is between Y=128 and the cloud height level when they are raised.\n" +
             "* ALWAYS_TRANSPARENT: Always render clouds as transparent (how it is in b1.7.3 and 1.15+)\n" + 
             "* ALWAYS_OPAQUE: Always render clouds as opaque")
-    public static CloudHeightCheck tweakCloudHeightCheckMode;
-    @ConfigLoadable(cat="Bugfixes", def=TRUE, com="Fixes graphical glitches that happen after recovering from a game crash, caused by world renderer display lists getting deleted but never reallocated. From 1.12.")
+    public static CloudHeightCheck cloudHeightCheckMode;
+    @ConfigFeature(cat="Bugfixes", def=TRUE, com="Fixes graphical glitches that happen after recovering from a game crash, caused by world renderer display lists getting deleted but never reallocated. From 1.12.")
     public static FeatureSetting fixDisplayListDelete;
-    @ConfigLoadable(cat="Bugfixes", def=TRUE, com="Fixes heightmap calculation not including the top layer of 16x16x16 regions, causing lighting errors (MC-7508)")
+    @ConfigFeature(cat="Bugfixes", def=TRUE, com="Fixes heightmap calculation not including the top layer of 16x16x16 regions, causing lighting errors (MC-7508)")
     public static FeatureSetting fixHeightmapRange;
-    @ConfigLoadable(cat="Bugfixes", def=TRUE, com="Fixes an extra food item sometimes getting silently consumed (MC-849)")
+    @ConfigFeature(cat="Bugfixes", def=TRUE, com="Fixes an extra food item sometimes getting silently consumed (MC-849)")
     public static FeatureSetting fixDoubleEat;
-    @ConfigLoadable(cat="Bugfixes", def=FALSE, com="Fixes crash when certain invalid URLs appear in chat. Incompatible with Hodgepodge 1.6.14 and higher, which already does this.")
+    @ConfigFeature(cat="Bugfixes", def=FALSE, com="Fixes crash when certain invalid URLs appear in chat. Incompatible with Hodgepodge 1.6.14 and higher, which already does this.")
     public static FeatureSetting fixForgeChatLinkCrash;
             
-    @ConfigLoadable(cat="Optimizations", def=TRUE, com="Optimizes WorldServer#getPendingBlockUpdates. OptiFine also does this, but this won't have an effect when OF is present, so there's no conflict.")
+    @ConfigFeature(cat="Optimizations", def=TRUE, com="Optimizes WorldServer#getPendingBlockUpdates. OptiFine also does this, but this won't have an effect when OF is present, so there's no conflict.")
     public static FeatureSetting getPendingBlockUpdates;
-    @ConfigLoadable(cat="Optimizations", def=FALSE, com="(WIP) Faster implementation of ChunkProviderClient#chunkMapping. From 1.16 (I don't know when exactly it was added). Might be a little buggy (it should only cause client-side errors though).")
+    @ConfigFeature(cat="Optimizations", def=FALSE, com="(WIP) Faster implementation of ChunkProviderClient#chunkMapping. From 1.16 (I don't know when exactly it was added). Might be a little buggy (it should only cause client-side errors though).")
     public static FeatureSetting clientChunkMap;
-    @ConfigLoadable(cat="Optimizations", def=TRUE, com="Skip over known libraries during Forge mod discovery. From Forge 1.12 (added in 1.9)")
+    @ConfigFeature(cat="Optimizations", def=TRUE, com="Skip over known libraries during Forge mod discovery. From Forge 1.12 (added in 1.9)")
     public static FeatureSetting forgeModDiscovererSkipKnownLibraries;
-    @ConfigLoadable(cat="Optimizations", def=TRUE, com="Cache jar discoverer results (and fix a memory leak as a nice bonus).")
+    @ConfigFeature(cat="Optimizations", def=TRUE, com="Cache jar discoverer results (and fix a memory leak as a nice bonus).")
     public static FeatureSetting jarDiscovererCache;
-    @ConfigLoadable(cat="Optimizations", def=TRUE, com="Don't update progress bar on steps. Only active if splash is disabled.")
+    @ConfigFeature(cat="Optimizations", def=TRUE, com="Don't update progress bar on steps. Only active if splash is disabled.")
     public static FeatureSetting forgeFastProgressBar;
-    @ConfigLoadable(cat="Optimizations", def=TRUE, com="Don't strip unusual characters from bar step messages. Only active if splash is disabled.")
+    @ConfigFeature(cat="Optimizations", def=TRUE, com="Don't strip unusual characters from bar step messages. Only active if splash is disabled.")
     public static FeatureSetting forgeFastStepMessageStrip;
-    @ConfigLoadable(cat="Optimizations", def=TRUE, com="Reduces the unnecessary work FMLDeobfuscationRemapper does when we are in a deobfuscated (i.e. development) environment.")
+    @ConfigFeature(cat="Optimizations", def=TRUE, com="Reduces the unnecessary work FMLDeobfuscationRemapper does when we are in a deobfuscated (i.e. development) environment.")
     public static FeatureSetting forgeFastDeobfuscationRemapper;
-    @ConfigLoadable(cat="Optimizations.Mods", def=TRUE, com="Replaces the reflection OptiFine uses to access Forge methods in WorldRenderer#updateRenderer with direct calls to those methods. Small speedup during chunk updates.")
+    @ConfigFeature(cat="Optimizations.Mods", def=TRUE, com="Replaces the reflection OptiFine uses to access Forge methods in WorldRenderer#updateRenderer with direct calls to those methods. Small speedup during chunk updates.")
     public static FeatureSetting ofOptimizeWorldRenderer;
-    @ConfigLoadable(cat="Optimizations.Mods", def=TRUE, com="Removes the call to GL11#getInteger in FastCraft's texture upload handler during texture stitching and uses a cached value instead. Fixes the slowness of texture stitching that happens when OptiFine and FastCraft are both present, and mipmapping is enabled.")
+    @ConfigFeature(cat="Optimizations.Mods", def=TRUE, com="Removes the call to GL11#getInteger in FastCraft's texture upload handler during texture stitching and uses a cached value instead. Fixes the slowness of texture stitching that happens when OptiFine and FastCraft are both present, and mipmapping is enabled.")
     public static FeatureSetting fcOptimizeTextureUpload;
-    @ConfigLoadable(cat="Optimizations", def=TRUE, com="Sets TCP_NODELAY to true, reducing network latency in multiplayer. Works on server as well as client. From Minecraft 1.12 (added in 1.8.1).")
+    @ConfigFeature(cat="Optimizations", def=TRUE, com="Sets TCP_NODELAY to true, reducing network latency in multiplayer. Works on server as well as client. From Minecraft 1.12 (added in 1.8.1).")
     public static FeatureSetting tcpNoDelay;
             
     //@ConfigBoolean(cat="Diagnostics", def=TRUE, com="Enables the /coretweaks command, used to access various diagnostics. Invoke it in-game for additional information.")
@@ -85,13 +85,13 @@ public class Config {
             
     //@ConfigBoolean(cat="Optimizations", def=FALSE, com="Use multi-threaded texture loading when stitching textures? Placebo.")
     public static FeatureSetting threadedTextureLoader = FeatureSetting.FALSE;
-    @ConfigLoadable(cat="Optimizations", def=TRUE, com="Enable class transformer cache.")
+    @ConfigFeature(cat="Optimizations", def=TRUE, com="Enable class transformer cache.")
     public static FeatureSetting transformerCache;
     @ConfigEnum(cat="Optimizations.transformerCache", def="LITE", com="The type of transformer caching to use.\n"
                     + "* LITE: Cache individual transformations of select transformers. Reduces startup time. Safe.\n"
                     + "* FULL: Cache the entire transformer chain. Reduces startup time further, but breaks with many mods.")
     public static TransformerCache transformerCacheMode;
-    @ConfigLoadable(cat="Optimizations", def=TRUE, com="Cache the file paths contained in folder resource packs. Fixes the immense slowdown they add to the loading of large modpacks.")
+    @ConfigFeature(cat="Optimizations", def=TRUE, com="Cache the file paths contained in folder resource packs. Fixes the immense slowdown they add to the loading of large modpacks.")
     public static FeatureSetting fastFolderTexturePack;
             
     //@ConfigInt(cat="Optimizations", def=0, min=0, max=Integer.MAX_VALUE, com="How many threads to use for loading textures? (0: auto (all cores))")
@@ -138,7 +138,7 @@ public class Config {
         FULL
     }
     
-    @ILoadableClass(enumClass = FeatureSetting.Setting.class, suffix = "-")
+    @ILoadableClass(enumClass = FeatureSetting.Setting.class, suffix = "")
     public static class FeatureSetting implements ILoadable {
         
         public static enum Setting {
@@ -170,7 +170,7 @@ public class Config {
         @Override
         public void setValue(Object newValue, Field field, Configuration config) {
             setting = (Setting)newValue;
-            ConfigLoadable ann = (ConfigLoadable)field.getAnnotation(ConfigLoadable.class);
+            ConfigFeature ann = (ConfigFeature)field.getAnnotation(ConfigFeature.class);
             if(!config.getBoolean("enable" + capitalize(ann.cat().toLowerCase().split("\\.")[0]), "_categories", true, "Set this to false to disable all features in the '" + ann.cat().toLowerCase() + "' category.") ||
                     Config.shouldDisable(this)) {
                 disable();
@@ -213,10 +213,10 @@ public class Config {
                 "\n" +
                 "For convenience, the '_categories' category contains toggles that can be used to disable all features in a category.");
         
-        config.setCategoryComment("Optimizations.transformerCache.full", 
+        config.setCategoryComment("Optimizations.transformer_cache.full", 
                 "Options for the full caching class transformer. (only appliable if it's enabled)");
         
-        config.setCategoryComment("Optimizations.transformerCache.lite", 
+        config.setCategoryComment("Optimizations.transformer_cache.lite", 
                 "Options for the lite caching class transformer. (only appliable if it's enabled)");
         
         String loadedVersion = config.getLoadedConfigVersion();

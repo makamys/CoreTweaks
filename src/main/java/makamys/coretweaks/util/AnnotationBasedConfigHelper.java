@@ -60,7 +60,7 @@ public class AnnotationBasedConfigHelper {
             ConfigEnum configEnum = null;
             ConfigStringList configStringList = null;
             ConfigString configString = null;
-            ConfigLoadable configLoadable = null;
+            ConfigFeature configFeature = null;
             
             for(Annotation an : field.getAnnotations()) {
                 if(an instanceof NeedsReload) {
@@ -77,12 +77,12 @@ public class AnnotationBasedConfigHelper {
                     configStringList = (ConfigStringList) an;
                 }  else if(an instanceof ConfigString) {
                     configString = (ConfigString) an;
-                }  else if(an instanceof ConfigLoadable) {
-                    configLoadable = (ConfigLoadable) an;
+                }  else if(an instanceof ConfigFeature) {
+                    configFeature = (ConfigFeature) an;
                 }
             }
             
-            if(configBoolean == null && configInt == null && configFloat == null && configEnum == null && configLoadable == null && configStringList == null && configString == null) continue;
+            if(configBoolean == null && configInt == null && configFloat == null && configEnum == null && configFeature == null && configStringList == null && configString == null) continue;
             
             Object currentValue = null;
             Object newValue = null;
@@ -95,16 +95,28 @@ public class AnnotationBasedConfigHelper {
             }
             
             if(configBoolean != null) {
-                newValue = config.getBoolean(field.getName(), configBoolean.cat(), configBoolean.def(), configBoolean.com());
+                newValue = config.getBoolean(field.getName(), snakeifyCategory(configBoolean.cat()), configBoolean.def(), configBoolean.com());
             } else if(configInt != null) {
-                newValue = config.getInt(field.getName(), configInt.cat(), configInt.def(), configInt.min(), configInt.max(), configInt.com()); 
+                newValue = config.getInt(field.getName(), snakeifyCategory(configInt.cat()), configInt.def(), configInt.min(), configInt.max(), configInt.com()); 
             } else if(configFloat != null) {
-                newValue = config.getFloat(field.getName(), configFloat.cat(), configFloat.def(), configFloat.min(), configFloat.max(), configFloat.com());
-            } else if(configEnum != null || configLoadable != null) {
-                String annDef = configEnum != null ? configEnum.def() : configLoadable.def();
-                String annCat = configEnum != null ? configEnum.cat() : configLoadable.cat();
-                String annCom = configEnum != null ? configEnum.com() : configLoadable.com();
+                newValue = config.getFloat(field.getName(), snakeifyCategory(configFloat.cat()), configFloat.def(), configFloat.min(), configFloat.max(), configFloat.com());
+            } else if(configEnum != null || configFeature != null) {
+                String annDef = configEnum != null ? configEnum.def() : configFeature.def();
+                String annCat = configEnum != null ? configEnum.cat() : configFeature.cat();
+                String annCom = configEnum != null ? configEnum.com() : configFeature.com();
                 String fieldName = field.getName();
+                
+                String[] parts = fieldName.split("_");
+                if(parts.length > 1) {
+                    fieldName = parts[parts.length - 1];
+                    annCat += "." + String.join(".", Arrays.copyOf(parts, parts.length - 1));
+                }
+                if(configFeature != null) {
+                    annCat += "." + fieldName;
+                    fieldName = "_enabled";
+                }
+                
+                annCat = snakeifyCategory(annCat);
                 
                 boolean lowerCase = annDef.codePoints().anyMatch(cp -> Character.isLowerCase(cp));
                 
@@ -144,9 +156,9 @@ public class AnnotationBasedConfigHelper {
                     newProp.set(newValueStr);
                 }
             } else if(configStringList != null) {
-                newValue = config.getStringList(field.getName(), configStringList.cat(), configStringList.def(), configStringList.com());
+                newValue = config.getStringList(field.getName(), snakeifyCategory(configStringList.cat()), configStringList.def(), configStringList.com());
             } else if(configString != null) {
-                newValue = config.getString(field.getName(), configString.cat(), configString.def(), configString.com());
+                newValue = config.getString(field.getName(), snakeifyCategory(configString.cat()), configString.def(), configString.com());
             }
             
             if(needsReload != null && !newValue.equals(currentValue)) {
@@ -159,6 +171,32 @@ public class AnnotationBasedConfigHelper {
         return needReload;
     }
     
+    private static String camelCaseToSnakeCase(String s) {
+        boolean[] spaceField = new boolean[s.length()];
+        
+        for(int i = 0; i < s.length(); i++) {
+            if(i > 0 && i < s.length() && Character.isLetter(s.charAt(i - 1)) && !Character.isUpperCase(s.charAt(i - 1)) && Character.isLetter(s.charAt(i)) && Character.isUpperCase(s.charAt(i))) {
+                spaceField[i] = true;
+            } else if(i > 2 && Character.isLetter(s.charAt(i - 2)) && Character.isUpperCase(s.charAt(i - 2)) && Character.isLetter(s.charAt(i - 1)) && Character.isUpperCase(s.charAt(i - 1)) && Character.isLetter(s.charAt(i)) && !Character.isUpperCase(s.charAt(i))) {
+                spaceField[i - 1] = true;
+            }
+        }
+        
+        String out = "";
+        for(int i = 0; i < s.length(); i++) {
+            if(spaceField[i]) {
+                out += "_";
+            }
+            out += Character.toLowerCase(s.charAt(i));
+        }
+        
+        return out;
+    }
+    
+    private static String snakeifyCategory(String annCat) {
+        return String.join(".", Arrays.stream(annCat.split("\\.")).map(s -> camelCaseToSnakeCase(s)).toArray(String[]::new));
+    }
+    
     public void saveFields(Configuration config) {
         iterateOverConfigAnd(config, (field, newValue, conf) -> {
             try {
@@ -168,12 +206,13 @@ public class AnnotationBasedConfigHelper {
                         String propName = field.getName();
                         Object serializableFieldValue = fieldValue;
                         if(fieldValue instanceof ILoadable) {
+                            // TODO save and migrate feature toggles
                             ILoadable loadable = ((ILoadable)fieldValue);
                             ILoadableClass loadableClass = loadable.getClass().getAnnotation(ILoadableClass.class);
                             propName += loadableClass.suffix();
                             serializableFieldValue = loadable.getValue();
                         }
-                        ConfigCategory cat = config.getCategory(catName);
+                        ConfigCategory cat = config.getCategory(snakeifyCategory(catName));
                         Property prop = cat.get(propName);
                         if(prop != null) {
                             try {
@@ -296,7 +335,7 @@ public class AnnotationBasedConfigHelper {
     
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.FIELD)
-    public static @interface ConfigLoadable {
+    public static @interface ConfigFeature {
 
         String cat();
         String def();
@@ -321,5 +360,9 @@ public class AnnotationBasedConfigHelper {
     @FunctionalInterface
     private static interface TriConsumer<A, B, C> {
         void accept(A a, B b, C c);
+    }
+    
+    private static String getLast(String[] arr) {
+        return arr[arr.length - 1];
     }
 }
