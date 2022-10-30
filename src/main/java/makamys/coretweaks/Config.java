@@ -72,6 +72,9 @@ public class Config {
     public static FeatureSetting forgeModDiscovererSkipKnownLibraries;
     @ConfigWrappedEnum(cat="Optimizations", def=TRUE, com="Cache jar discoverer results (and fix a memory leak as a nice bonus).\nCompatibility note: Not compatible with `jarDiscovererMemoryLeakFix` in FoamFix, which is a subset of this fix (we will attempt to disable their feature - if this fails, this feature will be disabled).")
     public static FeatureSetting jarDiscovererCache;
+    @ConfigInt(cat="Optimizations.jarDiscovererCache", def=8, min=-1, max=Integer.MAX_VALUE,
+            com="Maximum age (in runs) of elements in cache. If an element hasn't been used for more than this many runs, it will be discarded. Set to -1 for no limit.")
+    public static int jarDiscovererCacheMaxAge;
     @ConfigWrappedEnum(cat="Optimizations", def=TRUE, com="Don't update progress bar on steps. Only active if splash is disabled.")
     public static FeatureSetting forgeFastProgressBar;
     @ConfigWrappedEnum(cat="Optimizations", def=TRUE, com="Don't strip unusual characters from bar step messages. Only active if splash is disabled.")

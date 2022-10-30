@@ -6,23 +6,18 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.zip.ZipEntry;
-
-import javax.lang.model.SourceVersion;
 
 import org.objectweb.asm.Type;
 
 import com.esotericsoftware.kryo.Kryo;
-import com.esotericsoftware.kryo.KryoException;
 import com.esotericsoftware.kryo.Serializer;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
@@ -34,12 +29,19 @@ import cpw.mods.fml.common.discovery.asm.ModAnnotation;
 import cpw.mods.fml.common.discovery.asm.ModAnnotation.EnumHolder;
 import makamys.coretweaks.Config;
 import makamys.coretweaks.CoreTweaks;
-import makamys.coretweaks.optimization.transformercache.lite.TransformerCache.TransformerData;
 import makamys.coretweaks.util.Util;
 
+/*
+ * Format (v1):
+ * int8 0
+ * int8 version
+ * int32 epoch
+ * Map<String, CachedModInfo> cache
+ */
 public class JarDiscovererCache {
     
     private static Map<String, CachedModInfo> cache = new HashMap<>();
+    private static int epoch;
     
     private static byte MAGIC_0 = 0;
     private static byte VERSION = 1;
@@ -66,6 +68,8 @@ public class JarDiscovererCache {
             try(Input is = new UnsafeInput(new BufferedInputStream(new FileInputStream(DAT)))) {
                 byte magic0 = kryo.readObject(is, byte.class);
                 byte version = kryo.readObject(is, byte.class);
+                epoch = kryo.readObject(is, int.class);
+                epoch++;
                 
                 if(magic0 != MAGIC_0 || version != VERSION) {
                     CoreTweaks.LOGGER.warn("Jar discoverer cache is either a different version or corrupted, discarding.");
@@ -77,6 +81,7 @@ public class JarDiscovererCache {
                 DAT.renameTo(DAT_ERRORED);
                 e.printStackTrace();
                 cache.clear();
+                epoch = 0;
             }
         }
     }
@@ -102,10 +107,11 @@ public class JarDiscovererCache {
                             DAT.getParentFile().mkdirs();
                             DAT.createNewFile();
                         }
-                        cache.entrySet().removeIf(e -> !e.getValue().used);
+                        cache.entrySet().removeIf(e -> (epoch - e.getValue().lastAccessed) > Config.jarDiscovererCacheMaxAge);
                         try(Output output = new UnsafeOutput(new BufferedOutputStream(new FileOutputStream(DAT)))) {
                             kryo.writeObject(output, MAGIC_0);
                             kryo.writeObject(output, VERSION);
+                            kryo.writeObject(output, epoch);
                             kryo.writeObject(output, cache);
                         }
                     } catch (IOException e) {
@@ -125,7 +131,7 @@ public class JarDiscovererCache {
             cmi = new CachedModInfo(true);
             cache.put(hash, cmi);
         }
-        cmi.used = true;
+        cmi.lastAccessed = epoch;
         return cmi;
     }
     
@@ -137,8 +143,8 @@ public class JarDiscovererCache {
         
         Map<String, ASMModParser> parserMap = new HashMap<>();
         Set<String> modClasses = new HashSet<>();
+        int lastAccessed;
         transient boolean dirty;
-        transient boolean used;
         
         public CachedModInfo(boolean dirty) {
             this.dirty = dirty;
