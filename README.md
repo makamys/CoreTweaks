@@ -10,7 +10,7 @@ A Minecraft 1.7.10 coremod that contains various bug fixes, tweaks, optimization
 
 ## Incompatibilities
 
-* Other crash handling mods (e.g. [BetterCrashes](https://github.com/vfyjxf/BetterCrashes), [CrashGuard](https://github.com/FalsePattern/CrashGuard)) will only work if CoreTweaks's `crashHandler` is disabled. Using them may be preferable in some cases, as they can catch some crashes CoreTweaks cannot. The opposite is also true, however.
+* Since other crash handling mods (e.g. [BetterCrashes](https://github.com/vfyjxf/BetterCrashes), [CrashGuard](https://github.com/FalsePattern/CrashGuard)) overlap in functionality with CoreTweaks's `crashHandler`, it will be disabled if one of them is detected.
 * Various coremods will cause a crash on startup due to an incompatibility with Mixin. Use [Mixingasm](https://github.com/makamys/Mixingasm) to fix this.
 
 ### About `nomixin` builds
