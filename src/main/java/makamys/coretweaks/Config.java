@@ -8,6 +8,9 @@ import java.lang.reflect.Field;
 import java.util.Collections;
 import java.util.List;
 
+import org.spongepowered.asm.mixin.MixinEnvironment;
+import org.spongepowered.asm.mixin.MixinEnvironment.Phase;
+
 import cpw.mods.fml.common.versioning.ComparableVersion;
 import makamys.coretweaks.util.AnnotationBasedConfigHelper;
 import makamys.coretweaks.util.ConfigDumper;
@@ -20,7 +23,7 @@ public class Config {
     private static final String TRUE = "true";
     private static final String FALSE = "false";
     
-    @ConfigWrappedEnum(cat="Tweaks", def=TRUE, com="Lets you survive crashes without the game exiting, usually. Not compatible with other mods that do the same thing.")
+    @ConfigWrappedEnum(cat="Tweaks", def=TRUE, com="Lets you survive crashes without the game exiting, usually. Not compatible with other mods that do the same thing (this feature will be disabled).")
     public static FeatureSetting crashHandler;
     @ConfigWrappedEnum(cat="Tweaks", def=TRUE, com="Causes lighting updates around the block the player is looking at. A workaround for lighting errors that lets you fix them by staring at them. Useful in the Nether.")
     public static FeatureSetting lightFixStare;
@@ -58,7 +61,7 @@ public class Config {
     public static FeatureSetting fixHeightmapRange;
     @ConfigWrappedEnum(cat="Bugfixes", def=TRUE, com="Fixes an extra food item sometimes getting silently consumed (MC-849)")
     public static FeatureSetting fixDoubleEat;
-    @ConfigWrappedEnum(cat="Bugfixes", def=FALSE, com="Fixes crash when certain invalid URLs appear in chat. Incompatible with Hodgepodge 1.6.14 and higher, which already does this.")
+    @ConfigWrappedEnum(cat="Bugfixes", def=TRUE, com="Fixes crash when certain invalid URLs appear in chat.\nNot compatible with `fixUrlDetection` in Hodgepodge 1.6.14 and higher, which does the same (this feature will be disabled).")
     public static FeatureSetting fixForgeChatLinkCrash;
             
     @ConfigWrappedEnum(cat="Optimizations", def=TRUE, com="Optimizes WorldServer#getPendingBlockUpdates. OptiFine also does this, but this won't have an effect when OF is present, so there's no conflict.")
@@ -170,10 +173,11 @@ public class Config {
         @Override
         public void setValue(Object newValue, Field field, Configuration config) {
             setting = (Setting)newValue;
-            ConfigWrappedEnum ann = (ConfigWrappedEnum)field.getAnnotation(ConfigWrappedEnum.class);
-            if(!config.getBoolean("enable" + capitalize(ann.cat().toLowerCase().split("\\.")[0]), "_categories", true, "Set this to false to disable all features in the '" + ann.cat().toLowerCase() + "' category.") ||
-                    Config.shouldDisable(this)) {
-                disable();
+            if(!disabled) {
+                ConfigWrappedEnum ann = (ConfigWrappedEnum)field.getAnnotation(ConfigWrappedEnum.class);
+                if(!config.getBoolean("enable" + capitalize(ann.cat().toLowerCase().split("\\.")[0]), "_categories", true, "Set this to false to disable all features in the '" + ann.cat().toLowerCase() + "' category.") || (setting == Setting.TRUE && Config.shouldDisable(this))) {
+                    disable();
+                }
             }
         }
         
@@ -271,9 +275,18 @@ public class Config {
     
     private static boolean shouldDisable(FeatureSetting feature) {
         if(feature == crashHandler) {
-            // TODO
+            if(Compat.isBetterCrashesPresent()) {
+                LOGGER.info("Disabling crash handler because BetterCrashes is present.");
+                return true;
+            } else if(Compat.isCrashGuardPresent()) {
+                LOGGER.info("Disabling crash handler because CrashGuard is present.");
+                return true;
+            }
         } else if(feature == fixForgeChatLinkCrash) {
-            // TODO
+            if(Compat.isHodgepodgeChatLinkCrashFixEnabled()) {
+                LOGGER.info("Disabling forge chat link crash fix because Hodgepodge has the same fix enabled.");
+                return true;
+            }
         }
         return false;
     }

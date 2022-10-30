@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import makamys.coretweaks.CoreTweaks;
 import net.minecraftforge.common.ForgeHooks;
 
-@Mixin(value = ForgeHooks.class, remap = false)
+@Mixin(value = ForgeHooks.class, remap = false, priority = 900)
 public class MixinForgeHooks {
     
     @Redirect(method = "newChatWithLinks", 

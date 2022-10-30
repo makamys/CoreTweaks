@@ -35,9 +35,12 @@ public class AnnotationBasedConfigHelper {
     private void setConfigClassField(Field field, Object newValue, Configuration config) {
         try {
             if(IWrappedEnum.class.isAssignableFrom(field.getType())) {
-                IWrappedEnum instance = (IWrappedEnum)field.getType().newInstance();
+                IWrappedEnum instance = (IWrappedEnum) field.get(null);
+                if(instance == null) {
+                    instance = (IWrappedEnum) field.getType().newInstance();
+                    field.set(null, instance);
+                }
                 instance.setValue(newValue, field, config);
-                field.set(null, instance);
             } else {
                 field.set(null, newValue);
             }
