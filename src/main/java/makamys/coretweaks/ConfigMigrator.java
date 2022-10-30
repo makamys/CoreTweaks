@@ -85,6 +85,20 @@ public class ConfigMigrator {
         migrateFeatureSetting("tweaks", "ofUnlockCustomSkyMinRenderDistance", ofUnlockCustomSkyMinRenderDistance);
         migrateFeatureSetting("tweaks", "uncapCreateWorldGuiTextFieldLength", uncapCreateWorldGuiTextFieldLength);
         
+        deleteBooleanIfDefault("diagnostics", "coreTweaksCommand", true);
+        deleteBooleanIfDefault("diagnostics", "crasher", false);
+        deleteBooleanIfDefault("diagnostics", "forgeBarProfiler", false);
+        deleteBooleanIfDefault("diagnostics", "frameProfilerHooks", false);
+        deleteBooleanIfDefault("diagnostics", "frameProfilerPrint", false);
+        deleteBooleanIfDefault("diagnostics", "frameProfilerStartEnabled", false);
+        deleteStringIfDefault("diagnostics", "profilerMethods", "");
+        deleteBooleanIfDefault("diagnostics", "serverRunTimePrinter", false);
+        deleteBooleanIfDefault("diagnostics", "wireframe", false);
+        
+        deleteBooleanIfDefault("tweaks", "autoLoadDingOnWorldEntry", true);
+        deleteBooleanIfDefault("tweaks", "autoLoadPauseOnWorldEntry", true);
+        deleteIntIfDefault("tweaks", "autoLoadPauseWaitLength", 20);
+        
         for(String catName : config.getCategoryNames()) {
             ConfigCategory cat = config.getCategory(catName);
             if(cat.isEmpty()) {
@@ -93,6 +107,45 @@ public class ConfigMigrator {
         }
     }
     
+    private void deleteIntIfDefault(String cat, String name, int def) {
+        if(config.hasCategory(cat)) {
+            ConfigCategory category = config.getCategory(cat);
+            
+            if(category.containsKey(name)) {
+                Property prop = category.get(name);
+                if(prop.getType() == Type.INTEGER && prop.getInt() == def) {
+                    category.remove(name);
+                }
+            }
+        }
+    }
+
+    private void deleteStringIfDefault(String cat, String name, String def) {
+        if(config.hasCategory(cat)) {
+            ConfigCategory category = config.getCategory(cat);
+            
+            if(category.containsKey(name)) {
+                Property prop = category.get(name);
+                if(prop.getType() == Type.STRING && prop.getString().equals(def)) {
+                    category.remove(name);
+                }
+            }
+        }
+    }
+
+    private void deleteBooleanIfDefault(String cat, String name, boolean def) {
+        if(config.hasCategory(cat)) {
+            ConfigCategory category = config.getCategory(cat);
+            
+            if(category.containsKey(name)) {
+                Property prop = category.get(name);
+                if(prop.getType() == Type.BOOLEAN && prop.getBoolean() == def) {
+                    category.remove(name);
+                }
+            }
+        }
+    }
+
     private void migrateFeatureSetting(String cat, String name, FeatureSetting setting) {
         if(config.hasCategory(cat)) {
             ConfigCategory category = config.getCategory(cat);
