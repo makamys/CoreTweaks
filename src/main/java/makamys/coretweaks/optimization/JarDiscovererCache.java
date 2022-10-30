@@ -17,6 +17,8 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.zip.ZipEntry;
 
+import javax.lang.model.SourceVersion;
+
 import org.objectweb.asm.Type;
 
 import com.esotericsoftware.kryo.Kryo;
@@ -32,12 +34,15 @@ import cpw.mods.fml.common.discovery.asm.ModAnnotation;
 import cpw.mods.fml.common.discovery.asm.ModAnnotation.EnumHolder;
 import makamys.coretweaks.Config;
 import makamys.coretweaks.CoreTweaks;
+import makamys.coretweaks.optimization.transformercache.lite.TransformerCache.TransformerData;
 import makamys.coretweaks.util.Util;
 
 public class JarDiscovererCache {
     
     private static Map<String, CachedModInfo> cache = new HashMap<>();
-    private static Map<String, CachedModInfo> dirtyCache = new HashMap<>();
+    
+    private static byte MAGIC_0 = 0;
+    private static byte VERSION = 1;
     
     private static final File DAT_OLD = Util.childFile(CoreTweaks.CACHE_DIR, "jarDiscovererCache.dat");
     private static final File DAT = Util.childFile(CoreTweaks.CACHE_DIR, "jarDiscoverer.cache");
@@ -59,27 +64,14 @@ public class JarDiscovererCache {
         
         if(DAT.exists()) {
             try(Input is = new UnsafeInput(new BufferedInputStream(new FileInputStream(DAT)))) {
-                try {
-                    while(true) {
-                        String k = kryo.readObject(is, String.class);
-                        CachedModInfo v = kryo.readObject(is, CachedModInfo.class);
-                        if(k.equals(null)) {
-                            throw new RuntimeException("Key is null");
-                        }
-                        if(v.equals(null)) {
-                            throw new RuntimeException("Value is null");
-                        }
-                        LOGGER.trace("Read CachedModInfo " + k);
-                        cache.put(k, v);
-                    }
-                    
-                } catch(KryoException e) {
-                    // this feels dirty but I don't know a better way to check for EOF..
-                    if(!e.getMessage().equals("Buffer underflow.")) {
-                        throw e;
-                    }
-                }
+                byte magic0 = kryo.readObject(is, byte.class);
+                byte version = kryo.readObject(is, byte.class);
                 
+                if(magic0 != MAGIC_0 || version != VERSION) {
+                    CoreTweaks.LOGGER.warn("Jar discoverer cache is either a different version or corrupted, discarding.");
+                } else {
+                    cache = returnVerifiedMap(kryo.readObject(is, HashMap.class));
+                }
             } catch (Exception e) {
                 CoreTweaks.LOGGER.error("There was an error reading the jar discoverer cache. A new one will be created. The previous one has been saved as " + DAT_ERRORED.getName() + " for inspection.");
                 DAT.renameTo(DAT_ERRORED);
@@ -89,8 +81,18 @@ public class JarDiscovererCache {
         }
     }
     
+    private static Map<String, CachedModInfo> returnVerifiedMap(Map<String, CachedModInfo> map) {
+        if(map.containsKey(null)) {
+            throw new RuntimeException("Map contains null key");
+        }
+        if(map.containsValue(null)) {
+            throw new RuntimeException("Map contains null value");
+        }
+        return map;
+    }
+    
     public static void finish() {
-        if(!dirtyCache.isEmpty()) {
+        if(!cache.isEmpty()) {
             new Thread(new Runnable() {
 
                 @Override
@@ -100,19 +102,17 @@ public class JarDiscovererCache {
                             DAT.getParentFile().mkdirs();
                             DAT.createNewFile();
                         }
-                        try(Output output = new UnsafeOutput(new BufferedOutputStream(new FileOutputStream(DAT, true)))) {
-                            for(Entry<String, CachedModInfo> e : dirtyCache.entrySet()) {
-                                LOGGER.trace("Writing CachedModInfo " + e.getKey());
-                                kryo.writeObject(output, e.getKey());
-                                kryo.writeObject(output, e.getValue());
-                            }
+                        cache.entrySet().removeIf(e -> !e.getValue().used);
+                        try(Output output = new UnsafeOutput(new BufferedOutputStream(new FileOutputStream(DAT)))) {
+                            kryo.writeObject(output, MAGIC_0);
+                            kryo.writeObject(output, VERSION);
+                            kryo.writeObject(output, cache);
                         }
                     } catch (IOException e) {
                         // TODO Auto-generated catch block
                         e.printStackTrace();
                     }
                     cache = null;
-                    dirtyCache = null;
                 }
                 
             }, "CoreTweaks JarDiscovererCache save thread").start();
@@ -123,8 +123,9 @@ public class JarDiscovererCache {
         CachedModInfo cmi = cache.get(hash);
         if(cmi == null) {
             cmi = new CachedModInfo(true);
-            dirtyCache.put(hash, cmi);
+            cache.put(hash, cmi);
         }
+        cmi.used = true;
         return cmi;
     }
     
@@ -137,6 +138,7 @@ public class JarDiscovererCache {
         Map<String, ASMModParser> parserMap = new HashMap<>();
         Set<String> modClasses = new HashSet<>();
         transient boolean dirty;
+        transient boolean used;
         
         public CachedModInfo(boolean dirty) {
             this.dirty = dirty;
