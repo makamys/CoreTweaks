@@ -129,6 +129,9 @@ public class Config {
     
     @ConfigStringList(cat="Optimizations.transformerCache.lite", def={"cpw.mods.fml.common.asm.transformers.DeobfuscationTransformer", "codechicken.core.asm.MCPDeobfuscationTransformer", "net.minecraftforge.classloading.FluidIdTransformer", "cpw.mods.fml.common.asm.transformers.SideTransformer", "cpw.mods.fml.common.asm.transformers.TerminalTransformer"}, com="Canonical class names of the transformers that should be cached.")
     public static String[] transformersToCache;
+    @ConfigInt(cat="Optimizations.transformerCache.lite", def=128, min=-1, max=Integer.MAX_VALUE,
+            com="Maximum size (in MB) of cache. If the cache grows larger than this, the least recently used entries will be discarded. Set to -1 for no limit.")
+    public static int liteTransformerCacheMaxSizeMB;
     
     public static enum CloudHeightCheck {
         VARIABLE_CORRECTED,

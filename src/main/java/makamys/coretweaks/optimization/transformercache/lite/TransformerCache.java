@@ -38,12 +38,20 @@ import net.minecraft.launchwrapper.IClassTransformer;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.launchwrapper.LaunchClassLoader;
 
+/* Format:
+ * int8 0
+ * int8 version
+ * Map<String, TransformerData> map
+ */
 public class TransformerCache implements IModEventListener {
     
     public static TransformerCache instance = new TransformerCache();
     
     private List<IClassTransformer> myTransformers = new ArrayList<>();
     private Map<String, TransformerData> transformerMap = new HashMap<>();
+    
+    private static final byte MAGIC_0 = 0;
+    private static final byte VERSION = 1;
     
     private static final File DAT_OLD = Util.childFile(CoreTweaks.CACHE_DIR, "transformerCache.dat");
     private static final File DAT = Util.childFile(CoreTweaks.CACHE_DIR, "classTransformerLite.cache");
@@ -98,7 +106,20 @@ public class TransformerCache implements IModEventListener {
         
         if(DAT.exists()) {
             try(Input is = new UnsafeInput(new BufferedInputStream(new FileInputStream(DAT)))) {
-                transformerMap = returnVerifiedTransformerMap(kryo.readObject(is, HashMap.class));
+                byte magic0 = kryo.readObject(is, byte.class);
+                byte version = kryo.readObject(is, byte.class);
+                
+                if(magic0 != MAGIC_0 || version != VERSION) {
+                    CoreTweaks.LOGGER.warn("Transformer cache is either a different version or corrupted, discarding.");
+                } else {
+                    transformerMap = returnVerifiedTransformerMap(kryo.readObject(is, HashMap.class));
+                }
+                
+                for(TransformerData data : transformerMap.values()) {
+                    if(!Arrays.asList(Config.transformersToCache).contains(data.transformerClassName)) {
+                        CoreTweaks.LOGGER.info("Dropping " + data.transformerClassName + " from cache because we don't care about it anymore.");
+                    }
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             } catch(Exception e) {
@@ -140,9 +161,46 @@ public class TransformerCache implements IModEventListener {
             DAT.createNewFile();
         }
         LOGGER.info("Saving transformer cache");
+        trimCache((long)Config.liteTransformerCacheMaxSizeMB * 1024l * 1024l);
         try(Output output = new UnsafeOutput(new BufferedOutputStream(new FileOutputStream(DAT)))) {
+            kryo.writeObject(output, MAGIC_0);
+            kryo.writeObject(output, VERSION);
             kryo.writeObject(output, transformerMap);
         }
+    }
+    
+    private void trimCache(long maxSize) {
+        if(maxSize == -1) return;
+        
+        List<CachedTransformation> data = new ArrayList<>();
+        
+        for(TransformerData transData : transformerMap.values()) {
+            data.addAll(transData.transformationMap.values());
+        }
+        
+        data.sort(this::sortByAge);
+        
+        long usedSpace = 0;
+        int cutoff = -1;
+        for(int i = data.size() - 1; i >= 0; i--) {
+            usedSpace += data.get(i).getEstimatedSize();
+            if(usedSpace > maxSize) {
+                cutoff = data.get(i).lastAccessed;
+                break;
+            }
+        }
+        
+        if(cutoff != -1) {
+            final int cutoffCopy = cutoff;
+            for(TransformerData transData : transformerMap.values()) {
+                transData.transformationMap.entrySet().removeIf(e -> e.getValue().lastAccessed <= cutoffCopy);
+            }
+            transformerMap.entrySet().removeIf(e -> e.getValue().transformationMap.isEmpty());
+        }
+    }
+    
+    private int sortByAge(CachedTransformation a, CachedTransformation b) {
+        return a.lastAccessed < b.lastAccessed ? -1 : a.lastAccessed > b.lastAccessed ? 1 : 0;
     }
     
     private void saveProfilingResults() throws IOException {
@@ -169,6 +227,7 @@ public class TransformerCache implements IModEventListener {
             CachedTransformation trans = transData.transformationMap.get(transformedName);
             if(trans != null) {
                 if(nullSafeLength(basicClass) == trans.preLength && calculateHash(basicClass) == trans.preHash) {
+                    trans.lastAccessed = now();
                     return trans.postHash == trans.preHash ? basicClass : trans.newClass;
                 }
             }
@@ -202,6 +261,11 @@ public class TransformerCache implements IModEventListener {
         return memoizedHashValue;
     }
     
+    private static int now() {
+        // TODO update the format in 6055
+        return (int)(System.currentTimeMillis() / 1000 / 60);
+    }
+    
     public static class TransformerData {
         String transformerClassName;
         Map<String, CachedTransformation> transformationMap = new HashMap<>();
@@ -218,6 +282,7 @@ public class TransformerCache implements IModEventListener {
             int preHash;
             int postHash;
             byte[] newClass;
+            int lastAccessed;
             
             public CachedTransformation() {}
             
@@ -225,6 +290,7 @@ public class TransformerCache implements IModEventListener {
                 this.targetClassName = targetClassName;
                 this.preHash = preHash;
                 this.preLength = preLength;
+                this.lastAccessed = now();
             }
             
             public void putClass(byte[] result) {
@@ -232,6 +298,10 @@ public class TransformerCache implements IModEventListener {
                 if(preHash != postHash) {
                     newClass = result;
                 }
+            }
+            
+            public int getEstimatedSize() {
+                return targetClassName.length() + 4 + 4 + 4 + (newClass != null ? newClass.length : 0) + 4;
             }
         }
     }
