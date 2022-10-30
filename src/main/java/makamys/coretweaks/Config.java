@@ -23,7 +23,7 @@ public class Config {
     private static final String TRUE = "true";
     private static final String FALSE = "false";
     
-    @ConfigWrappedEnum(cat="Tweaks", def=TRUE, com="Lets you survive crashes without the game exiting, usually. Not compatible with other mods that do the same thing (this feature will be disabled).")
+    @ConfigWrappedEnum(cat="Tweaks", def=TRUE, com="Lets you survive crashes without the game exiting, usually.\nCompatibility note: Not compatible with other mods that do the same thing (this feature will be disabled).")
     public static FeatureSetting crashHandler;
     @ConfigWrappedEnum(cat="Tweaks", def=TRUE, com="Causes lighting updates around the block the player is looking at. A workaround for lighting errors that lets you fix them by staring at them. Useful in the Nether.")
     public static FeatureSetting lightFixStare;
@@ -61,7 +61,7 @@ public class Config {
     public static FeatureSetting fixHeightmapRange;
     @ConfigWrappedEnum(cat="Bugfixes", def=TRUE, com="Fixes an extra food item sometimes getting silently consumed (MC-849)")
     public static FeatureSetting fixDoubleEat;
-    @ConfigWrappedEnum(cat="Bugfixes", def=TRUE, com="Fixes crash when certain invalid URLs appear in chat.\nNot compatible with `fixUrlDetection` in Hodgepodge 1.6.14 and higher, which does the same (this feature will be disabled).")
+    @ConfigWrappedEnum(cat="Bugfixes", def=TRUE, com="Fixes crash when certain invalid URLs appear in chat.\nCompatibility note: Not compatible with `fixUrlDetection` in Hodgepodge 1.6.14 and higher, which does the same (this feature will be disabled).")
     public static FeatureSetting fixForgeChatLinkCrash;
             
     @ConfigWrappedEnum(cat="Optimizations", def=TRUE, com="Optimizes WorldServer#getPendingBlockUpdates. OptiFine also does this, but this won't have an effect when OF is present, so there's no conflict.")
@@ -70,7 +70,7 @@ public class Config {
     public static FeatureSetting clientChunkMap;
     @ConfigWrappedEnum(cat="Optimizations", def=TRUE, com="Skip over known libraries during Forge mod discovery. From Forge 1.12 (added in 1.9)")
     public static FeatureSetting forgeModDiscovererSkipKnownLibraries;
-    @ConfigWrappedEnum(cat="Optimizations", def=TRUE, com="Cache jar discoverer results (and fix a memory leak as a nice bonus).")
+    @ConfigWrappedEnum(cat="Optimizations", def=TRUE, com="Cache jar discoverer results (and fix a memory leak as a nice bonus).\nCompatibility note: Not compatible with `jarDiscovererMemoryLeakFix` in FoamFix, which is a subset of this fix (we will attempt to disable their feature - if this fails, this feature will be disabled).")
     public static FeatureSetting jarDiscovererCache;
     @ConfigWrappedEnum(cat="Optimizations", def=TRUE, com="Don't update progress bar on steps. Only active if splash is disabled.")
     public static FeatureSetting forgeFastProgressBar;
