@@ -23,3 +23,12 @@ jar.manifest.attributes (
 )
 
 apply from: "makalibs.gradle"
+
+jar {
+	from('.') {
+	  include "README.md"
+	  include "LICENSE"
+	  include "CREDITS"
+	  into ''
+    }
+}
