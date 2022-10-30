@@ -10,6 +10,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.apache.logging.log4j.Logger;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
@@ -32,6 +33,7 @@ abstract class MixinWorldServer {
     @Shadow
     private List pendingTickListEntriesThisTick;
     @Shadow
+    @Final
     static private Logger logger;
     
     Map<Long, List<NextTickListEntry>> map;
