@@ -32,6 +32,9 @@ public class CoreTweaksPlugin implements IFMLLoadingPlugin {
                 transformerClasses.add("makamys.coretweaks.asm.FMLFastSplashTransformer");
             }
         }
+        if(Config.backportForge5160.isActive()) {
+            transformerClasses.add("makamys.asm.itaros.backport5160.Forge5160Transformer");
+        }
         
         return transformerClasses.toArray(new String[] {});
     }

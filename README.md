@@ -26,6 +26,8 @@ For more 1.7.10 bugfix/performance/debug mods, refer to [this list](https://gist
 
 This mod is licensed under the [MIT License](https://github.com/makamys/CoreTweaks/blob/master/LICENSE).
 
+It contains code based on minecraft-backport5160, a mod by Itaros which in turn was based on code from Forge and Paper contributors. See [CREDITS](CREDITS) for details.
+
 ## Contributing
 
 When running in an IDE, add these program arguments
