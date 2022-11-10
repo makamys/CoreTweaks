@@ -43,7 +43,12 @@ public class Config {
     public static FeatureSetting uncapCreateWorldGuiTextFieldLength;
     @ConfigWrappedEnum(cat="Tweaks", def=FALSE, com="Add a button to the main menu that loads the last played world.")
     public static FeatureSetting mainMenuContinueButton;
-            
+    @ConfigWrappedEnum(cat="Tweaks", def=FALSE, com="In vanilla, the player can't sprint for longer than 30 seconds. This tweak lets you modify this time limit.")
+    public static FeatureSetting extendSprintTimeLimit;
+    @ConfigInt(cat="Tweaks.extendSprintTimeLimit", def=Integer.MAX_VALUE, min=0, max=Integer.MAX_VALUE, 
+            com="The maximum amount of ticks the player can sprint for. The default value corresponds to 3.4 years. The vanilla value is 600 ticks.")
+    public static int sprintTimeLimit;
+    
     @ConfigWrappedEnum(cat="Bugfixes", def=TRUE, com="Restore interdimensional travel sound (travel.ogg). Fixes MC-233, fixed in 1.9")
     public static FeatureSetting restoreTravelSound;
     @ConfigWrappedEnum(cat="Bugfixes", def=TRUE, com="Fixes bug in entity swimming code resulting in small entities (ones with hitboxes less than 0.8 units tall, such as DMod's foxes) being prone to drowning.")
