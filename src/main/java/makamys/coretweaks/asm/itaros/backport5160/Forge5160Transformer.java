@@ -135,7 +135,7 @@ public class Forge5160Transformer implements IClassTransformer {
                                     visitMethodInsn(Opcodes.INVOKEVIRTUAL, ASMUtils.internalize(resolverClassNames.getName("net.minecraft.world.chunk.Chunk", SimpleNameResolver.NamingPolicy.PKG)), resolverMethodNames.getName("setChunkModified"), "()V", false);
                                     if(flagInstrumentAggressiveLogging) {
                                         visitLdcInsn("Chunk has been tainted by entity addition!");
-                                        visitMethodInsn(Opcodes.INVOKESTATIC, "ru/itaros/backport5160/DebugProbe", resolverMethodNames.getName("notifyCall"), "(Ljava/lang/String;)V", false);
+                                        visitMethodInsn(Opcodes.INVOKESTATIC, "makamys/coretweaks/asm/itaros/backport5160/DebugProbe", resolverMethodNames.getName("notifyCall"), "(Ljava/lang/String;)V", false);
                                     }
                                 }
                                 super.visitInsn(opcode);
@@ -154,7 +154,7 @@ public class Forge5160Transformer implements IClassTransformer {
                                         visitMethodInsn(Opcodes.INVOKEVIRTUAL, ASMUtils.internalize(resolverClassNames.getName("net.minecraft.world.chunk.Chunk", SimpleNameResolver.NamingPolicy.PKG)), resolverMethodNames.getName("setChunkModified"), "()V", false);
                                         if(flagInstrumentAggressiveLogging) {
                                             visitLdcInsn("Chunk has been tainted by entity removal!");
-                                            visitMethodInsn(Opcodes.INVOKESTATIC, "ru/itaros/backport5160/DebugProbe", resolverMethodNames.getName("notifyCall"), "(Ljava/lang/String;)V", false);
+                                            visitMethodInsn(Opcodes.INVOKESTATIC, "makamys/coretweaks/asm/itaros/backport5160/DebugProbe", resolverMethodNames.getName("notifyCall"), "(Ljava/lang/String;)V", false);
                                         }
                                     }
                                     super.visitInsn(opcode);
@@ -241,12 +241,12 @@ public class Forge5160Transformer implements IClassTransformer {
                                     //Argument one(chunk coordinate X)
                                     visitVarInsn(Opcodes.ALOAD, 0);//Entity = this (load from this)
                                     visitFieldInsn(Opcodes.GETFIELD, owner, resolverFieldNames.getName("posX"), "D");//posX
-                                    visitMethodInsn(Opcodes.INVOKESTATIC, "ru/itaros/backport5160/ComplexOperations", "shiftFlooredIntegral4Right", "(D)I", false);
+                                    visitMethodInsn(Opcodes.INVOKESTATIC, "makamys/coretweaks/asm/itaros/backport5160/ComplexOperations", "shiftFlooredIntegral4Right", "(D)I", false);
                                     //visitInsn(Opcodes.POP);
                                     //Argument two(chunk coordinate Z)
                                     visitVarInsn(Opcodes.ALOAD, 0);//Entity = this (load from this)
                                     visitFieldInsn(Opcodes.GETFIELD, owner, resolverFieldNames.getName("posZ"), "D");//posZ
-                                    visitMethodInsn(Opcodes.INVOKESTATIC, "ru/itaros/backport5160/ComplexOperations", "shiftFlooredIntegral4Right", "(D)I", false);
+                                    visitMethodInsn(Opcodes.INVOKESTATIC, "makamys/coretweaks/asm/itaros/backport5160/ComplexOperations", "shiftFlooredIntegral4Right", "(D)I", false);
                                     //visitInsn(Opcodes.POP);
                                     //CALL FFS!
                                     //TODO: I am not sure this is correct method, but judging by 4 shift it should be
@@ -254,7 +254,7 @@ public class Forge5160Transformer implements IClassTransformer {
                                     visitInsn(Opcodes.POP);//Ignore result. Here we are just teasing the game to force chunkload
                                     if(flagInstrumentAggressiveLogging) {
                                         visitLdcInsn("Chunkload has been forced!");
-                                        visitMethodInsn(Opcodes.INVOKESTATIC, "ru/itaros/backport5160/DebugProbe", resolverMethodNames.getName("notifyCall"), "(Ljava/lang/String;)V", false);
+                                        visitMethodInsn(Opcodes.INVOKESTATIC, "makamys/coretweaks/asm/itaros/backport5160/DebugProbe", resolverMethodNames.getName("notifyCall"), "(Ljava/lang/String;)V", false);
                                     }
                                     
                                     visitLabel(excludeLabel);//End of exclusion zone for client side
@@ -334,7 +334,7 @@ public class Forge5160Transformer implements IClassTransformer {
                                                     //Thank gods it returns nothing
                                                     if(flagInstrumentAggressiveLogging) {
                                                         visitLdcInsn("PATCHED!!!");
-                                                        visitMethodInsn(Opcodes.INVOKESTATIC, "ru/itaros/backport5160/DebugProbe", "notifyCall", "(Ljava/lang/String;)V", false);
+                                                        visitMethodInsn(Opcodes.INVOKESTATIC, "makamys/coretweaks/asm/itaros/backport5160/DebugProbe", "notifyCall", "(Ljava/lang/String;)V", false);
                                                     }
                                                     visitLabel(excludeLabel);//End of exclusion zone for non-tracked entities or client side
                                                 }

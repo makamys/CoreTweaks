@@ -33,7 +33,7 @@ public class CoreTweaksPlugin implements IFMLLoadingPlugin {
             }
         }
         if(Config.backportForge5160.isActive()) {
-            transformerClasses.add("makamys.asm.itaros.backport5160.Forge5160Transformer");
+            transformerClasses.add("makamys.coretweaks.asm.itaros.backport5160.Forge5160Transformer");
         }
         
         return transformerClasses.toArray(new String[] {});
