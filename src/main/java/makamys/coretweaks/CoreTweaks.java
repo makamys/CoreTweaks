@@ -29,8 +29,6 @@ public class CoreTweaks {
     public static final File CACHE_DIR = new File(MY_DIR, "cache");
     
     public static void init(){
-        Persistence.loadIfNotLoadedAlready();
-        
         if(Config.threadedTextureLoader.isActive()) {
                 textureLoader = new ThreadedTextureLoader(
                     Config.threadedTextureLoaderThreadCount != 0 ? Config.threadedTextureLoaderThreadCount
@@ -38,14 +36,14 @@ public class CoreTweaks {
         }
         
         if(Config.transformerCache.isActive() && Config.transformerCacheMode == Config.TransformerCache.FULL) {
+            Persistence.loadIfNotLoadedAlready();
             cachingTransformer = CachingTransformer.register();
+            Persistence.lastVersion = CoreTweaks.VERSION;
+            Persistence.save();
         }
         
         if(FastDeobfuscationRemapper.isActive()) {
             FastDeobfuscationRemapper.init();
         }
-        
-        Persistence.lastVersion = CoreTweaks.VERSION;
-        Persistence.save();
     }
 }
