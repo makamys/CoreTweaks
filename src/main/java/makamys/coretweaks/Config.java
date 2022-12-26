@@ -69,7 +69,7 @@ public class Config {
     @ConfigWrappedEnum(cat="Bugfixes", def=TRUE, com="Fixes crash when certain invalid URLs appear in chat.\nCompatibility note: Not compatible with `fixUrlDetection` in Hodgepodge 1.6.14 and higher, which does the same (this feature will be disabled).")
     public static FeatureSetting fixForgeChatLinkCrash;
     @ConfigWrappedEnum(cat="Bugfixes", def=TRUE, com="Backports most of https://github.com/MinecraftForge/MinecraftForge/pull/5160, a patch that fixes minecarts duplicating and vanishing.")
-    public static FeatureSetting backportForge5160;
+    public static FeatureSetting fixEntityTracking;
             
     @ConfigWrappedEnum(cat="Optimizations", def=TRUE, com="Optimizes WorldServer#getPendingBlockUpdates. OptiFine also does this, but this won't have an effect when OF is present, so there's no conflict.")
     public static FeatureSetting getPendingBlockUpdates;
@@ -300,7 +300,7 @@ public class Config {
                 LOGGER.info("Disabling forge chat link crash fix because Hodgepodge has the same fix enabled.");
                 return true;
             }
-        } else if(feature == backportForge5160) {
+        } else if(feature == fixEntityTracking) {
             if(Compat.isBackport5160Present()) {
                 LOGGER.info("Disabling backport of Forge PR #5160 because backport5160 is present.");
                 return true;

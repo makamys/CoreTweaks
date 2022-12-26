@@ -84,7 +84,7 @@ public class MixinConfigPlugin implements IMixinConfigPlugin {
             if(Config.disableFog.isActive()) mixins.add("tweak.disablefog.MixinEntityRenderer");
             if(Config.uncapCreateWorldGuiTextFieldLength.isActive()) mixins.add("tweak.newworldguimaxlength.MixinGuiCreateWorld");
             if(Config.extendSprintTimeLimit.isActive()) mixins.add("tweak.extendsprint.MixinEntityPlayerSP");
-            if(Config.backportForge5160.isActive()) {
+            if(Config.fixEntityTracking.isActive()) {
                 mixins.add("bugfix.forge5160.MixinChunk");
                 mixins.add("bugfix.forge5160.MixinEntity");
                 mixins.add("bugfix.forge5160.MixinWorld");
