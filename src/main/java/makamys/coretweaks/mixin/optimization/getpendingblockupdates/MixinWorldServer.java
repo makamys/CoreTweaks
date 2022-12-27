@@ -36,7 +36,7 @@ abstract class MixinWorldServer {
     @Final
     static private Logger logger;
     
-    Map<Long, List<NextTickListEntry>> map;
+    Map<Long, Set<NextTickListEntry>> map;
     
     @Redirect(method = {"scheduleBlockUpdateWithPriority", "func_147446_b"}, at = @At(value = "INVOKE", target = "Ljava/util/TreeSet;add(Ljava/lang/Object;)Z", remap = false))
     public boolean redirectAdd(TreeSet set, Object o) {
@@ -44,21 +44,21 @@ abstract class MixinWorldServer {
         long key = ChunkCoordIntPair.chunkXZ2Int(e.xCoord >> 4, e.zCoord >> 4);
         
         if(map == null) map = new HashMap<>();
-        List<NextTickListEntry> list = map.get(key);
-        if(list == null) {
-            list = new LinkedList<>();
-            map.put(key, list);
+        Set<NextTickListEntry> chunkSet = map.get(key);
+        if(chunkSet == null) {
+            chunkSet = new TreeSet<>();
+            map.put(key, chunkSet);
         }
-        list.add(e);
+        chunkSet.add(e);
         return set.add(o);
     }
     
     @Redirect(method = {"tickUpdates"}, at = @At(value = "INVOKE", target = "Ljava/util/TreeSet;remove(Ljava/lang/Object;)Z", remap = false))
     public boolean redirectRemove(TreeSet set, Object o) {
         NextTickListEntry e = (NextTickListEntry)o;
-        List<NextTickListEntry> list = map.get(ChunkCoordIntPair.chunkXZ2Int(e.xCoord >> 4, e.zCoord >> 4));
-        if(list != null) {
-            list.remove(e);
+        Set<NextTickListEntry> chunkSet = map.get(ChunkCoordIntPair.chunkXZ2Int(e.xCoord >> 4, e.zCoord >> 4));
+        if(chunkSet != null) {
+            chunkSet.remove(e);
         }
         return set.remove(o);
     }
@@ -80,9 +80,9 @@ abstract class MixinWorldServer {
         if(map != null) {
             for(int cx = p_72920_1_.xPosition - 1; cx <= p_72920_1_.xPosition + 1; cx++) {
                 for(int cz = p_72920_1_.zPosition - 1; cz <= p_72920_1_.zPosition + 1; cz++) {
-                    List<NextTickListEntry> list = map.get(ChunkCoordIntPair.chunkXZ2Int(cx, cz));
-                    if(list != null) {
-                        Iterator<NextTickListEntry> it = list.iterator();
+                    Set<NextTickListEntry> chunkSet = map.get(ChunkCoordIntPair.chunkXZ2Int(cx, cz));
+                    if(chunkSet != null) {
+                        Iterator<NextTickListEntry> it = chunkSet.iterator();
                         while(it.hasNext()) {
                             NextTickListEntry nte = it.next();
                             if (nte.xCoord >= i && nte.xCoord < j && nte.zCoord >= k && nte.zCoord < l)
