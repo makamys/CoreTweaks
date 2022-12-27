@@ -41,7 +41,7 @@ abstract class MixinWorldServer {
     @Redirect(method = {"scheduleBlockUpdateWithPriority", "func_147446_b"}, at = @At(value = "INVOKE", target = "Ljava/util/TreeSet;add(Ljava/lang/Object;)Z", remap = false))
     public boolean redirectAdd(TreeSet set, Object o) {
         NextTickListEntry e = (NextTickListEntry)o;
-        long key = ChunkCoordIntPair.chunkXZ2Int(e.xCoord / 16, e.yCoord / 16);
+        long key = ChunkCoordIntPair.chunkXZ2Int(e.xCoord >> 4, e.zCoord >> 4);
         
         if(map == null) map = new HashMap<>();
         List<NextTickListEntry> list = map.get(key);
@@ -56,7 +56,7 @@ abstract class MixinWorldServer {
     @Redirect(method = {"tickUpdates"}, at = @At(value = "INVOKE", target = "Ljava/util/TreeSet;remove(Ljava/lang/Object;)Z", remap = false))
     public boolean redirectRemove(TreeSet set, Object o) {
         NextTickListEntry e = (NextTickListEntry)o;
-        List<NextTickListEntry> list = map.get(ChunkCoordIntPair.chunkXZ2Int(e.xCoord / 16, e.zCoord / 16));
+        List<NextTickListEntry> list = map.get(ChunkCoordIntPair.chunkXZ2Int(e.xCoord >> 4, e.zCoord >> 4));
         if(list != null) {
             list.remove(e);
         }
