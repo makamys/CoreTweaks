@@ -3,7 +3,6 @@ package makamys.coretweaks.mixin.optimization.getpendingblockupdates;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -15,15 +14,19 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import makamys.coretweaks.ducks.optimization.IPendingBlockUpdatesWorldServer;
+import makamys.coretweaks.optimization.GetPendingBlockUpdates;
 import net.minecraft.world.ChunkCoordIntPair;
 import net.minecraft.world.NextTickListEntry;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.chunk.Chunk;
 
 @Mixin(WorldServer.class)
-abstract class MixinWorldServer {
+abstract class MixinWorldServer implements IPendingBlockUpdatesWorldServer {
     
     @Shadow
     private Set pendingTickListEntriesHashSet;
@@ -36,30 +39,23 @@ abstract class MixinWorldServer {
     @Final
     static private Logger logger;
     
-    Map<Long, Set<NextTickListEntry>> map;
+    /** Chunk coordinate -> Block updates in that chunk */
+    private Map<Long, Set<NextTickListEntry>> crtw$chunkPendingUpdatesMap;
+    
+    @Inject(method = "tick", at = @At("HEAD"))
+    private void onTick(CallbackInfo ci) {
+        GetPendingBlockUpdates.onTick(this);
+    }
     
     @Redirect(method = {"scheduleBlockUpdateWithPriority", "func_147446_b"}, at = @At(value = "INVOKE", target = "Ljava/util/TreeSet;add(Ljava/lang/Object;)Z", remap = false))
     public boolean redirectAdd(TreeSet set, Object o) {
-        NextTickListEntry e = (NextTickListEntry)o;
-        long key = ChunkCoordIntPair.chunkXZ2Int(e.xCoord >> 4, e.zCoord >> 4);
-        
-        if(map == null) map = new HashMap<>();
-        Set<NextTickListEntry> chunkSet = map.get(key);
-        if(chunkSet == null) {
-            chunkSet = new TreeSet<>();
-            map.put(key, chunkSet);
-        }
-        chunkSet.add(e);
+        GetPendingBlockUpdates.add(this, (NextTickListEntry)o);
         return set.add(o);
     }
     
     @Redirect(method = {"tickUpdates"}, at = @At(value = "INVOKE", target = "Ljava/util/TreeSet;remove(Ljava/lang/Object;)Z", remap = false))
     public boolean redirectRemove(TreeSet set, Object o) {
-        NextTickListEntry e = (NextTickListEntry)o;
-        Set<NextTickListEntry> chunkSet = map.get(ChunkCoordIntPair.chunkXZ2Int(e.xCoord >> 4, e.zCoord >> 4));
-        if(chunkSet != null) {
-            chunkSet.remove(e);
-        }
+        GetPendingBlockUpdates.remove(this, (NextTickListEntry)o);
         return set.remove(o);
     }
     
@@ -77,10 +73,12 @@ abstract class MixinWorldServer {
         int k = (chunkcoordintpair.chunkZPos << 4) - 2;
         int l = k + 16 + 2;
         
-        if(map != null) {
+        // New code start
+        
+        if(!GetPendingBlockUpdates.isEmpty(this)) {
             for(int cx = p_72920_1_.xPosition - 1; cx <= p_72920_1_.xPosition + 1; cx++) {
                 for(int cz = p_72920_1_.zPosition - 1; cz <= p_72920_1_.zPosition + 1; cz++) {
-                    Set<NextTickListEntry> chunkSet = map.get(ChunkCoordIntPair.chunkXZ2Int(cx, cz));
+                    Set<NextTickListEntry> chunkSet = GetPendingBlockUpdates.get(this, cx, cz);
                     if(chunkSet != null) {
                         Iterator<NextTickListEntry> it = chunkSet.iterator();
                         while(it.hasNext()) {
@@ -92,6 +90,9 @@ abstract class MixinWorldServer {
                                     this.pendingTickListEntriesHashSet.remove(nte);
                                     this.pendingTickListEntriesTreeSet.remove(nte);
                                     it.remove();
+                                    if(chunkSet.isEmpty()) {
+                                        GetPendingBlockUpdates.removeKey(this, cx, cz);
+                                    }
                                 }
     
                                 if (arraylist == null)
@@ -108,6 +109,7 @@ abstract class MixinWorldServer {
         }
 
         for (int i1 = 1; i1 < 2; ++i1)
+        // New code end
         {
             Iterator iterator;
 
@@ -148,5 +150,13 @@ abstract class MixinWorldServer {
         }
 
         return arraylist;
+    }
+    
+    @Override
+    public Map<Long, Set<NextTickListEntry>> crtw$getChunkPendingUpdatesMap() {
+        if(crtw$chunkPendingUpdatesMap == null) {
+            crtw$chunkPendingUpdatesMap = new HashMap<>();
+        }
+        return crtw$chunkPendingUpdatesMap;
     }
 }
