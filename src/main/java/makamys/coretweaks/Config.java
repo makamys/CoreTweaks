@@ -71,7 +71,7 @@ public class Config {
     @ConfigWrappedEnum(cat="Bugfixes", def=TRUE, com="Backports most of https://github.com/MinecraftForge/MinecraftForge/pull/5160, a patch that fixes minecarts duplicating and vanishing.")
     public static FeatureSetting fixEntityTracking;
             
-    @ConfigWrappedEnum(cat="Optimizations", def=TRUE, com="Optimizes WorldServer#getPendingBlockUpdates. Speed up chunk unloading. OptiFine also does this, but this won't have an effect when OF is present, so there's no conflict.")
+    @ConfigWrappedEnum(cat="Optimizations", def=TRUE, com="Optimizes WorldServer#getPendingBlockUpdates. Speed up chunk unloading.\nCompatibility note: Not compatible with OptiFine, which does the same thing (this feature will be disabled).")
     public static FeatureSetting getPendingBlockUpdates;
     //@ConfigWrappedEnum(cat="Optimizations", def=FALSE, com="(WIP) Faster implementation of ChunkProviderClient#chunkMapping. From 1.16 (I don't know when exactly it was added). Might be a little buggy (it should only cause client-side errors though).")
     public static FeatureSetting clientChunkMap = FeatureSetting.FALSE;
@@ -303,6 +303,11 @@ public class Config {
         } else if(feature == fixEntityTracking) {
             if(Compat.isBackport5160Present()) {
                 LOGGER.info("Disabling backport of Forge PR #5160 because backport5160 is present.");
+                return true;
+            }
+        } else if(feature == getPendingBlockUpdates) {
+            if(Compat.isOptifinePresent()) {
+                LOGGER.info("Disabling getPendingBlockUpdates optimization because OptiFine is present.");
                 return true;
             }
         }

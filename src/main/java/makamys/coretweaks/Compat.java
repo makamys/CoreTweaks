@@ -90,5 +90,9 @@ public class Compat {
     public static boolean isBackport5160Present() {
         return Config.class.getResource("/ru/itaros/backport5160/Forge5160Plugin.class") != null;
     }
+
+    public static boolean isOptifinePresent() {
+        return Config.class.getResource("/optifine/OptiFineTweaker.class") != null;
+    }
     
 }
