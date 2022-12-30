@@ -7,9 +7,10 @@ import java.util.List;
 import java.util.Map;
 
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
+import cpw.mods.fml.relauncher.IFMLLoadingPlugin.MCVersion;
 import makamys.coretweaks.optimization.JarDiscovererCache;
 
-@IFMLLoadingPlugin.SortingIndex(1001) // Run after deobf (FMLDeobfTweaker has an index of 1000)
+@MCVersion("1.7.10")
 public class CoreTweaksPlugin implements IFMLLoadingPlugin {
 
     public CoreTweaksPlugin() {
