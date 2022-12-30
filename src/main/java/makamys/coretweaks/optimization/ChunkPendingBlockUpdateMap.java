@@ -14,7 +14,7 @@ import net.minecraft.world.NextTickListEntry;
 
 public class ChunkPendingBlockUpdateMap {
     
-    private static final boolean DEBUG = Boolean.parseBoolean(System.getProperty("coretweaks.debugGetPendingBlockUpdates", "false"));
+    public static final boolean DEBUG = Boolean.parseBoolean(System.getProperty("coretweaks.debugGetPendingBlockUpdates", "false"));
     
     public static void add(IPendingBlockUpdatesWorldServer ws, NextTickListEntry e) {
         Map<Long, Set<NextTickListEntry>> map = ws.crtw$getChunkPendingUpdatesMap();
@@ -86,6 +86,10 @@ public class ChunkPendingBlockUpdateMap {
     
     private static int chunkCoordPairToZ(long pair) {
         return (int)((pair >> 32) & 4294967295L);
+    }
+
+    public static void onError() {
+        System.out.println("ERROR");
     }
     
 }

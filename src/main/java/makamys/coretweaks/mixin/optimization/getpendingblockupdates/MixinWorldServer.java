@@ -1,6 +1,9 @@
 package makamys.coretweaks.mixin.optimization.getpendingblockupdates;
 
+import static makamys.coretweaks.optimization.ChunkPendingBlockUpdateMap.DEBUG;
+
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -107,10 +110,23 @@ abstract class MixinWorldServer implements IPendingBlockUpdatesWorldServer {
                 }
             }
         }
+        
+        List<NextTickListEntry> debug_myList = null;
+        if(DEBUG && arraylist != null) {
+            debug_myList = new ArrayList<>();
+            debug_myList.addAll(arraylist);
+            arraylist.clear();
+        }
 
-        for (int i1 = 1; i1 < 2; ++i1)
+        for (int i1 = DEBUG ? 0 : 1; i1 < 2; ++i1)
         // New code end
         {
+            if(DEBUG && i1 == 1) {
+                if (!((debug_myList == null && arraylist == null) || (debug_myList.equals(arraylist)))){
+                    ChunkPendingBlockUpdateMap.onError();
+                }
+            }
+            
             Iterator iterator;
 
             if (i1 == 0)
