@@ -145,7 +145,7 @@ public class MixinConfigPlugin implements IMixinConfigPlugin {
             Class bugfixModClassTransformerClass = null;
             try {
                 bugfixModClassTransformerClass = Class.forName("pl.asie.foamfix.bugfixmod.coremod.BugfixModClassTransformer");
-                LOGGER.info("Found BugfixModClassTransformer, applying compatibility hack for FoamFix's jarDiscovererMemoryLeakFix");
+                LOGGER.info("Found BugfixModClassTransformer, applying compatibility hack to forcibly disable FoamFix's jarDiscovererMemoryLeakFix");
                 Object instance = bugfixModClassTransformerClass.getField("instance").get(null);
                 Map<String, ArrayList> patchers = (Map<String, ArrayList>) ReflectionHelper.getPrivateValue(bugfixModClassTransformerClass, instance, "patchers");
                 for(Iterator<Entry<String, ArrayList>> it = patchers.entrySet().iterator(); it.hasNext(); ) {
