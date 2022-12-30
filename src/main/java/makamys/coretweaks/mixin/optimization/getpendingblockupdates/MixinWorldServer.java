@@ -111,6 +111,10 @@ abstract class MixinWorldServer implements IPendingBlockUpdatesWorldServer {
             }
         }
         
+        if(arraylist != null) {
+            Collections.sort(arraylist);
+        }
+        
         List<NextTickListEntry> debug_myList = null;
         if(DEBUG && arraylist != null) {
             debug_myList = new ArrayList<>();
