@@ -80,7 +80,6 @@ public class MixinConfigPlugin implements IMixinConfigPlugin {
             if(Config.fixSmallEntitySwim.isActive()) mixins.add("bugfix.smallentityswim.MixinEntity");
             if(Config.fixForgeChatLinkCrash.isActive()) mixins.add("bugfix.chatlinkcrash.MixinForgeHooks");
             if(Config.clampFarPlaneDistance.isActive()) mixins.add("tweak.farplane.MixinEntityRenderer");
-            if(Config.ofUnlockCustomSkyMinRenderDistance.isActive()) mixins.add("tweak.ofcustomsky.MixinOFD6CustomSky");
             if(Config.disableFog.isActive()) mixins.add("tweak.disablefog.MixinEntityRenderer");
             if(Config.uncapCreateWorldGuiTextFieldLength.isActive()) mixins.add("tweak.newworldguimaxlength.MixinGuiCreateWorld");
             if(Config.extendSprintTimeLimit.isActive()) mixins.add("tweak.extendsprint.MixinEntityPlayerSP");
@@ -91,11 +90,16 @@ public class MixinConfigPlugin implements IMixinConfigPlugin {
             }
             
             if(Config.forceUncapFramerate.isActive()) mixins.add("tweak.synctweak.MixinMinecraft");
-            if(Config.ofFixUpdateRenderersReturnValue.isActive()) mixins.add("tweak.ofupdaterenderersreturn.MixinRenderGlobal");
-            if(Config.ofOptimizeWorldRenderer.isActive()) mixins.add("optimization.ofupdaterendererreflect.MixinWorldRenderer");
             if(Config.optimizeGetPendingBlockUpdates.isActive()) mixins.add("optimization.getpendingblockupdates.MixinWorldServer");
             if(Config.restoreTravelSound.isActive()) mixins.add("bugfix.restoretravelsound.MixinNetHandlerPlayClient");
             if(Config.tweakCloudHeightCheck.isActive()) mixins.add("tweak.cloudheightcheck.MixinEntityRenderer");
+            
+            if(Compat.isOptifinePresent()) {
+                if(Config.ofFixUpdateRenderersReturnValue.isActive()) mixins.add("tweak.ofupdaterenderersreturn.MixinRenderGlobal");
+                if(Config.ofOptimizeWorldRenderer.isActive()) mixins.add("optimization.ofupdaterendererreflect.MixinWorldRenderer");
+                if(Config.ofUnlockCustomSkyMinRenderDistance.isActive()) mixins.add("tweak.ofcustomsky.MixinOFD6CustomSky");
+            }
+            
             if(Config.fcOptimizeTextureUpload.isActive()) {
                 String fcVersion = (String)Launch.blackboard.get("fcVersion");
                 if(fcVersion != null) {
