@@ -2,7 +2,7 @@
 {
   "modid": "coretweaks",
   "name": "CoreTweaks",
-  "description": "A bunch of random bug fixes, optimizations and performance diagnostics",
+  "description": "A bunch of random bug fixes, optimizations and tweaks",
   "version": "${version}",
   "mcversion": "${minecraft_version}",
   "url": "",
