@@ -23,7 +23,7 @@ public class Config {
     private static final String TRUE = "true";
     private static final String FALSE = "false";
     
-    @ConfigWrappedEnum(cat="Tweaks", def=TRUE, com="Lets you survive crashes without the game exiting, usually.\nCompatibility note: Not compatible with other mods that do the same thing (this feature will be disabled).")
+    @ConfigWrappedEnum(cat="Tweaks", def=TRUE, com="Lets you survive crashes without the game exiting, usually.\nCompatibility note: Not compatible BetterCrashes and CrashGuard, which do the same thing (this feature will be disabled).")
     public static FeatureSetting crashHandler;
     @ConfigWrappedEnum(cat="Tweaks", def=TRUE, com="Causes lighting updates around the block the player is looking at. A workaround for lighting errors that lets you fix them by staring at them. Useful in the Nether.")
     public static FeatureSetting lightFixStare;
@@ -46,7 +46,7 @@ public class Config {
     @ConfigWrappedEnum(cat="Tweaks", def=FALSE, com="In vanilla, the player can't sprint for longer than 30 seconds. This tweak lets you modify this time limit.")
     public static FeatureSetting extendSprintTimeLimit;
     @ConfigInt(cat="Tweaks.extendSprintTimeLimit", def=Integer.MAX_VALUE, min=0, max=Integer.MAX_VALUE, 
-            com="The maximum amount of ticks the player can sprint for. The default value corresponds to 3.4 years. The vanilla value is 600 ticks.")
+            com="The maximum amount of ticks the player can sprint for. The default value corresponds to 3.4 years. The vanilla value is 600 ticks (= 30 seconds).")
     public static int sprintTimeLimit;
     
     @ConfigWrappedEnum(cat="Bugfixes", def=TRUE, com="Restore interdimensional travel sound (travel.ogg). Fixes MC-233, fixed in 1.9")
@@ -71,7 +71,7 @@ public class Config {
     @ConfigWrappedEnum(cat="Bugfixes", def=TRUE, com="Backports most of https://github.com/MinecraftForge/MinecraftForge/pull/5160, a patch that fixes minecarts duplicating and vanishing.")
     public static FeatureSetting fixEntityTracking;
             
-    @ConfigWrappedEnum(cat="Optimizations", def=TRUE, com="Optimizes WorldServer#getPendingBlockUpdates. Speed up chunk unloading.\nCompatibility note: Not compatible with OptiFine, which does the same thing (this feature will be disabled).")
+    @ConfigWrappedEnum(cat="Optimizations", def=TRUE, com="Optimizes WorldServer#getPendingBlockUpdates. Speeds up chunk unloading.\nCompatibility note: Not compatible with OptiFine, which does the same thing (this feature will be disabled).")
     public static FeatureSetting optimizeGetPendingBlockUpdates;
     //@ConfigWrappedEnum(cat="Optimizations", def=FALSE, com="(WIP) Faster implementation of ChunkProviderClient#chunkMapping. From 1.16 (I don't know when exactly it was added). Might be a little buggy (it should only cause client-side errors though).")
     public static FeatureSetting clientChunkMap = FeatureSetting.FALSE;
@@ -106,7 +106,7 @@ public class Config {
                     + "* LITE: Cache individual transformations of select transformers. Reduces startup time. Safe.\n"
                     + "* FULL: Cache the entire transformer chain. Reduces startup time further, but breaks with many mods.")
     public static TransformerCache transformerCacheMode;
-    @ConfigWrappedEnum(cat="Optimizations", def=TRUE, com="Cache the file paths contained in folder resource packs. Fixes the immense slowdown they add to the loading of large modpacks.")
+    @ConfigWrappedEnum(cat="Optimizations", def=TRUE, com="Cache the file paths contained in folder resource packs. Eliminates the immense slowdown they add to the loading of large modpacks.")
     public static FeatureSetting fastFolderTexturePack;
             
     //@ConfigInt(cat="Optimizations", def=0, min=0, max=Integer.MAX_VALUE, com="How many threads to use for loading textures? (0: auto (all cores))")
