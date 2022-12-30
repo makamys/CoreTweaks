@@ -14,7 +14,8 @@ import net.minecraft.world.NextTickListEntry;
 
 public class ChunkPendingBlockUpdateMap {
     
-    public static final boolean DEBUG = Boolean.parseBoolean(System.getProperty("coretweaks.debugGetPendingBlockUpdates", "false"));
+    public static final boolean DEBUG = Boolean.parseBoolean(System.getProperty("coretweaks.optimizeGetPendingBlockUpdates.debug", "false"));
+    public static final boolean LENIENT_MODE = Boolean.parseBoolean(System.getProperty("coretweaks.optimizeGetPendingBlockUpdates.lenient", "false"));
     
     public static void add(IPendingBlockUpdatesWorldServer ws, NextTickListEntry e) {
         Map<Long, Set<NextTickListEntry>> map = ws.crtw$getChunkPendingUpdatesMap();

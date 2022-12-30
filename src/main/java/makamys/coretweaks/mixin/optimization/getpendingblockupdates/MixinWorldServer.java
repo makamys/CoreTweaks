@@ -1,6 +1,7 @@
 package makamys.coretweaks.mixin.optimization.getpendingblockupdates;
 
 import static makamys.coretweaks.optimization.ChunkPendingBlockUpdateMap.DEBUG;
+import static makamys.coretweaks.optimization.ChunkPendingBlockUpdateMap.LENIENT_MODE;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -111,7 +112,7 @@ abstract class MixinWorldServer implements IPendingBlockUpdatesWorldServer {
             }
         }
         
-        if(arraylist != null) {
+        if(!LENIENT_MODE && arraylist != null) {
             Collections.sort(arraylist);
         }
         
