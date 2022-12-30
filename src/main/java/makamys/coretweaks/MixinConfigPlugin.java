@@ -93,7 +93,7 @@ public class MixinConfigPlugin implements IMixinConfigPlugin {
             if(Config.forceUncapFramerate.isActive()) mixins.add("tweak.synctweak.MixinMinecraft");
             if(Config.ofFixUpdateRenderersReturnValue.isActive()) mixins.add("tweak.ofupdaterenderersreturn.MixinRenderGlobal");
             if(Config.ofOptimizeWorldRenderer.isActive()) mixins.add("optimization.ofupdaterendererreflect.MixinWorldRenderer");
-            if(Config.getPendingBlockUpdates.isActive()) mixins.add("optimization.getpendingblockupdates.MixinWorldServer");
+            if(Config.optimizeGetPendingBlockUpdates.isActive()) mixins.add("optimization.getpendingblockupdates.MixinWorldServer");
             if(Config.restoreTravelSound.isActive()) mixins.add("bugfix.restoretravelsound.MixinNetHandlerPlayClient");
             if(Config.tweakCloudHeightCheck.isActive()) mixins.add("tweak.cloudheightcheck.MixinEntityRenderer");
             if(Config.fcOptimizeTextureUpload.isActive()) {

@@ -12,7 +12,7 @@ import makamys.coretweaks.ducks.optimization.IPendingBlockUpdatesWorldServer;
 import net.minecraft.world.ChunkCoordIntPair;
 import net.minecraft.world.NextTickListEntry;
 
-public class GetPendingBlockUpdates {
+public class ChunkPendingBlockUpdateMap {
     
     private static final boolean DEBUG = Boolean.parseBoolean(System.getProperty("coretweaks.debugGetPendingBlockUpdates", "false"));
     

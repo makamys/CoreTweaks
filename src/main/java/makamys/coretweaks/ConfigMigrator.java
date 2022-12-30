@@ -41,7 +41,7 @@ public class ConfigMigrator {
         migrateFeatureSetting("optimizations", "forgeFastProgressBar", forgeFastProgressBar);
         migrateFeatureSetting("optimizations", "forgeFastStepMessageStrip", forgeFastStepMessageStrip);
         migrateFeatureSetting("optimizations", "forgeModDiscovererSkipKnownLibraries", forgeModDiscovererSkipKnownLibraries);
-        migrateFeatureSetting("optimizations", "getPendingBlockUpdates", getPendingBlockUpdates);
+        migrateFeatureSetting("optimizations", "getPendingBlockUpdates", optimizeGetPendingBlockUpdates);
         migrateFeatureSetting("optimizations", "jarDiscovererCache", jarDiscovererCache);
         migrateFeatureSetting("optimizations", "ofOptimizeWorldRenderer", ofOptimizeWorldRenderer);
         migrateFeatureSetting("optimizations", "tcpNoDelay", tcpNoDelay);

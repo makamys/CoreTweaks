@@ -19,7 +19,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import makamys.coretweaks.ducks.optimization.IPendingBlockUpdatesWorldServer;
-import makamys.coretweaks.optimization.GetPendingBlockUpdates;
+import makamys.coretweaks.optimization.ChunkPendingBlockUpdateMap;
 import net.minecraft.world.ChunkCoordIntPair;
 import net.minecraft.world.NextTickListEntry;
 import net.minecraft.world.WorldServer;
@@ -44,18 +44,18 @@ abstract class MixinWorldServer implements IPendingBlockUpdatesWorldServer {
     
     @Inject(method = "tick", at = @At("HEAD"))
     private void onTick(CallbackInfo ci) {
-        GetPendingBlockUpdates.onTick(this);
+        ChunkPendingBlockUpdateMap.onTick(this);
     }
     
     @Redirect(method = {"scheduleBlockUpdateWithPriority", "func_147446_b"}, at = @At(value = "INVOKE", target = "Ljava/util/TreeSet;add(Ljava/lang/Object;)Z", remap = false))
     public boolean redirectAdd(TreeSet set, Object o) {
-        GetPendingBlockUpdates.add(this, (NextTickListEntry)o);
+        ChunkPendingBlockUpdateMap.add(this, (NextTickListEntry)o);
         return set.add(o);
     }
     
     @Redirect(method = {"tickUpdates"}, at = @At(value = "INVOKE", target = "Ljava/util/TreeSet;remove(Ljava/lang/Object;)Z", remap = false))
     public boolean redirectRemove(TreeSet set, Object o) {
-        GetPendingBlockUpdates.remove(this, (NextTickListEntry)o);
+        ChunkPendingBlockUpdateMap.remove(this, (NextTickListEntry)o);
         return set.remove(o);
     }
     
@@ -75,10 +75,10 @@ abstract class MixinWorldServer implements IPendingBlockUpdatesWorldServer {
         
         // New code start
         
-        if(!GetPendingBlockUpdates.isEmpty(this)) {
+        if(!ChunkPendingBlockUpdateMap.isEmpty(this)) {
             for(int cx = p_72920_1_.xPosition - 1; cx <= p_72920_1_.xPosition + 1; cx++) {
                 for(int cz = p_72920_1_.zPosition - 1; cz <= p_72920_1_.zPosition + 1; cz++) {
-                    Set<NextTickListEntry> chunkSet = GetPendingBlockUpdates.get(this, cx, cz);
+                    Set<NextTickListEntry> chunkSet = ChunkPendingBlockUpdateMap.get(this, cx, cz);
                     if(chunkSet != null) {
                         Iterator<NextTickListEntry> it = chunkSet.iterator();
                         while(it.hasNext()) {
@@ -91,7 +91,7 @@ abstract class MixinWorldServer implements IPendingBlockUpdatesWorldServer {
                                     this.pendingTickListEntriesTreeSet.remove(nte);
                                     it.remove();
                                     if(chunkSet.isEmpty()) {
-                                        GetPendingBlockUpdates.removeKey(this, cx, cz);
+                                        ChunkPendingBlockUpdateMap.removeKey(this, cx, cz);
                                     }
                                 }
     

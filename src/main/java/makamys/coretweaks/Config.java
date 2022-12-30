@@ -72,7 +72,7 @@ public class Config {
     public static FeatureSetting fixEntityTracking;
             
     @ConfigWrappedEnum(cat="Optimizations", def=TRUE, com="Optimizes WorldServer#getPendingBlockUpdates. Speed up chunk unloading.\nCompatibility note: Not compatible with OptiFine, which does the same thing (this feature will be disabled).")
-    public static FeatureSetting getPendingBlockUpdates;
+    public static FeatureSetting optimizeGetPendingBlockUpdates;
     //@ConfigWrappedEnum(cat="Optimizations", def=FALSE, com="(WIP) Faster implementation of ChunkProviderClient#chunkMapping. From 1.16 (I don't know when exactly it was added). Might be a little buggy (it should only cause client-side errors though).")
     public static FeatureSetting clientChunkMap = FeatureSetting.FALSE;
     @ConfigWrappedEnum(cat="Optimizations", def=TRUE, com="Skip over known libraries during Forge mod discovery. From Forge 1.12 (added in 1.9)")
@@ -305,7 +305,7 @@ public class Config {
                 LOGGER.info("Disabling backport of Forge PR #5160 because backport5160 is present.");
                 return true;
             }
-        } else if(feature == getPendingBlockUpdates) {
+        } else if(feature == optimizeGetPendingBlockUpdates) {
             if(Compat.isOptifinePresent()) {
                 LOGGER.info("Disabling getPendingBlockUpdates optimization because OptiFine is present.");
                 return true;
