@@ -134,6 +134,9 @@ public class MixinConfigPlugin implements IMixinConfigPlugin {
             if(Config.fastFolderTexturePack.isActive()) {
                 mixins.add("optimization.foldertexturepack.MixinFolderResourcePack");
             }
+            if(Config.fastDefaultTexturePack.isActive()) {
+                mixins.add("optimization.defaulttexturepack.MixinDefaultResourcePack");
+            }
             if(Config.tcpNoDelay.isActive()) {
                 mixins.add("optimization.tcpnodelay.MixinChannelInitializers");
             }
