@@ -108,7 +108,7 @@ public class Config {
     public static TransformerCache transformerCacheMode;
     @ConfigWrappedEnum(cat="Optimizations", def=TRUE, com="Cache the file paths contained in folder resource packs. Eliminates the immense slowdown they add to the loading of large modpacks.")
     public static FeatureSetting fastFolderTexturePack;
-    @ConfigWrappedEnum(cat="Optimizations", def=FALSE, com="EXPERIMENTAL: Speed up resource stream construction in DefaultResourcePack.")
+    @ConfigWrappedEnum(cat="Optimizations", def=FALSE, com="EXPERIMENTAL: Speed up resource stream construction in DefaultResourcePack. Mostly makes a difference in dev environment.")
     public static FeatureSetting fastDefaultTexturePack;
             
     //@ConfigInt(cat="Optimizations", def=0, min=0, max=Integer.MAX_VALUE, com="How many threads to use for loading textures? (0: auto (all cores))")
