@@ -28,7 +28,7 @@ abstract class MixinNetHandlerPlayClient implements INetHandlerPlayClient {
     @Inject(method = "handleRespawn", at = @At("HEAD"))
     public void preHandleRespawn(S07PacketRespawn packet, CallbackInfo ci) {
         int dimension = packet.func_149082_c();
-        if (dimension != gameController.thePlayer.dimension) {
+        if (dimension != gameController.thePlayer.dimension && !gameController.thePlayer.isDead) {
             soundPending = true;
         }
     }
