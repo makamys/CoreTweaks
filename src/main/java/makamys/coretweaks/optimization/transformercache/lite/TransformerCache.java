@@ -18,8 +18,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import javax.lang.model.SourceVersion;
-
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
@@ -138,7 +136,7 @@ public class TransformerCache implements IModEventListener {
             throw new RuntimeException("Map contains null value");
         }
         for(String key : map.keySet()) {
-            if(!SourceVersion.isName(key)) {
+            if(!Util.isValidClassName(key)) {
                 throw new RuntimeException("Map contains invalid key: " + key);
             }
         }

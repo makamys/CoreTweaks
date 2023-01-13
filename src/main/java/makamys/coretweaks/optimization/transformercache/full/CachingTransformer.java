@@ -25,8 +25,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.stream.Collectors;
 
-import javax.lang.model.SourceVersion;
-
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.io.Files;
@@ -153,7 +151,7 @@ public class CachingTransformer implements IClassTransformer, MapAddListener<Str
                         byte[] classData = new byte[classLength];
                         int bytesRead = in.read(classData, 0, classLength);
                         
-                        if(!SourceVersion.isName(className)) {
+                        if(!Util.isValidClassName(className)) {
                             throw new RuntimeException("Invalid class name: " + className);
                         } else if(bytesRead != classLength) {
                             throw new RuntimeException("Length of " + className + " doesn't match advertised length of " + classLength);
