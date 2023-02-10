@@ -88,6 +88,9 @@ public class MixinConfigPlugin implements IMixinConfigPlugin {
                 mixins.add("bugfix.forge5160.MixinEntity");
                 mixins.add("bugfix.forge5160.MixinWorld");
             }
+            if(Config.guiClickSound.isActive()) {
+                mixins.add("bugfix.guiclicksound.MixinGuiListExtended");
+            }
             
             if(Config.forceUncapFramerate.isActive()) mixins.add("tweak.synctweak.MixinMinecraft");
             if(Config.optimizeGetPendingBlockUpdates.isActive()) mixins.add("optimization.getpendingblockupdates.MixinWorldServer");

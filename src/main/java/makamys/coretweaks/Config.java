@@ -70,6 +70,8 @@ public class Config {
     public static FeatureSetting fixForgeChatLinkCrash;
     @ConfigWrappedEnum(cat="Bugfixes", def=TRUE, com="Backports most of https://github.com/MinecraftForge/MinecraftForge/pull/5160, a patch that fixes minecarts duplicating and vanishing.")
     public static FeatureSetting fixEntityTracking;
+    @ConfigWrappedEnum(cat="Bugfixes", def=TRUE, com="Fixes click sounds not playing in guis with scroll bars (e.g. the video settings screen.)")
+    public static FeatureSetting guiClickSound;
             
     @ConfigWrappedEnum(cat="Optimizations", def=TRUE, com="Optimizes WorldServer#getPendingBlockUpdates. Speeds up chunk unloading.\nCompatibility note: Not compatible with OptiFine, which does the same thing (this feature will be disabled).")
     public static FeatureSetting optimizeGetPendingBlockUpdates;
