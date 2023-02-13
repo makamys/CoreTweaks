@@ -85,6 +85,9 @@ abstract class MixinMinecraft {
                                 throw new RuntimeException("Exception on server thread");
                             }
                         } catch (Throwable t) {
+                            CoreTweaks.LOGGER.error("#@!@# Game crashed! CoreTweaks will attempt to keep the game running.");
+                            t.printStackTrace();
+                            
                             if(!(t instanceof OutOfMemoryError)) {
                                 // Create crash report, mirroring logic in Minecraft#run
                                 // Note: addGraphicsAndWorldToCrashReport has to be called inside the same method as runGameLoop,
