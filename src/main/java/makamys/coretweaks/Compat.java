@@ -26,32 +26,47 @@ public class Compat {
     }
     
     public static boolean isHodgepodgeChatLinkCrashFixEnabled() {
-        try(InputStream is = Compat.class.getResourceAsStream("/com/mitchej123/hodgepodge/Hodgepodge.class")) {
+        String version = getModVersion("com.mitchej123.hodgepodge.Hodgepodge");
+
+        if(version != null) {
+            if(new ComparableVersion(version).compareTo(new ComparableVersion("1.6.14")) >= 0) {
+                Configuration config = new Configuration(new File(Launch.minecraftHome, "config/hodgepodge.cfg"));
+                config.load();
+                ConfigCategory cat = config.getCategory("fixes");
+                if(cat.containsKey("fixUrlDetection")) {
+                    return cat.get("fixUrlDetection").getBoolean();
+                } else {
+                    // Unknown format, let's be on the safe side and yield
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public static boolean isBackport5160Present() {
+        return Config.class.getResource("/ru/itaros/backport5160/Forge5160Plugin.class") != null;
+    }
+
+    public static boolean isOptifinePresent() {
+        return Config.class.getResource("/optifine/OptiFineTweaker.class") != null;
+    }
+    
+    private static String getModVersion(String className) {
+        String path = "/" + className.replace('.', '/') + ".class";
+        try(InputStream is = Compat.class.getResourceAsStream(path)) {
             if(is != null) {
                 byte[] data = IOUtils.toByteArray(is);
                 VersionRetrievingModClassVisitor visitor = new VersionRetrievingModClassVisitor();
                 ClassReader classReader = new ClassReader(data);
                 classReader.accept(visitor, 0);
                 
-                if(visitor.modVersion != null) {
-                    String version = visitor.modVersion;
-                    if(new ComparableVersion(version).compareTo(new ComparableVersion("1.6.14")) >= 0) {
-                        Configuration config = new Configuration(new File(Launch.minecraftHome, "config/hodgepodge.cfg"));
-                        config.load();
-                        ConfigCategory cat = config.getCategory("fixes");
-                        if(cat.containsKey("fixUrlDetection")) {
-                            return cat.get("fixUrlDetection").getBoolean();
-                        } else {
-                            // Unknown format, let's be on the safe side and yield
-                            return true;
-                        }
-                    }
-                }
+                return visitor.modVersion;
             }
         } catch (IOException e) {
             
         }
-        return false;
+        return null;
     }
     
     private static class VersionRetrievingModClassVisitor extends ClassVisitor {
@@ -85,14 +100,6 @@ public class Compat {
             }
             
         }
-    }
-
-    public static boolean isBackport5160Present() {
-        return Config.class.getResource("/ru/itaros/backport5160/Forge5160Plugin.class") != null;
-    }
-
-    public static boolean isOptifinePresent() {
-        return Config.class.getResource("/optifine/OptiFineTweaker.class") != null;
     }
     
 }
