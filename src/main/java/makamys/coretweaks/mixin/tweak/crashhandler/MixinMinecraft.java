@@ -31,8 +31,7 @@ abstract class MixinMinecraft {
     private CrashReport crashReporter;
     
     @Shadow
-    @Final
-    private static final Logger logger = LogManager.getLogger();
+    private static Logger logger = LogManager.getLogger();
     
     @Shadow
     abstract void startGame() throws LWJGLException;
