@@ -46,7 +46,7 @@ public class MixinEntity implements IForge5160Entity {
     public void onPositionChanged1(CallbackInfo ci) {
         // Exclude update if isAddedToWorld evaluates to false
         // Exclude update if world.isRemote evaluates to true
-        if (crtw$isAddedToWorld() && !this.worldObj.isRemote) {
+        if (crtw$isAddedToWorld() && this.worldObj != null && !this.worldObj.isRemote) {
             // Forces world to recognize the entity on each movement. EWH!!!
             this.worldObj.updateEntityWithOptionalForce((Entity)(Object)this, false);
             // Thank gods it returns nothing
@@ -57,7 +57,7 @@ public class MixinEntity implements IForge5160Entity {
     @Inject(method = "setPositionAndRotation", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;setPosition(DDD)V"))
     public void onPositionChanged2(CallbackInfo ci) {
         // Exclude update if world.isRemote evaluates to true
-        if (!this.worldObj.isRemote) {
+        if (this.worldObj != null && !this.worldObj.isRemote) {
             // CALL FFS!
             // TODO: I am not sure this is correct method, but judging by 4 shift it should be
             this.worldObj.getChunkFromChunkCoords(
