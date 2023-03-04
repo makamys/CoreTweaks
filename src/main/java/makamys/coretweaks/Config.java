@@ -58,7 +58,8 @@ public class Config {
     @ConfigEnum(cat="Tweaks.tweakCloudHeightCheck", def="ALWAYS_TRANSPARENT", com="Lets you tweak the condition used to decide whether to render opaque or transparent clouds.\n" + 
             "* VARIABLE_CORRECTED: Keep vanilla behavior of rendering clouds as opaque when the player is below them and transparent otherwise, but with the turning point corrected to match the cloud height even when the world provider has a different cloud height than 128. Also provides a fix for OptiFine's bug where clouds disappear when the player is between Y=128 and the cloud height level when they are raised.\n" +
             "* ALWAYS_TRANSPARENT: Always render clouds as transparent (how it is in b1.7.3 and 1.15+)\n" + 
-            "* ALWAYS_OPAQUE: Always render clouds as opaque")
+            "* ALWAYS_OPAQUE: Always render clouds as opaque\n" +
+            "Compatibility note: Not compatible with NotFine, which has a setting to control the same thing (this feature will be disabled).")
     public static CloudHeightCheck cloudHeightCheckMode;
     @ConfigWrappedEnum(cat="Bugfixes", def=TRUE, com="Fixes graphical glitches that happen after recovering from a game crash, caused by world renderer display lists getting deleted but never reallocated. From 1.12.")
     public static FeatureSetting fixDisplayListDelete;
@@ -312,6 +313,11 @@ public class Config {
         } else if(feature == optimizeGetPendingBlockUpdates) {
             if(Compat.isOptifinePresent()) {
                 LOGGER.info("Disabling getPendingBlockUpdates optimization because OptiFine is present.");
+                return true;
+            }
+        } else if(feature == tweakCloudHeightCheck) {
+            if(Compat.isNotFinePresent()) {
+                LOGGER.info("Disabling cloud height check fix because NotFine is present.");
                 return true;
             }
         }
