@@ -253,7 +253,7 @@ public class Config {
             ConfigDumper.dumpConfig(config);
         }
         
-        if(config.hasChanged()) {
+        if(config.hasChanged() || !config.getDefinedConfigVersion().equals(config.getLoadedConfigVersion())) {
             config.save();
         }
     }
