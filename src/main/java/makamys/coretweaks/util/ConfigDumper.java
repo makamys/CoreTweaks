@@ -57,7 +57,7 @@ public class ConfigDumper {
     
     private static String createEntry(int level, String title, String body) {
         if(level == 0) {
-            return "\n# " + title + "\n" + body + "\n";
+            return "\n# " + title + "\n" + body.replaceAll("\\n\\*", "\n> *") + "\n";
         } else {
             return createIndent(level - 1) + "* **" + title + "**<br>" + body.replaceAll("\n\n", "<br>") + "\n";
         }
