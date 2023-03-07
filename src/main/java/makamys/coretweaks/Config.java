@@ -249,9 +249,7 @@ public class Config {
         
         sortCategories(config);
         
-        if(ConfigDumper.ENABLED) {
-            ConfigDumper.dumpConfig(config);
-        }
+        ConfigDumper.dumpConfigIfEnabled(config, CoreTweaks.MODID);
         
         if(config.hasChanged() || !config.getDefinedConfigVersion().equals(config.getLoadedConfigVersion())) {
             config.save();
