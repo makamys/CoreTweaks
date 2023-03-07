@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import org.apache.commons.lang3.StringUtils;
+
 import net.minecraft.launchwrapper.Launch;
 import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Configuration;
@@ -22,48 +24,47 @@ public class ConfigDumper {
         File outFile = new File(Launch.minecraftHome, "config-export-" + config.getConfigFile().getName() + ".md");
         try(FileWriter fw = new FileWriter(outFile)){
             for(String category : config.getCategoryNames()) {
-                String outTitle = "";
-                String outBody = "";
+                String out = "";
                 
                 ConfigCategory cat = config.getCategory(category);
                 String catName = cat.getQualifiedName();
+                String catBaseName = cat.getName();
+                int level = StringUtils.countMatches(catName, ".");
                 
                 if(catName.startsWith("_")) {
                     continue;
                 }
                 
-                if(catName.contains(".")) {
-                    catName = catName.substring(catName.indexOf(".") + 1);
-                    outTitle += "#";
-                    
-                    if(!cat.containsKey("_enabled")) {
-                        outTitle += "#";
-                    }
+                String catComment = StringUtils.defaultString(cat.getComment());
+                if(cat.containsKey("_enabled")) {
+                    catComment = cat.get("_enabled").comment;
                 }
-                outTitle += "# " + catName + "\n\n";
                 
-                String comment = cat.getComment();
-                
-                if(comment != null) {
-                    outBody += commentToMarkdown(cat.getComment());
-                    outBody += "\n\n";
-                }
+                out += createEntry(level, catBaseName, commentToMarkdown(catComment));
                 
                 for(Property prop : cat.getValues().values()) {
-                    if(!prop.getName().equals("_enabled")) {
-                        outBody += "### " + catName + "." + prop.getName() + "\n";
+                    if(!prop.getName().startsWith("_")) {
+                        out += createEntry(level + 1, prop.getName(), commentToMarkdown(prop.comment));
                     }
-                    outBody += commentToMarkdown(prop.comment) + "\n\n";
                 }
                 
-                if(!cat.getQualifiedName().contains(".") || !outBody.isEmpty()) {
-                    fw.write(outTitle);
-                    fw.write(outBody);
-                }
+                fw.write(out);
             }
         } catch(IOException e) {
             e.printStackTrace();
         }
+    }
+    
+    private static String createEntry(int level, String title, String body) {
+        if(level == 0) {
+            return "\n# " + title + "\n" + body + "\n";
+        } else {
+            return createIndent(level - 1) + "* **" + title + "**<br>" + body.replaceAll("\n\n", "<br>") + "\n";
+        }
+    }
+    
+    private static String createIndent(int level) {
+        return level == 0 ? "" : String.format("%" + level * 4 + "c", ' ');
     }
 
     private static String commentToMarkdown(String comment) {
