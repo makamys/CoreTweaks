@@ -29,6 +29,9 @@ public class CoreTweaksPlugin implements IFMLLoadingPlugin {
                 transformerClasses.add("makamys.coretweaks.asm.FMLFastSplashTransformer");
             }
         }
+        if(Config.forgeFixLoggerClassLoadingError.isActive()) {
+            transformerClasses.add("makamys.coretweaks.asm.FMLLogTransformer");
+        }
         
         return transformerClasses.toArray(new String[] {});
     }
