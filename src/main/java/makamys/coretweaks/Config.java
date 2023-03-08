@@ -68,6 +68,8 @@ public class Config {
     public static FeatureSetting fixEntityTracking;
     @ConfigWrappedEnum(cat="Bugfixes", def=TRUE, com="Fixes click sounds not playing in guis with scroll bars (e.g. the video settings screen.)")
     public static FeatureSetting guiClickSound;
+    @ConfigWrappedEnum(cat="Bugfixes", def=TRUE, com="Fixes the NoClassDefFoundError that can occur when FML logs an exception originating from a coremod, losing the original exception in the process. This ostensibly happens due to a bug in the version of log4j that 1.7.10 ships with.")
+    public static FeatureSetting forgeFixLoggerClassLoadingError;
             
     @ConfigWrappedEnum(cat="Optimizations", def=TRUE, com="Optimizes WorldServer#getPendingBlockUpdates. Speeds up chunk unloading.\nCompatibility note: Not compatible with OptiFine, which does the same thing (this feature will be disabled).")
     public static FeatureSetting optimizeGetPendingBlockUpdates;
