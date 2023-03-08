@@ -15,8 +15,13 @@ import org.apache.logging.log4j.Level;
 import static makamys.coretweaks.CoreTweaks.LOGGER;
 
 /**
- * <p>Redirects FMLRelaunchLog#log to not pass throwable objects to log4j, because this causes issues when the
- *    stack trace contains classes from mods that contain a tweaker.
+ * <p>Redirects FMLRelaunchLog#log to a safer version that shouldn't crash.
+ * <p>Log4j (version 2.0-beta9) is known to crash when Logger#log is called with a throwable whose stack trace contains
+ *    classes from a mod which contains a tweaker. Log4j tries to load all classes in the stack trace
+ *    so it can display which jar they originate from. But in this case, classes from the mod are on the
+ *    parent class loader's class path (since the mod contains a tweaker), while the Minecraft classes
+ *    it references are not (only LaunchClassLoader remaps the names of these.) Thus a ClassNotFoundError
+ *    happens when trying to load these classes, which log4j does not catch.
  * <p>We use a transformer instead of a mixin because FML is a minefield for mixin errors.
  */
 public class FMLLogTransformer implements IClassTransformer {
@@ -46,7 +51,7 @@ public class FMLLogTransformer implements IClassTransformer {
      * </pre>
      */
     private static byte[] transformFMLLog(byte[] bytes) {
-        LOGGER.info("Transforming FMLLog#log to not pass throwables to log4j");
+        LOGGER.info("Transforming FMLLog#log to fix ClassNotFoundError when logging throwables");
 
         ClassNode classNode = new ClassNode();
         ClassReader classReader = new ClassReader(bytes);
