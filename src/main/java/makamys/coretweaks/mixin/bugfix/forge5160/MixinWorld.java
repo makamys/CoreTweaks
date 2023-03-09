@@ -15,13 +15,13 @@ public class MixinWorld {
     // Here we mark Entity as tracked so when it moves across chunk border it could let it be notified
     @Inject(method = "onEntityAdded", at = @At("RETURN"))
     private void postEntityAdded(Entity entity, CallbackInfo ci) {
-        ((IForge5160Entity)entity).crtw$onAddedToWorld();
+        ((IForge5160Entity)entity).crtw$onAddedToWorld((World)(Object)this);
     }
     
     // Here we unmark Entity as tracked so when it moves across chunk border it would be ignored
     @Inject(method = "onEntityRemoved", at = @At("RETURN"))
     private void postEntityRemoved(Entity entity, CallbackInfo ci) {
-        ((IForge5160Entity)entity).crtw$onRemovedFromWorld();
+        ((IForge5160Entity)entity).crtw$onRemovedFromWorld((World)(Object)this);
     }
     
 }

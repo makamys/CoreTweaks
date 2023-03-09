@@ -2,6 +2,7 @@ package makamys.coretweaks.mixin.bugfix.forge5160;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.At.Shift;
@@ -10,6 +11,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import makamys.coretweaks.ducks.bugfix.IForge5160Entity;
 import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
+
+import static makamys.coretweaks.CoreTweaks.LOGGER;
 
 // Adapted from https://github.com/Itaros/minecraft-backport5160/blob/master/src/main/java/ru/itaros/backport5160/Forge5160Transformer.java
 
@@ -29,6 +32,7 @@ import net.minecraft.world.World;
 public class MixinEntity implements IForge5160Entity {
     
     private boolean crtw$isAddedToWorld;
+    private int crtw$worldId;
     
     @Shadow
     public World worldObj;
@@ -46,7 +50,7 @@ public class MixinEntity implements IForge5160Entity {
     public void onPositionChanged1(CallbackInfo ci) {
         // Exclude update if isAddedToWorld evaluates to false
         // Exclude update if world.isRemote evaluates to true
-        if (crtw$isAddedToWorld() && this.worldObj != null && !this.worldObj.isRemote) {
+        if (this.worldObj != null && !this.worldObj.isRemote && crtw$isAddedToWorld(this.worldObj)) {
             // Forces world to recognize the entity on each movement. EWH!!!
             this.worldObj.updateEntityWithOptionalForce((Entity)(Object)this, false);
             // Thank gods it returns nothing
@@ -70,18 +74,30 @@ public class MixinEntity implements IForge5160Entity {
     
     // Adding tracking monitoring facilities
     // Here we implement isAddedToWorld accessor to get current status of world presence tracking
-    public boolean crtw$isAddedToWorld() {
-        return this.crtw$isAddedToWorld;
+    // CoreTweaks: We also make sure the dimension ID matches
+    public boolean crtw$isAddedToWorld(World world) {
+        return this.crtw$isAddedToWorld && this.crtw$worldId == getWorldId(world);
     }
 
     // Here we implement method used to set tracking flag
-    public void crtw$onAddedToWorld() {
+    public void crtw$onAddedToWorld(World world) {
         this.crtw$isAddedToWorld = true;
+        this.crtw$worldId = getWorldId(world);
     }
 
     // Here we implement method used to unset tracking flag
-    public void crtw$onRemovedFromWorld() {
-        this.crtw$isAddedToWorld = false;
+    public void crtw$onRemovedFromWorld(World world) {
+        if(getWorldId(world) == this.crtw$worldId) {
+            this.crtw$isAddedToWorld = false;
+        } else {
+            // Some mods might do "1. add to new world; 2. remove from old world" instead of "1. remove from old world; 2. add to new world" 
+            LOGGER.debug("Will not track removal from invalid world. Entity is in dimension " + this.crtw$worldId + ", and it's being removed from dimension " + getWorldId(world));
+        }
+    }
+    
+    @Unique
+    private int getWorldId(World world) {
+        return world.provider.dimensionId;
     }
     
 }
