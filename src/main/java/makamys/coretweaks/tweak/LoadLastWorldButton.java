@@ -8,6 +8,7 @@ import makamys.coretweaks.IModEventListener;
 import makamys.coretweaks.util.MCUtil;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiMainMenu;
+import net.minecraft.client.resources.I18n;
 import net.minecraftforge.client.event.GuiScreenEvent.ActionPerformedEvent;
 import net.minecraftforge.client.event.GuiScreenEvent.InitGuiEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -30,7 +31,7 @@ public class LoadLastWorldButton implements IModEventListener {
             GuiButton newWorld = ((List<GuiButton>)event.buttonList).stream().filter(b -> b.id == 1).findFirst().get();
             int originalWidth = newWorld.width;
             newWorld.width = originalWidth / 3 * 2 - 2;
-            loadLastWorldButton = new GuiButton(UPDATES_BUTTON_ID, newWorld.xPosition + originalWidth / 3 * 2 + 2, newWorld.yPosition, originalWidth - (originalWidth / 3 * 2 + 2), newWorld.height, "Continue");
+            loadLastWorldButton = new GuiButton(UPDATES_BUTTON_ID, newWorld.xPosition + originalWidth / 3 * 2 + 2, newWorld.yPosition, originalWidth - (originalWidth / 3 * 2 + 2), newWorld.height, I18n.format("gui.coretweaks.menu.continue", new Object[0]));
             event.buttonList.add(loadLastWorldButton);
         }
     }
