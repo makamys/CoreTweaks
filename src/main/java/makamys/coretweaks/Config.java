@@ -41,7 +41,7 @@ public class Config {
     public static FeatureSetting disableFog;
     @ConfigWrappedEnum(cat="Tweaks", def=FALSE, com="Uncap max length for world name and world seed in the world creation GUI. (By default, it's capped at 32.)")
     public static FeatureSetting uncapCreateWorldGuiTextFieldLength;
-    @ConfigWrappedEnum(cat="Tweaks", def=FALSE, com="Add a button to the main menu that loads the last played world.")
+    @ConfigWrappedEnum(cat="Tweaks", def=FALSE, com="Add a button to the main menu that loads the last played world. (Button ID: -2026964516)")
     public static FeatureSetting mainMenuContinueButton;
     @ConfigWrappedEnum(cat="Tweaks", def=FALSE, com="In vanilla, the player can't sprint for longer than 30 seconds. This tweak lets you modify this time limit.")
     public static FeatureSetting extendSprintTimeLimit;
