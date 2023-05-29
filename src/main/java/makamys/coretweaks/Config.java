@@ -100,6 +100,8 @@ public class Config {
             
     //@ConfigBoolean(cat="Diagnostics", def=TRUE, com="Enables the /coretweaks command, used to access various diagnostics. Invoke it in-game for additional information.")
     public static FeatureSetting coreTweaksCommand = FeatureSetting.FALSE;
+    @ConfigWrappedEnum(cat="Diagnostics", def=TRUE, com="Makes MapStorage's errors more informative.")
+    public static FeatureSetting enhanceMapStorageErrors;
             
     //@ConfigBoolean(cat="Optimizations", def=FALSE, com="Use multi-threaded texture loading when stitching textures? Placebo.")
     public static FeatureSetting threadedTextureLoader = FeatureSetting.FALSE;

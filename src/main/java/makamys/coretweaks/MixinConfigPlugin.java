@@ -144,6 +144,9 @@ public class MixinConfigPlugin implements IMixinConfigPlugin {
                 mixins.add("optimization.tcpnodelay.MixinChannelInitializers");
             }
             
+            if(Config.enhanceMapStorageErrors.isActive()) {
+                mixins.add("diagnostics.enhancemapstorageerrors.MixinMapStorage");
+            }
         }
         return mixins;
     }
