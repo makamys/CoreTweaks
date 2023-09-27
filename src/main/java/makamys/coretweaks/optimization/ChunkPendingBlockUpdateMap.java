@@ -37,9 +37,9 @@ public class ChunkPendingBlockUpdateMap {
         Set<NextTickListEntry> chunkSet = map.get(key);
         if(chunkSet != null) {
             chunkSet.remove(e);
-        }
-        if(chunkSet.isEmpty()) {
-            map.remove(key);
+            if(chunkSet.isEmpty()) {
+                map.remove(key);
+            }
         }
     }
 
