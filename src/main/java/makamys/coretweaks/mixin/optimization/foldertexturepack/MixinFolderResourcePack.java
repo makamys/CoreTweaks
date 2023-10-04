@@ -1,9 +1,6 @@
 package makamys.coretweaks.mixin.optimization.foldertexturepack;
 
-import static makamys.coretweaks.CoreTweaks.LOGGER;
-
 import java.io.File;
-import java.util.HashSet;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -11,7 +8,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import makamys.coretweaks.optimization.FastFolderResourcePack;
+import makamys.coretweaks.optimization.PrefixedFolderResourceAccelerator;
 import net.minecraft.client.resources.FolderResourcePack;
 
 /**
@@ -23,21 +20,17 @@ import net.minecraft.client.resources.FolderResourcePack;
 
 @Mixin(FolderResourcePack.class)
 public abstract class MixinFolderResourcePack {
-    HashSet<String> filePaths = new HashSet<String>();
+    private PrefixedFolderResourceAccelerator crtw$resourceFetchAccelerator;
     
     @Inject(method = "<init>*", at = @At("RETURN"))
     private void afterConstructor(File folder, CallbackInfo ci) {
-        FastFolderResourcePack.afterConstructor(folder, filePaths);
-    }
-    
-    private void explore(File folder, String path) {
-        FastFolderResourcePack.explore(folder, path, filePaths);
+        crtw$resourceFetchAccelerator = new PrefixedFolderResourceAccelerator(folder);
     }
     
     @Redirect(method = "hasResourceName(Ljava/lang/String;)Z", 
             at = @At(value = "INVOKE", target = "Ljava/io/File;isFile()Z", remap = false))
     public boolean redirectIsFile(File file) {
-        return FastFolderResourcePack.redirectIsFile(file, filePaths);
+        return crtw$resourceFetchAccelerator.isFile(file);
     }
     
 }
