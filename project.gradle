@@ -1,10 +1,24 @@
 dependencies {
-	embed 'com.esotericsoftware.kryo:kryo5:5.5.0'
-	compile files('gradlelibs/fastcraft-dummy.jar') // A jar with empty classes, just to avoid errors during build
-	compile files('gradlelibs/optifine-dummy.jar') // A jar with empty classes, just to avoid errors during build
+    shadow('com.esotericsoftware.kryo:kryo5:5.5.0')
+    compile files('gradlelibs/fastcraft-dummy.jar') // A jar with empty classes, just to avoid errors during build
+    compile files('gradlelibs/optifine-dummy.jar') // A jar with empty classes, just to avoid errors during build
 }
 
 jar {
+    // we disable the original jar task, and make shadowJar do the work instead
+    enabled = false
+    dependsOn shadowJar
+}
+
+// shadowJar is the new jar
+shadowJar {
+    classifier = '' // use the same file name as the jar task
+    configurations = [project.configurations.shadow]
+    relocate 'makamys.mclib', 'makamys.coretweaks.repackage.makamys.mclib'
+    relocate 'net.sf.cglib', 'makamys.coretweaks.repackage.net.sf.cglib'
+    relocate 'com.esotericsoftware.kryo', 'makamys.coretweaks.repackage.com.esotericsoftware.kryo'
+    exclude '**/LICENSE.txt'
+    
     manifest {
         attributes (
             'MixinConfigs': 'coretweaks.mixin.json,coretweaks-init.mixin.json,coretweaks-preinit.mixin.json',
@@ -12,23 +26,18 @@ jar {
             // If these two are not set, Forge will not detect the mod, it will only run the mixins
             'FMLCorePluginContainsFMLMod': 'true',
             'ForceLoadAsMod': 'true',
-			'FMLCorePlugin': 'makamys.coretweaks.CoreTweaksPlugin'
+            'FMLCorePlugin': 'makamys.coretweaks.CoreTweaksPlugin',
+            
+            'FMLAT': "${project.modid}_at.cfg",
         )
     }
-	
-}
-
-jar.manifest.attributes (
-	'FMLAT': "${project.modid}_at.cfg",
-)
-
-apply from: "makalibs.gradle"
-
-jar {
-	from('.') {
-	  include "README.md"
-	  include "LICENSE"
-	  include "CREDITS"
-	  into ''
+    
+    from('.') {
+      include "README.md"
+      include "LICENSE"
+      include "CREDITS"
+      into ''
     }
 }
+
+apply from: "makalibs.gradle"

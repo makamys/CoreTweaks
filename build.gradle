@@ -2,19 +2,22 @@
     unless you have to. Edit project.gradle instead. */
 
 buildscript {
-	repositories {
-		mavenCentral()
-		maven {
-			name = "forge"
-			url = "https://maven.minecraftforge.net/"
-		}
-		maven {
-			url = "https://jitpack.io"
-		}
-	}
-	dependencies {
-		classpath 'com.github.GTNewHorizons:ForgeGradle:1.2.11'
-	}
+    repositories {
+        mavenCentral()
+        gradlePluginPortal() // this line has to be after mavenCentral() or ForgeGradle breaks apart
+        maven {
+            name = "forge"
+            url = "https://maven.minecraftforge.net/"
+        }
+        maven {
+            url = "https://jitpack.io"
+        }
+    }
+    dependencies {
+        classpath 'com.github.GTNewHorizons:ForgeGradle:1.2.11'
+        classpath 'com.github.jengelman.gradle.plugins:shadow:4.0.2'
+    }
 }
 
+apply plugin: "com.github.johnrengelman.shadow"
 apply from: "buildscript/forge-1.7.gradle"

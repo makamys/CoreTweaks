@@ -15,7 +15,7 @@ if(!embedMixin){
 
 dependencies {
 	if(embedMixin){
-		embed('org.spongepowered:mixin:0.7.11-SNAPSHOT'){
+		shadow('org.spongepowered:mixin:0.7.11-SNAPSHOT'){
 			setTransitive false
 		}
 	} else {
@@ -27,7 +27,7 @@ dependencies {
 
 ext.outRefMapFile = "${tasks.compileJava.temporaryDir}/${project.modid}.mixin.refmap.json"
 
-jar {
+shadowJar {
 	manifest {
         attributes (
 			'MixinConfigs': "${project.modid}.mixin.json",
