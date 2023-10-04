@@ -17,7 +17,7 @@ public class MixinDefaultResourcePack {
     @Overwrite
     private InputStream getResourceStream(ResourceLocation p_110605_1_) {
         if(crtw$resourceFetchAccelerator == null) {
-            crtw$resourceFetchAccelerator = new PrefixedClasspathResourceAccelerator("/assets");
+            crtw$resourceFetchAccelerator = new PrefixedClasspathResourceAccelerator();
         }
         return crtw$resourceFetchAccelerator.getResourceAsStream("/assets/" + p_110605_1_.getResourceDomain() + "/" + p_110605_1_.getResourcePath());
     }
