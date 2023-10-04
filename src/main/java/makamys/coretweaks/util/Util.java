@@ -19,4 +19,8 @@ public class Util {
         return SourceVersion.isName(className);
     }
     
+    public static boolean isClassPresent(String className) {
+        return Util.class.getResource("/" + className.replace('.', '/') + ".class") != null;
+    }
+    
 }

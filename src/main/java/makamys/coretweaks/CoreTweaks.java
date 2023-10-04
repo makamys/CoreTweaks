@@ -8,6 +8,7 @@ import org.apache.logging.log4j.Logger;
 import makamys.coretweaks.optimization.FastDeobfuscationRemapper;
 import makamys.coretweaks.optimization.ThreadedTextureLoader;
 import makamys.coretweaks.optimization.transformercache.full.CachingTransformer;
+import makamys.coretweaks.util.Util;
 import net.minecraft.launchwrapper.Launch;
 
 public class CoreTweaks {
@@ -44,6 +45,13 @@ public class CoreTweaks {
         
         if(FastDeobfuscationRemapper.isActive()) {
             FastDeobfuscationRemapper.init();
+        }
+        
+        // Exclude transformation to reduce class load time
+        if(Util.isClassPresent("makamys.coretweaks.repackage.com.esotericsoftware.kryo.kryo5.Kryo")) {
+            Launch.classLoader.addTransformerExclusion("makamys.coretweaks.repackage.com.esotericsoftware.kryo.kryo5");
+        } else {
+            Launch.classLoader.addTransformerExclusion("com.esotericsoftware.kryo.kryo5");
         }
     }
 }
