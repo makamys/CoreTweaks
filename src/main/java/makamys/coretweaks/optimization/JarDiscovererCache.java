@@ -48,7 +48,7 @@ public class JarDiscovererCache implements IModEventListener {
     private int epoch;
     
     private byte MAGIC_0 = 0;
-    private byte VERSION = 1;
+    private byte VERSION = 2;
     
     private final File DAT_OLD = Util.childFile(CoreTweaks.CACHE_DIR, "jarDiscovererCache.dat");
     private final File DAT = Util.childFile(CoreTweaks.CACHE_DIR, "jarDiscoverer.cache");
@@ -61,7 +61,13 @@ public class JarDiscovererCache implements IModEventListener {
         kryo.register(Type.class, new TypeSerializer());
         kryo.register(ModAnnotation.class, new ModAnnotationSerializer());
         kryo.register(EnumHolder.class, new EnumHolderSerializer());
-        kryo.setRegistrationRequired(false);
+        kryo.register(java.util.HashMap.class);
+        kryo.register(makamys.coretweaks.optimization.JarDiscovererCache.CachedModInfo.class);
+        kryo.register(java.util.HashSet.class);
+        kryo.register(cpw.mods.fml.common.discovery.asm.ASMModParser.class);
+        kryo.register(java.util.LinkedList.class);
+        kryo.register(classForNameOrException("cpw.mods.fml.common.discovery.asm.ASMModParser$AnnotationType"));
+        kryo.register(java.util.ArrayList.class);
         
         if(DAT_OLD.exists() && !DAT.exists()) {
             LOGGER.info("Migrating jar discoverer cache: " + DAT_OLD + " -> " + DAT);
@@ -90,6 +96,14 @@ public class JarDiscovererCache implements IModEventListener {
         }
     }
     
+    private static Class<?> classForNameOrException(String string) {
+        try {
+            return Class.forName(string);
+        } catch(ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     private Map<String, CachedModInfo> returnVerifiedMap(Map<String, CachedModInfo> map) {
         if(map.containsKey(null)) {
             throw new RuntimeException("Map contains null key");

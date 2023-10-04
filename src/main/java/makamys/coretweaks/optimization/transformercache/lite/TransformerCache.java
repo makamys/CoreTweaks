@@ -49,7 +49,7 @@ public class TransformerCache implements IModEventListener {
     private Map<String, TransformerData> transformerMap = new HashMap<>();
     
     private static final byte MAGIC_0 = 0;
-    private static final byte VERSION = 1;
+    private static final byte VERSION = 2;
     
     private static final File DAT_OLD = Util.childFile(CoreTweaks.CACHE_DIR, "transformerCache.dat");
     private static final File DAT = Util.childFile(CoreTweaks.CACHE_DIR, "classTransformerLite.cache");
@@ -95,7 +95,10 @@ public class TransformerCache implements IModEventListener {
     }
     
     private void loadData() {
-        kryo.setRegistrationRequired(false);
+        kryo.register(HashMap.class);
+        kryo.register(TransformerCache.TransformerData.class);
+        kryo.register(TransformerCache.TransformerData.CachedTransformation.class);
+        kryo.register(byte[].class);
         
         if(DAT_OLD.exists() && !DAT.exists()) {
             LOGGER.info("Migrating class cache: " + DAT_OLD + " -> " + DAT);
