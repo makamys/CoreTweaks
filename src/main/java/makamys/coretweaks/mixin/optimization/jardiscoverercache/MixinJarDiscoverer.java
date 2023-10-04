@@ -40,7 +40,7 @@ abstract class MixinJarDiscoverer implements INetHandlerPlayClient {
         hash = file.getPath() + "@" + file.lastModified();
         
         lastHash = hash;
-        lastCMI = JarDiscovererCache.getCachedModInfo(lastHash);
+        lastCMI = JarDiscovererCache.instance.getCachedModInfo(lastHash);
         
         LOGGER.debug("preDiscover " + candidate.getModContainer() + "(hash " + lastHash + ")");
     }

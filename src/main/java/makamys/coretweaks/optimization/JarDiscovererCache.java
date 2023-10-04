@@ -27,8 +27,10 @@ import com.esotericsoftware.kryo.unsafe.UnsafeOutput;
 import cpw.mods.fml.common.discovery.asm.ASMModParser;
 import cpw.mods.fml.common.discovery.asm.ModAnnotation;
 import cpw.mods.fml.common.discovery.asm.ModAnnotation.EnumHolder;
+import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import makamys.coretweaks.Config;
 import makamys.coretweaks.CoreTweaks;
+import makamys.coretweaks.IModEventListener;
 import makamys.coretweaks.util.Util;
 
 /*
@@ -38,21 +40,23 @@ import makamys.coretweaks.util.Util;
  * int32 epoch
  * Map<String, CachedModInfo> cache
  */
-public class JarDiscovererCache {
+public class JarDiscovererCache implements IModEventListener {
     
-    private static Map<String, CachedModInfo> cache = new HashMap<>();
-    private static int epoch;
+    public static JarDiscovererCache instance;
     
-    private static byte MAGIC_0 = 0;
-    private static byte VERSION = 1;
+    private Map<String, CachedModInfo> cache = new HashMap<>();
+    private int epoch;
     
-    private static final File DAT_OLD = Util.childFile(CoreTweaks.CACHE_DIR, "jarDiscovererCache.dat");
-    private static final File DAT = Util.childFile(CoreTweaks.CACHE_DIR, "jarDiscoverer.cache");
-    private static final File DAT_ERRORED = Util.childFile(CoreTweaks.CACHE_DIR, "jarDiscoverer.cache.errored");
+    private byte MAGIC_0 = 0;
+    private byte VERSION = 1;
     
-    private static final Kryo kryo = new Kryo();
+    private final File DAT_OLD = Util.childFile(CoreTweaks.CACHE_DIR, "jarDiscovererCache.dat");
+    private final File DAT = Util.childFile(CoreTweaks.CACHE_DIR, "jarDiscoverer.cache");
+    private final File DAT_ERRORED = Util.childFile(CoreTweaks.CACHE_DIR, "jarDiscoverer.cache.errored");
     
-    public static void load() {
+    private final Kryo kryo = new Kryo();
+    
+    public void load() {
         LOGGER.info("Loading JarDiscovererCache");
         kryo.register(Type.class, new TypeSerializer());
         kryo.register(ModAnnotation.class, new ModAnnotationSerializer());
@@ -86,7 +90,7 @@ public class JarDiscovererCache {
         }
     }
     
-    private static Map<String, CachedModInfo> returnVerifiedMap(Map<String, CachedModInfo> map) {
+    private Map<String, CachedModInfo> returnVerifiedMap(Map<String, CachedModInfo> map) {
         if(map.containsKey(null)) {
             throw new RuntimeException("Map contains null key");
         }
@@ -96,7 +100,12 @@ public class JarDiscovererCache {
         return map;
     }
     
-    public static void finish() {
+    @Override
+    public void onPostInit(FMLPostInitializationEvent event) {
+        finish();
+    }
+    
+    public void finish() {
         if(!cache.isEmpty()) {
             new Thread(new Runnable() {
 
@@ -125,7 +134,7 @@ public class JarDiscovererCache {
         }
     }
     
-    public static CachedModInfo getCachedModInfo(String hash) {
+    public CachedModInfo getCachedModInfo(String hash) {
         CachedModInfo cmi = cache.get(hash);
         if(cmi == null) {
             cmi = new CachedModInfo(true);
@@ -133,10 +142,6 @@ public class JarDiscovererCache {
         }
         cmi.lastAccessed = epoch;
         return cmi;
-    }
-    
-    public static boolean isActive() {
-        return Config.jarDiscovererCache.isActive();
     }
     
     public static class CachedModInfo {

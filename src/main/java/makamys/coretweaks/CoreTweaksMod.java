@@ -57,6 +57,9 @@ public class CoreTweaksMod
         if(Config.transformerCache.isActive() && Config.transformerCacheMode == Config.TransformerCache.LITE) {
             registerListener(TransformerCache.instance);
         }
+        if(Config.jarDiscovererCache.isActive()) {
+            registerListener(JarDiscovererCache.instance);
+        }
         if(Config.mainMenuContinueButton.isActive()) {
             registerListener(LoadLastWorldButton.instance = new LoadLastWorldButton());
         }
@@ -88,8 +91,6 @@ public class CoreTweaksMod
     
     @EventHandler
     public void postInit(FMLPostInitializationEvent event) {
-        JarDiscovererCache.finish();
-        
         listeners.forEach(l -> l.onPostInit(event));
     }
     
