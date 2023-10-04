@@ -18,11 +18,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.esotericsoftware.kryo.Kryo;
-import com.esotericsoftware.kryo.io.Input;
-import com.esotericsoftware.kryo.io.Output;
-import com.esotericsoftware.kryo.unsafe.UnsafeInput;
-import com.esotericsoftware.kryo.unsafe.UnsafeOutput;
+import com.esotericsoftware.kryo.kryo5.Kryo;
+import com.esotericsoftware.kryo.kryo5.io.Input;
+import com.esotericsoftware.kryo.kryo5.io.Output;
+import com.esotericsoftware.kryo.kryo5.unsafe.UnsafeInput;
+import com.esotericsoftware.kryo.kryo5.unsafe.UnsafeOutput;
 import com.google.common.hash.Hashing;
 
 import cpw.mods.fml.relauncher.ReflectionHelper;
