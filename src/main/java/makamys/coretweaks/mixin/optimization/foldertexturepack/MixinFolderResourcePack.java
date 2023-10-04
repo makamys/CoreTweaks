@@ -11,6 +11,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import makamys.coretweaks.optimization.FastFolderResourcePack;
 import net.minecraft.client.resources.FolderResourcePack;
 
 /**
@@ -22,38 +23,21 @@ import net.minecraft.client.resources.FolderResourcePack;
 
 @Mixin(FolderResourcePack.class)
 public abstract class MixinFolderResourcePack {
-    
-    private static final boolean DEBUG = Boolean.parseBoolean(System.getProperty("coretweaks.debugFolderResourcePackMixin", "false"));
-    
     HashSet<String> filePaths = new HashSet<String>();
     
     @Inject(method = "<init>*", at = @At("RETURN"))
     private void afterConstructor(File folder, CallbackInfo ci) {
-        if(DEBUG) LOGGER.info("running after constructor, folder=" + folder);
-        
-        explore(folder, folder.getPath());
+        FastFolderResourcePack.afterConstructor(folder, filePaths);
     }
     
     private void explore(File folder, String path) {
-        if(DEBUG) LOGGER.info("exploring folder=" + folder + " path=" + path);
-        
-        for(File f: folder.listFiles()) {
-            String myPath = (path.isEmpty() ? "" : path + File.separator) + f.getName();
-            filePaths.add(myPath);
-            if(f.isDirectory()) {
-                explore(f, myPath);
-            }
-        }
+        FastFolderResourcePack.explore(folder, path, filePaths);
     }
     
     @Redirect(method = "hasResourceName(Ljava/lang/String;)Z", 
             at = @At(value = "INVOKE", target = "Ljava/io/File;isFile()Z", remap = false))
     public boolean redirectIsFile(File file) {
-        boolean result = filePaths.contains(file.getPath());
-        
-        if(DEBUG) LOGGER.info("isFile " + file + " ? " + result);
-        
-        return result;
+        return FastFolderResourcePack.redirectIsFile(file, filePaths);
     }
     
 }
