@@ -21,9 +21,6 @@ public class CoreTweaksPlugin implements IFMLLoadingPlugin {
     @Override
     public String[] getASMTransformerClass() {
         List<String> transformerClasses = new ArrayList<>();
-        if(Config.jarDiscovererCache.isActive()) {
-            transformerClasses.add("makamys.coretweaks.asm.ASMModParserTransformer");
-        }
         if(Config.forgeModDiscovererSkipKnownLibraries.isActive()) {
             transformerClasses.add("makamys.coretweaks.asm.ModDiscovererTransformer");
         }
