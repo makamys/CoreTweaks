@@ -44,20 +44,23 @@ public class JarDiscovererCache implements IModEventListener {
     
     public static JarDiscovererCache instance;
     
+    private boolean hasLoaded;
+    
     private Map<String, CachedModInfo> cache = new HashMap<>();
     private int epoch;
     
-    private byte MAGIC_0 = 0;
-    private byte VERSION = 2;
+    private final byte MAGIC_0 = 0;
+    private final byte VERSION = 2;
     
     private final File DAT_OLD = Util.childFile(CoreTweaks.CACHE_DIR, "jarDiscovererCache.dat");
     private final File DAT = Util.childFile(CoreTweaks.CACHE_DIR, "jarDiscoverer.cache");
     private final File DAT_ERRORED = Util.childFile(CoreTweaks.CACHE_DIR, "jarDiscoverer.cache.errored");
     
-    private final Kryo kryo = new Kryo();
+    private Kryo kryo;
     
     public void load() {
         LOGGER.info("Loading JarDiscovererCache");
+        kryo = new Kryo();
         kryo.register(Type.class, new TypeSerializer());
         kryo.register(ModAnnotation.class, new ModAnnotationSerializer());
         kryo.register(EnumHolder.class, new EnumHolderSerializer());
@@ -94,6 +97,8 @@ public class JarDiscovererCache implements IModEventListener {
                 epoch = 0;
             }
         }
+        
+        hasLoaded = true;
     }
     
     private static Class<?> classForNameOrException(String string) {
@@ -149,6 +154,9 @@ public class JarDiscovererCache implements IModEventListener {
     }
     
     public CachedModInfo getCachedModInfo(String hash) {
+        if(!hasLoaded) {
+            load();
+        }
         CachedModInfo cmi = cache.get(hash);
         if(cmi == null) {
             cmi = new CachedModInfo(true);

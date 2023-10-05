@@ -8,7 +8,6 @@ import java.util.Map;
 
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin.MCVersion;
-import makamys.coretweaks.optimization.JarDiscovererCache;
 
 @MCVersion("1.7.10")
 public class CoreTweaksPlugin implements IFMLLoadingPlugin {
@@ -45,9 +44,6 @@ public class CoreTweaksPlugin implements IFMLLoadingPlugin {
 
     @Override
     public String getSetupClass() {
-        if(Config.jarDiscovererCache.isActive()) {
-            (JarDiscovererCache.instance = new JarDiscovererCache()).load();
-        }
         return null;
     }
 

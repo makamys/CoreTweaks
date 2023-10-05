@@ -6,6 +6,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import makamys.coretweaks.optimization.FastDeobfuscationRemapper;
+import makamys.coretweaks.optimization.JarDiscovererCache;
 import makamys.coretweaks.optimization.ThreadedTextureLoader;
 import makamys.coretweaks.optimization.transformercache.full.CachingTransformer;
 import makamys.coretweaks.util.Util;
@@ -42,7 +43,9 @@ public class CoreTweaks {
             Persistence.lastVersion = CoreTweaks.VERSION;
             Persistence.save();
         }
-        
+        if(Config.jarDiscovererCache.isActive()) {
+            JarDiscovererCache.instance = new JarDiscovererCache();
+        }
         if(FastDeobfuscationRemapper.isActive()) {
             FastDeobfuscationRemapper.init();
         }
