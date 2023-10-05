@@ -8,7 +8,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -21,8 +20,10 @@ import com.esotericsoftware.kryo.kryo5.Kryo;
 import com.esotericsoftware.kryo.kryo5.Serializer;
 import com.esotericsoftware.kryo.kryo5.io.Input;
 import com.esotericsoftware.kryo.kryo5.io.Output;
+import com.esotericsoftware.kryo.kryo5.objenesis.strategy.StdInstantiatorStrategy;
 import com.esotericsoftware.kryo.kryo5.unsafe.UnsafeInput;
 import com.esotericsoftware.kryo.kryo5.unsafe.UnsafeOutput;
+import com.esotericsoftware.kryo.kryo5.util.DefaultInstantiatorStrategy;
 
 import cpw.mods.fml.common.discovery.asm.ASMModParser;
 import cpw.mods.fml.common.discovery.asm.ModAnnotation;
@@ -61,9 +62,10 @@ public class JarDiscovererCache implements IModEventListener {
     public void load() {
         LOGGER.info("Loading JarDiscovererCache");
         kryo = new Kryo();
+        kryo.setInstantiatorStrategy(new DefaultInstantiatorStrategy(new StdInstantiatorStrategy()));
         kryo.register(Type.class, new TypeSerializer());
-        kryo.register(ModAnnotation.class, new ModAnnotationSerializer());
-        kryo.register(EnumHolder.class, new EnumHolderSerializer());
+        kryo.register(ModAnnotation.class);
+        kryo.register(EnumHolder.class);
         kryo.register(java.util.HashMap.class);
         kryo.register(makamys.coretweaks.optimization.JarDiscovererCache.CachedModInfo.class);
         kryo.register(java.util.HashSet.class);
@@ -204,8 +206,8 @@ public class JarDiscovererCache implements IModEventListener {
         }
     }
     
+    /** Much more compact than FieldSerializer */
     public static class TypeSerializer extends Serializer<Type> {
-
         @Override
         public void write(Kryo kryo, Output output, Type type) {
             output.writeByte(type.getSort());
@@ -246,78 +248,5 @@ public class JarDiscovererCache implements IModEventListener {
                     return null;
             }
         }
-        
-    }
-    
-    public static class ModAnnotationSerializer extends Serializer<ModAnnotation> {
-        
-        private static ModAnnotation lastMa;
-        
-        @Override
-        public void write(Kryo kryo, Output output, ModAnnotation ma) {
-            kryo.writeObject(output, ma.getType());
-            kryo.writeObject(output, ma.getASMType());
-            output.writeString(ma.getMember());
-            Map<String, Object> serializableValues = new HashMap<>();
-            
-            kryo.writeObject(output, ma.getValues());
-        }
-
-        @Override
-        public ModAnnotation read(Kryo kryo, Input input, Class<? extends ModAnnotation> ma) {
-            try {
-                Field type = ma.getDeclaredField("type");
-                Object at = kryo.readObject(input, type.getType());
-                ModAnnotation maa = new ModAnnotation(null, kryo.readObject(input, Type.class), input.readString());
-                type.setAccessible(true);
-                type.set(maa, at);
-                
-                lastMa = maa;
-                try {
-                Map<String, Object> values = kryo.readObject(input, HashMap.class);
-                values.forEach((k, v) -> {
-                    maa.addProperty(k, v);
-                    
-                });
-                } catch(Exception e) {
-                    return null;
-                }
-                return maa;
-            } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-            
-            return null;
-        }
-        
-    }
-    
-    public static class EnumHolderSerializer extends Serializer<EnumHolder> {
-
-        @Override
-        public void write(Kryo kryo, Output output, EnumHolder eh) {
-            try {
-                Field descF = eh.getClass().getDeclaredField("desc");
-                descF.setAccessible(true);
-                Field valueF = eh.getClass().getDeclaredField("value");
-                valueF.setAccessible(true);
-                
-                String desc = (String) descF.get(eh);
-                String value = (String) valueF.get(eh);
-                
-                output.writeString(desc);
-                output.writeString(value);
-            } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-        }
-
-        @Override
-        public EnumHolder read(Kryo kryo, Input input, Class<? extends EnumHolder> type) {
-            return ModAnnotationSerializer.lastMa.new EnumHolder(input.readString(), input.readString());
-        }
-        
     }
 }
