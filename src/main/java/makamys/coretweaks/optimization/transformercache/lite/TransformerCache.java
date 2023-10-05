@@ -23,6 +23,7 @@ import com.esotericsoftware.kryo.kryo5.io.Input;
 import com.esotericsoftware.kryo.kryo5.io.Output;
 import com.esotericsoftware.kryo.kryo5.unsafe.UnsafeInput;
 import com.esotericsoftware.kryo.kryo5.unsafe.UnsafeOutput;
+import com.google.common.collect.Sets;
 import com.google.common.hash.Hashing;
 
 import cpw.mods.fml.relauncher.ReflectionHelper;
@@ -67,7 +68,7 @@ public class TransformerCache implements IModEventListener {
     public void init() {
         if(inited) return;
         
-        transformersToCache = Arrays.stream(Config.transformersToCache).collect(Collectors.toSet());
+        transformersToCache = Sets.newHashSet(Config.transformersToCache);
         
         // We get a ClassCircularityError if we don't add this
         Launch.classLoader.addTransformerExclusion("makamys.coretweaks.optimization.transformercache.lite");
