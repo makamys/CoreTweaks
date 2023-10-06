@@ -56,7 +56,7 @@ public class TransformerCache implements IModEventListener {
     private static final File DAT = Util.childFile(CoreTweaks.CACHE_DIR, "classTransformerLite.cache");
     private static final File DAT_ERRORED = Util.childFile(CoreTweaks.CACHE_DIR, "classTransformerLite.cache.errored");
     private static final File TRANSFORMERCACHE_PROFILER_CSV = Util.childFile(CoreTweaks.OUT_DIR, "transformercache_profiler.csv");
-    private final Kryo kryo = new Kryo();
+    private Kryo kryo;
     
     private Set<String> transformersToCache = new HashSet<>();
     
@@ -96,6 +96,9 @@ public class TransformerCache implements IModEventListener {
     }
     
     private void loadData() {
+        long t0 = System.nanoTime();
+        
+        kryo = new Kryo();
         kryo.register(HashMap.class);
         kryo.register(TransformerCache.TransformerData.class);
         kryo.register(TransformerCache.TransformerData.CachedTransformation.class);
@@ -130,6 +133,9 @@ public class TransformerCache implements IModEventListener {
                 e.printStackTrace();
             }
         }
+        
+        long t1 = System.nanoTime();
+        LOGGER.debug("Loaded lite transformer cache in " + ((t1-t0) / 1_000_000_000.0) + "s");
     }
     
     private static Map<String, TransformerData> returnVerifiedTransformerMap(Map<String, TransformerData> map) {

@@ -61,6 +61,7 @@ public class JarDiscovererCache implements IModEventListener {
     
     public void load() {
         LOGGER.info("Loading JarDiscovererCache");
+        long t0 = System.nanoTime();
         kryo = new Kryo();
         kryo.setInstantiatorStrategy(new DefaultInstantiatorStrategy(new StdInstantiatorStrategy()));
         kryo.register(Type.class, new TypeSerializer());
@@ -99,6 +100,9 @@ public class JarDiscovererCache implements IModEventListener {
                 epoch = 0;
             }
         }
+        
+        long t1 = System.nanoTime();
+        LOGGER.debug("Loaded jar discoverer cache in " + (t1-t0) / 1_000_000_000.0 + "s");
         
         hasLoaded = true;
     }
