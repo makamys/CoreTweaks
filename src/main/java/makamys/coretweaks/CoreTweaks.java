@@ -7,6 +7,7 @@ import org.apache.logging.log4j.Logger;
 
 import makamys.coretweaks.optimization.FastDeobfuscationRemapper;
 import makamys.coretweaks.optimization.JarDiscovererCache;
+import makamys.coretweaks.optimization.LibraryTransformationExcluder;
 import makamys.coretweaks.optimization.ThreadedTextureLoader;
 import makamys.coretweaks.optimization.transformercache.full.CachingTransformer;
 import makamys.coretweaks.util.Util;
@@ -31,6 +32,15 @@ public class CoreTweaks {
     public static final File CACHE_DIR = new File(MY_DIR, "cache");
     
     public static void init(){
+        // Exclude transformation to reduce class load time
+        if(Util.isClassPresent("makamys.coretweaks.repackage.com.esotericsoftware.kryo.kryo5.Kryo")) {
+            Launch.classLoader.addTransformerExclusion("makamys.coretweaks.repackage.com.esotericsoftware.kryo.kryo5.");
+        } else {
+            Launch.classLoader.addTransformerExclusion("com.esotericsoftware.kryo.kryo5.");
+        }
+        if(Config.excludeLibraryTransformation.isActive()) {
+            LibraryTransformationExcluder.run();
+        }
         if(Config.threadedTextureLoader.isActive()) {
                 textureLoader = new ThreadedTextureLoader(
                     Config.threadedTextureLoaderThreadCount != 0 ? Config.threadedTextureLoaderThreadCount
@@ -48,13 +58,6 @@ public class CoreTweaks {
         }
         if(FastDeobfuscationRemapper.isActive()) {
             FastDeobfuscationRemapper.init();
-        }
-        
-        // Exclude transformation to reduce class load time
-        if(Util.isClassPresent("makamys.coretweaks.repackage.com.esotericsoftware.kryo.kryo5.Kryo")) {
-            Launch.classLoader.addTransformerExclusion("makamys.coretweaks.repackage.com.esotericsoftware.kryo.kryo5");
-        } else {
-            Launch.classLoader.addTransformerExclusion("com.esotericsoftware.kryo.kryo5");
         }
     }
 }

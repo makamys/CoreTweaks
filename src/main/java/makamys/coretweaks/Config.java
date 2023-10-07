@@ -8,9 +8,6 @@ import java.lang.reflect.Field;
 import java.util.Collections;
 import java.util.List;
 
-import org.spongepowered.asm.mixin.MixinEnvironment;
-import org.spongepowered.asm.mixin.MixinEnvironment.Phase;
-
 import cpw.mods.fml.common.versioning.ComparableVersion;
 import makamys.coretweaks.util.AnnotationBasedConfigHelper;
 import makamys.coretweaks.util.ConfigDumper;
@@ -97,6 +94,10 @@ public class Config {
     public static FeatureSetting fcOptimizeTextureUpload;
     @ConfigWrappedEnum(cat="Optimizations", def=TRUE, com="Sets TCP_NODELAY to true, reducing network latency in multiplayer. Works on server as well as client. From Minecraft 1.12 (added in 1.8.1).")
     public static FeatureSetting tcpNoDelay;
+    @ConfigWrappedEnum(cat="Optimizations", def=TRUE, com="Exclude libraries from being transformed. Speeds up startup slightly. This will break any mods that try to transform these libraries, though that's fairly unlikely.")
+    public static FeatureSetting excludeLibraryTransformation;
+    @ConfigStringList(cat="Optimizations.excludeLibraryTransformation.packages", def={"com.google.gson.", "joptsimple.", "io.netty.", "gnu.trove.", "net.sf.cglib."}, com="Packages that should be added as class transformer exclusions.", resetOnRead=true)
+    public static String[] excludeLibraryTransformationPackages;
             
     //@ConfigBoolean(cat="Diagnostics", def=TRUE, com="Enables the /coretweaks command, used to access various diagnostics. Invoke it in-game for additional information.")
     public static FeatureSetting coreTweaksCommand = FeatureSetting.FALSE;

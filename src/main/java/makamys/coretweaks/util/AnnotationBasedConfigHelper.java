@@ -159,7 +159,21 @@ public class AnnotationBasedConfigHelper {
                     newProp.set(newValueStr);
                 }
             } else if(configStringList != null) {
-                newValue = config.getStringList(field.getName(), snakeifyCategory(configStringList.cat()), configStringList.def(), configStringList.com());
+                String[] defaultVal = configStringList.def();
+                if(configStringList.resetOnRead()) {
+                    defaultVal = new String[configStringList.def().length + 1];
+                    defaultVal[0] = ":resetOnRead";
+                    System.arraycopy(configStringList.def(), 0, defaultVal, 1, configStringList.def().length);
+                }
+                String comment = configStringList.com();
+                if(configStringList.resetOnRead()) {
+                    comment += "\n(This list will be reset every time the config is read if the first element is ':resetOnRead')";
+                }
+                String[] strings = config.getStringList(field.getName(), snakeifyCategory(configStringList.cat()), defaultVal, comment);
+                if(strings.length > 0 && strings[0].equals(":resetOnRead")) {
+                    strings = configStringList.def();
+                }
+                newValue = strings;
             } else if(configString != null) {
                 newValue = config.getString(field.getName(), snakeifyCategory(configString.cat()), configString.def(), configString.com());
             }
@@ -328,6 +342,7 @@ public class AnnotationBasedConfigHelper {
         String cat();
         String[] def();
         String com() default "";
+        boolean resetOnRead() default false;
 
     }
     
