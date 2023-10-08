@@ -6,6 +6,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import makamys.coretweaks.optimization.FastDeobfuscationRemapper;
+import makamys.coretweaks.optimization.ForgeFastWildcardTransformers;
 import makamys.coretweaks.optimization.JarDiscovererCache;
 import makamys.coretweaks.optimization.LibraryTransformationExcluder;
 import makamys.coretweaks.optimization.ThreadedTextureLoader;
@@ -58,6 +59,9 @@ public class CoreTweaks {
         }
         if(FastDeobfuscationRemapper.isActive()) {
             FastDeobfuscationRemapper.init();
+        }
+        if(Config.forgeFastWildcardTransformers.isActive()) {
+            ForgeFastWildcardTransformers.instance = new ForgeFastWildcardTransformers();
         }
     }
 }

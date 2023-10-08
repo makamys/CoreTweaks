@@ -30,6 +30,7 @@ import cpw.mods.fml.relauncher.ReflectionHelper;
 import makamys.coretweaks.Config;
 import makamys.coretweaks.CoreTweaks;
 import makamys.coretweaks.IModEventListener;
+import makamys.coretweaks.optimization.NonFunctionAlteringWrapper;
 import makamys.coretweaks.optimization.transformercache.lite.TransformerCache.TransformerData.CachedTransformation;
 import makamys.coretweaks.util.Util;
 import net.minecraft.launchwrapper.IClassNameTransformer;
@@ -83,8 +84,12 @@ public class TransformerCache implements IModEventListener {
         List<IClassTransformer> transformers = (List<IClassTransformer>)ReflectionHelper.getPrivateValue(LaunchClassLoader.class, lcl, "transformers");
         for(int i = 0; i < transformers.size(); i++) {
             IClassTransformer transformer = transformers.get(i);
-            if(transformersToCache.contains(transformer.getClass().getCanonicalName())) {
-                LOGGER.info("Replacing " + transformer.getClass().getCanonicalName() + " with cached proxy");
+            IClassTransformer realTransformer = transformer;
+            while(realTransformer instanceof NonFunctionAlteringWrapper<?>) {
+                realTransformer = ((NonFunctionAlteringWrapper<IClassTransformer>)realTransformer).getOriginal();
+            }
+            if(transformersToCache.contains(realTransformer.getClass().getCanonicalName())) {
+                LOGGER.info("Replacing " + realTransformer.getClass().getCanonicalName() + " with cached proxy");
                 
                 IClassTransformer newTransformer = transformer instanceof IClassNameTransformer
                         ? new CachedNameTransformerProxy(transformer) : new CachedTransformerProxy(transformer);

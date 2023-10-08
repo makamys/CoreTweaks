@@ -1,8 +1,9 @@
 package makamys.coretweaks.optimization.transformercache.lite;
 
+import makamys.coretweaks.optimization.NonFunctionAlteringWrapper;
 import net.minecraft.launchwrapper.IClassTransformer;
 
-public class CachedTransformerProxy implements IClassTransformer {
+public class CachedTransformerProxy implements IClassTransformer, NonFunctionAlteringWrapper<IClassTransformer> {
 
     public int runs = 0;
     public int misses = 0;
@@ -31,6 +32,11 @@ public class CachedTransformerProxy implements IClassTransformer {
     @Override
     public String toString() {
         return "CachedTransformerProxy{" + transformerName + "}";
+    }
+
+    @Override
+    public IClassTransformer getOriginal() {
+        return original;
     }
 
 }

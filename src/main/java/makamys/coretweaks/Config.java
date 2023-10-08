@@ -98,6 +98,8 @@ public class Config {
     public static FeatureSetting excludeLibraryTransformation;
     @ConfigStringList(cat="Optimizations.excludeLibraryTransformation.packages", def={"com.google.gson.", "joptsimple.", "io.netty.", "gnu.trove.", "net.sf.cglib."}, com="Packages that should be added as class transformer exclusions.", resetOnRead=true)
     public static String[] excludeLibraryTransformationPackages;
+    @ConfigWrappedEnum(cat="Optimizations", def=TRUE, com="Makes Forge's wildcard class transformers more efficient. Might break mods that interact with the transformer list.")
+    public static FeatureSetting forgeFastWildcardTransformers;
             
     //@ConfigBoolean(cat="Diagnostics", def=TRUE, com="Enables the /coretweaks command, used to access various diagnostics. Invoke it in-game for additional information.")
     public static FeatureSetting coreTweaksCommand = FeatureSetting.FALSE;
