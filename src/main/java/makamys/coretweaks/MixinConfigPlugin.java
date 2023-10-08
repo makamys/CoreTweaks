@@ -131,10 +131,10 @@ public class MixinConfigPlugin implements IMixinConfigPlugin {
                 mixins.add("optimization.threadedtextureloader.ITextureMap");
                 mixins.add("optimization.threadedtextureloader.MixinTextureMap");
             }
-            if(Config.fastFolderTexturePack.isActive()) {
+            if(Config.fastFolderResourcePack.isActive()) {
                 mixins.add("optimization.foldertexturepack.MixinFolderResourcePack");
             }
-            if(Config.fastDefaultTexturePack.isActive()) {
+            if(Config.fastDefaultResourcePack.isActive()) {
                 mixins.add("optimization.defaulttexturepack.MixinDefaultResourcePack");
             }
             if(Config.tcpNoDelay.isActive()) {

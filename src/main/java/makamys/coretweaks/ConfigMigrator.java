@@ -24,7 +24,7 @@ public class ConfigMigrator {
         this.config = config;
     }
     
-    public void migrate() {
+    public void migrate_0_2_to_0_3() {
         LOGGER.info("Migrating config from 0.2 to 0.3");
         
         migrateFeatureSetting("bugfixes", "fixDisplayListDelete", fixDisplayListDelete);
@@ -35,7 +35,7 @@ public class ConfigMigrator {
         migrateFeatureSetting("bugfixes", "restoreTravelSound", restoreTravelSound);
         
         migrateFeatureSetting("optimizations", "clientChunkMap", clientChunkMap);
-        migrateFeatureSetting("optimizations", "fastFolderTexturePack", fastFolderTexturePack);
+        migrateFeatureSetting("optimizations", "fastFolderTexturePack", fastFolderResourcePack);
         migrateFeatureSetting("optimizations", "fcOptimizeTextureUpload", fcOptimizeTextureUpload);
         migrateFeatureSetting("optimizations", "forgeFastDeobfuscationRemapper", forgeFastDeobfuscationRemapper);
         migrateFeatureSetting("optimizations", "forgeFastProgressBar", forgeFastProgressBar);
@@ -99,11 +99,34 @@ public class ConfigMigrator {
         deleteBooleanIfDefault("tweaks", "autoLoadPauseOnWorldEntry", true);
         deleteIntIfDefault("tweaks", "autoLoadPauseWaitLength", 20);
         
+        removeEmptyCategories();
+    }
+    
+    private void removeEmptyCategories() {
         for(String catName : config.getCategoryNames()) {
             ConfigCategory cat = config.getCategory(catName);
             if(cat.isEmpty()) {
                 config.removeCategory(cat);
             }
+        }
+    }
+    
+    public void migrate_0_3_0_to_0_3_1() {
+        migrateRenamedFeatureSetting("optimizations.fast_folder_texture_pack", Config.fastFolderResourcePack);
+        migrateRenamedFeatureSetting("optimizations.fast_default_texture_pack", Config.fastDefaultResourcePack);
+        removeEmptyCategories();
+    }
+    
+    private void migrateRenamedFeatureSetting(String category, FeatureSetting setting) {
+        try {
+            ConfigCategory cat = config.getCategory(category);
+            if(cat != null) {
+                setting.setValue(FeatureSetting.Setting.valueOf(cat.get("_enabled").getString().toUpperCase()));
+                cat.remove("_enabled");
+            }
+        } catch(Exception e) {
+            LOGGER.warn("Something went wrong while trying to migrate " + category);
+            e.printStackTrace();
         }
     }
     
@@ -231,5 +254,4 @@ public class ConfigMigrator {
             }
         }
     }
-    
 }

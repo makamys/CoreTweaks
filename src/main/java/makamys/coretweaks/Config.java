@@ -115,9 +115,9 @@ public class Config {
                     + "* FULL: Cache the entire transformer chain. Reduces startup time further, but breaks with many mods.")
     public static TransformerCache transformerCacheMode;
     @ConfigWrappedEnum(cat="Optimizations", def=TRUE, com="Cache the file paths contained in folder resource packs. Eliminates the immense slowdown they add to the loading of large modpacks.")
-    public static FeatureSetting fastFolderTexturePack;
+    public static FeatureSetting fastFolderResourcePack;
     @ConfigWrappedEnum(cat="Optimizations", def=FALSE, com="EXPERIMENTAL: Cache the folders contained in DefaultResourcePacks. Makes the biggest difference in dev environments and on slow file systems (looking at you Windows.)")
-    public static FeatureSetting fastDefaultTexturePack;
+    public static FeatureSetting fastDefaultResourcePack;
             
     //@ConfigInt(cat="Optimizations", def=0, min=0, max=Integer.MAX_VALUE, com="How many threads to use for loading textures? (0: auto (all cores))")
     public static int threadedTextureLoaderThreadCount;
@@ -248,7 +248,11 @@ public class Config {
         
         String loadedVersion = config.getLoadedConfigVersion();
         if((loadedVersion == null || (!loadedVersion.startsWith("@") && new ComparableVersion(config.getLoadedConfigVersion()).compareTo(new ComparableVersion("0.3")) < 0))) {
-            new ConfigMigrator(config).migrate();
+            new ConfigMigrator(config).migrate_0_2_to_0_3();
+            configHelper.saveFields(config);
+        }
+        if(loadedVersion != null && (!loadedVersion.startsWith("@") && new ComparableVersion(config.getLoadedConfigVersion()).compareTo(new ComparableVersion("0.3.1")) < 0)) {
+            new ConfigMigrator(config).migrate_0_3_0_to_0_3_1();
             configHelper.saveFields(config);
         }
         
