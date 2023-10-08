@@ -114,6 +114,7 @@ public class ConfigMigrator {
     public void migrate_0_3_0_to_0_3_1() {
         migrateRenamedFeatureSetting("optimizations.fast_folder_texture_pack", Config.fastFolderResourcePack);
         migrateRenamedFeatureSetting("optimizations.fast_default_texture_pack", Config.fastDefaultResourcePack);
+        deleteIntIfDefault("tweaks.extend_sprint_time_limit", "sprintTimeLimit", 2147483647);
         removeEmptyCategories();
     }
     
