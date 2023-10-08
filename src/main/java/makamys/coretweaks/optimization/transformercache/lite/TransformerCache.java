@@ -9,6 +9,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -31,19 +32,24 @@ import makamys.coretweaks.Config;
 import makamys.coretweaks.CoreTweaks;
 import makamys.coretweaks.IModEventListener;
 import makamys.coretweaks.optimization.NonFunctionAlteringWrapper;
+import makamys.coretweaks.optimization.ForgeFastWildcardTransformers.PatternConditionalTransformer;
 import makamys.coretweaks.optimization.transformercache.lite.TransformerCache.TransformerData.CachedTransformation;
 import makamys.coretweaks.util.Util;
+import makamys.coretweaks.util.WrappedAddListenableList;
+import makamys.coretweaks.util.WrappedAddListenableList.AdditionEvent;
+import makamys.coretweaks.util.WrappedAddListenableList.AdditionEventListener;
 import net.minecraft.launchwrapper.IClassNameTransformer;
 import net.minecraft.launchwrapper.IClassTransformer;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.launchwrapper.LaunchClassLoader;
+import net.minecraftforge.classloading.FluidIdTransformer;
 
 /* Format:
  * int8 0
  * int8 version
  * Map<String, TransformerData> map
  */
-public class TransformerCache implements IModEventListener {
+public class TransformerCache implements IModEventListener, AdditionEventListener<IClassTransformer> {
     
     public static TransformerCache instance = new TransformerCache();
     
@@ -80,23 +86,39 @@ public class TransformerCache implements IModEventListener {
     }
 
     private void hookClassLoader() {
-        LaunchClassLoader lcl = (LaunchClassLoader)Launch.classLoader;
-        List<IClassTransformer> transformers = (List<IClassTransformer>)ReflectionHelper.getPrivateValue(LaunchClassLoader.class, lcl, "transformers");
-        for(int i = 0; i < transformers.size(); i++) {
-            IClassTransformer transformer = transformers.get(i);
-            IClassTransformer realTransformer = transformer;
-            while(realTransformer instanceof NonFunctionAlteringWrapper<?>) {
-                realTransformer = ((NonFunctionAlteringWrapper<IClassTransformer>)realTransformer).getOriginal();
-            }
-            if(transformersToCache.contains(realTransformer.getClass().getCanonicalName())) {
-                LOGGER.info("Replacing " + realTransformer.getClass().getCanonicalName() + " with cached proxy");
-                
-                IClassTransformer newTransformer = transformer instanceof IClassNameTransformer
-                        ? new CachedNameTransformerProxy(transformer) : new CachedTransformerProxy(transformer);
+        try {
+            LaunchClassLoader lcl = (LaunchClassLoader)Launch.classLoader;
+            
+            Field transformersField = LaunchClassLoader.class.getDeclaredField("transformers");
+            transformersField.setAccessible(true);
+            List<IClassTransformer> transformers = (List<IClassTransformer>)transformersField.get(lcl);
+            
+            WrappedAddListenableList<IClassTransformer> wrappedTransformers = 
+                    new WrappedAddListenableList<IClassTransformer>(transformers);
+            
+            transformersField.set(lcl, wrappedTransformers);
+            
+            wrappedTransformers.addListener(this);
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+    @Override
+    public void onAdd(AdditionEvent<IClassTransformer> event) {
+        IClassTransformer transformer = event.element;
+        IClassTransformer realTransformer = transformer;
+        while(realTransformer instanceof NonFunctionAlteringWrapper<?>) {
+            realTransformer = ((NonFunctionAlteringWrapper<IClassTransformer>)realTransformer).getOriginal();
+        }
+        if(transformersToCache.contains(realTransformer.getClass().getCanonicalName())) {
+            LOGGER.info("Replacing " + realTransformer.getClass().getCanonicalName() + " with cached proxy");
+            
+            IClassTransformer newTransformer = transformer instanceof IClassNameTransformer
+                    ? new CachedNameTransformerProxy(transformer) : new CachedTransformerProxy(transformer);
 
-                myTransformers.add(newTransformer);
-                transformers.set(i, newTransformer);
-            }
+            myTransformers.add(newTransformer);
+            event.element = newTransformer;
         }
     }
     

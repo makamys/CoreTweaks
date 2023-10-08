@@ -11,6 +11,7 @@ import makamys.coretweaks.optimization.JarDiscovererCache;
 import makamys.coretweaks.optimization.LibraryTransformationExcluder;
 import makamys.coretweaks.optimization.ThreadedTextureLoader;
 import makamys.coretweaks.optimization.transformercache.full.CachingTransformer;
+import makamys.coretweaks.optimization.transformercache.lite.TransformerCache;
 import makamys.coretweaks.util.Util;
 import net.minecraft.launchwrapper.Launch;
 
@@ -62,6 +63,10 @@ public class CoreTweaks {
         }
         if(Config.forgeFastWildcardTransformers.isActive()) {
             ForgeFastWildcardTransformers.instance = new ForgeFastWildcardTransformers();
+        }
+        if(Config.transformerCache.isActive() && Config.transformerCacheMode == Config.TransformerCache.LITE) {
+            // At this point the transformer chain is complete, so we can go hook it.
+            TransformerCache.instance.init();
         }
     }
 }

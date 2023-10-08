@@ -62,11 +62,6 @@ public class MixinConfigPlugin implements IMixinConfigPlugin {
         } else if(phase == Phase.INIT) {
             
         } else if(phase == Phase.DEFAULT) {
-            if(Config.transformerCache.isActive() && Config.transformerCacheMode == Config.TransformerCache.LITE) {
-                // At this point the transformer chain is complete, so we can go hook it.
-                TransformerCache.instance.init();
-            }
-            
             if(Config.jarDiscovererCache.isActive()) {
                 // We are now at the end of Launch#launch. FoamFix's transformer has finished constructing, so we can hack it.
                 if(disableFoamFixJarDiscovererTransformer()) {
