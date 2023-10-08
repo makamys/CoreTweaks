@@ -26,7 +26,7 @@ public class CachedTransformerProxy implements IClassTransformer, NonFunctionAlt
             result = original.transform(name, transformedName, basicClass);
             TransformerCache.instance.putCached(transformerName, name, transformedName, result);
         }
-        return result;
+        return TransformerCache.fromNullableByteArray(result);
     }
     
     @Override

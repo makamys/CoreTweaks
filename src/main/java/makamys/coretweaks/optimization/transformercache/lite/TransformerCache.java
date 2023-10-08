@@ -65,6 +65,8 @@ public class TransformerCache implements IModEventListener, AdditionEventListene
     private static final File TRANSFORMERCACHE_PROFILER_CSV = Util.childFile(CoreTweaks.OUT_DIR, "transformercache_profiler.csv");
     private Kryo kryo;
     
+    private static final byte[] NULL_BYTE_ARRAY = new byte[0];
+    
     private Set<String> transformersToCache = new HashSet<>();
     
     private boolean inited = false;
@@ -263,11 +265,19 @@ public class TransformerCache implements IModEventListener, AdditionEventListene
             if(trans != null) {
                 if(nullSafeLength(basicClass) == trans.preLength && calculateHash(basicClass) == trans.preHash) {
                     trans.lastAccessed = now();
-                    return trans.postHash == trans.preHash ? basicClass : trans.newClass;
+                    return trans.postHash == trans.preHash ? toNullableByteArray(basicClass) : trans.newClass;
                 }
             }
         }
         return null;
+    }
+    
+    public static byte[] toNullableByteArray(byte[] array) {
+        return array == null ? NULL_BYTE_ARRAY : array;
+    }
+    
+    public static byte[] fromNullableByteArray(byte[] array) {
+        return array == NULL_BYTE_ARRAY ? null : array;
     }
     
     private static int nullSafeLength(byte[] array) {
