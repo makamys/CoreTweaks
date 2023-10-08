@@ -65,7 +65,6 @@ public class CoreTweaks {
             ForgeFastWildcardTransformers.instance = new ForgeFastWildcardTransformers();
         }
         if(Config.transformerCache.isActive() && Config.transformerCacheMode == Config.TransformerCache.LITE) {
-            // At this point the transformer chain is complete, so we can go hook it.
             TransformerCache.instance.init();
         }
     }
