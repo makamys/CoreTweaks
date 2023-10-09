@@ -1,4 +1,4 @@
-package makamys.coretweaks.mixin.optimization.foldertexturepack;
+package makamys.coretweaks.mixin.optimization.folderresourcepack;
 
 import java.io.File;
 

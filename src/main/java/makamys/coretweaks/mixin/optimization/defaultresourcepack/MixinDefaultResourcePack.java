@@ -1,4 +1,4 @@
-package makamys.coretweaks.mixin.optimization.defaulttexturepack;
+package makamys.coretweaks.mixin.optimization.defaultresourcepack;
 
 import java.io.InputStream;
 
