@@ -120,10 +120,12 @@ public class ConfigMigrator {
     
     private void migrateRenamedFeatureSetting(String category, FeatureSetting setting) {
         try {
-            ConfigCategory cat = config.getCategory(category);
-            if(cat != null) {
-                setting.setValue(FeatureSetting.Setting.valueOf(cat.get("_enabled").getString().toUpperCase()));
-                cat.remove("_enabled");
+            if(config.hasCategory(category)) {
+                ConfigCategory cat = config.getCategory(category);
+                if(cat != null) {
+                    setting.setValue(FeatureSetting.Setting.valueOf(cat.get("_enabled").getString().toUpperCase()));
+                    cat.remove("_enabled");
+                }
             }
         } catch(Exception e) {
             LOGGER.warn("Something went wrong while trying to migrate " + category);
