@@ -93,7 +93,7 @@ public class Config {
     public static FeatureSetting tcpNoDelay;
     @ConfigWrappedEnum(cat="Optimizations", def=TRUE, com="Exclude libraries from being transformed. Speeds up startup slightly. This will break any mods that try to transform these libraries, though that's fairly unlikely.")
     public static FeatureSetting excludeLibraryTransformation;
-    @ConfigStringList(cat="Optimizations.excludeLibraryTransformation.packages", def={"com.google.gson.", "joptsimple.", "io.netty.", "gnu.trove.", "net.sf.cglib."}, com="Packages that should be added as class transformer exclusions.", resetOnRead=true)
+    @ConfigStringList(cat="Optimizations.excludeLibraryTransformation.packages", def={"com.google.gson.", "joptsimple.", "io.netty.", "gnu.trove.", "net.sf.cglib."}, com="Packages that should be added as class transformer exclusions.", resetOnLoad=true)
     public static String[] excludeLibraryTransformationPackages;
     @ConfigWrappedEnum(cat="Optimizations", def=TRUE, com="Makes Forge's wildcard class transformers more efficient. Might break mods that interact with the transformer list.")
     public static FeatureSetting forgeFastWildcardTransformers;

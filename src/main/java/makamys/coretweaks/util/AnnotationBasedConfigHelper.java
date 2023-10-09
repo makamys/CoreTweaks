@@ -160,17 +160,17 @@ public class AnnotationBasedConfigHelper {
                 }
             } else if(configStringList != null) {
                 String[] defaultVal = configStringList.def();
-                if(configStringList.resetOnRead()) {
+                if(configStringList.resetOnLoad()) {
                     defaultVal = new String[configStringList.def().length + 1];
-                    defaultVal[0] = ":resetOnRead";
+                    defaultVal[0] = ":resetOnLoad";
                     System.arraycopy(configStringList.def(), 0, defaultVal, 1, configStringList.def().length);
                 }
                 String comment = configStringList.com();
-                if(configStringList.resetOnRead()) {
-                    comment += "\n(This list will be reset every time the config is read if the first element is ':resetOnRead')";
+                if(configStringList.resetOnLoad()) {
+                    comment += "\n(This list will be reset every time the config is loaded if the first element is ':resetOnLoad')";
                 }
                 String[] strings = config.getStringList(field.getName(), snakeifyCategory(configStringList.cat()), defaultVal, comment);
-                if(strings.length > 0 && strings[0].equals(":resetOnRead")) {
+                if(strings.length > 0 && strings[0].equals(":resetOnLoad")) {
                     strings = configStringList.def();
                 }
                 newValue = strings;
@@ -342,7 +342,7 @@ public class AnnotationBasedConfigHelper {
         String cat();
         String[] def();
         String com() default "";
-        boolean resetOnRead() default false;
+        boolean resetOnLoad() default false;
 
     }
     
