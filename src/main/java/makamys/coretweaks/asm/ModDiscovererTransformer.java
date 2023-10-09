@@ -134,7 +134,8 @@ public class ModDiscovererTransformer implements IClassTransformer {
             "oshi-core-",
             "netty-",
             "libraryjavasound-",
-            "fastutil-"
+            "fastutil-",
+            "lombok-"
         };
         for (String s : prefixes)
         {
