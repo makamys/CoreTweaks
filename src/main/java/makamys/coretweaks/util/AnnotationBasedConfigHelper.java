@@ -171,6 +171,11 @@ public class AnnotationBasedConfigHelper {
                 }
                 String[] strings = config.getStringList(field.getName(), snakeifyCategory(configStringList.cat()), defaultVal, comment);
                 if(strings.length > 0 && strings[0].equals(":resetOnLoad")) {
+                    if(!Arrays.equals(strings, defaultVal)) {
+                        // reset
+                        config.getCategory(snakeifyCategory(configStringList.cat())).remove(field.getName());
+                        config.getStringList(field.getName(), snakeifyCategory(configStringList.cat()), defaultVal, comment);
+                    }
                     strings = configStringList.def();
                 }
                 newValue = strings;
