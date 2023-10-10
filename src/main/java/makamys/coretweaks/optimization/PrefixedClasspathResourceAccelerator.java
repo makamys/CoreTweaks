@@ -3,6 +3,7 @@ package makamys.coretweaks.optimization;
 import static makamys.coretweaks.CoreTweaks.LOGGER;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -137,27 +138,31 @@ public class PrefixedClasspathResourceAccelerator {
         public JarIndex(URL url) {
             this.url = url;
             File f = Paths.get(url.toURI()).toFile();
-            try (ZipFile zf = new ZipFile(f)) {
-                Enumeration<? extends ZipEntry> entries = zf.entries();
-                while(entries.hasMoreElements()) {
-                    ZipEntry ze = entries.nextElement();
-                    String dirName = null;
-                    if(ze.isDirectory()) {
-                        String name = ze.getName();
-                        name = name.substring(0, name.length() - 1);
-                        dirName = name;
-                    } else {
-                        String s = ze.getName();
-                        if(s.contains("/")) {
-                            dirName = s.substring(0, s.lastIndexOf("/"));
+            try {
+                try (ZipFile zf = new ZipFile(f)) {
+                    Enumeration<? extends ZipEntry> entries = zf.entries();
+                    while(entries.hasMoreElements()) {
+                        ZipEntry ze = entries.nextElement();
+                        String dirName = null;
+                        if(ze.isDirectory()) {
+                            String name = ze.getName();
+                            name = name.substring(0, name.length() - 1);
+                            dirName = name;
+                        } else {
+                            String s = ze.getName();
+                            if(s.contains("/")) {
+                                dirName = s.substring(0, s.lastIndexOf("/"));
+                            }
                         }
-                    }
-                    if(dirName != null) {
-                        while(directories.add(dirName) && dirName.contains("/")) {
-                            dirName = dirName.substring(0, dirName.lastIndexOf("/"));
+                        if(dirName != null) {
+                            while(directories.add(dirName) && dirName.contains("/")) {
+                                dirName = dirName.substring(0, dirName.lastIndexOf("/"));
+                            }
                         }
                     }
                 }
+            } catch(FileNotFoundException e) {
+                // no problem
             }
         }
 
