@@ -31,7 +31,7 @@ public class CachedTransformerProxy implements IClassTransformer, NonFunctionAlt
     }
     
     public static CachedTransformerProxy of(IClassTransformer transformer) throws Exception {
-        Class<?> cls = CachedTransformerProxyGenerator.generate(CachedTransformerProxy.class, transformer.getClass().getSimpleName());
+        Class<?> cls = CachedTransformerProxyGenerator.generate(CachedTransformerProxy.class, transformer.getClass());
         return (CachedTransformerProxy)cls.getConstructor(IClassTransformer.class).newInstance(transformer);
     }
     

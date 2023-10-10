@@ -1,9 +1,6 @@
 package makamys.coretweaks.optimization.transformercache.lite;
 
-import java.io.File;
 import java.lang.reflect.Method;
-import java.util.HashSet;
-import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.objectweb.asm.AnnotationVisitor;
@@ -17,22 +14,12 @@ import makamys.coretweaks.util.Util;
 import net.minecraft.launchwrapper.Launch;
 
 public class CachedTransformerProxyGenerator implements Opcodes {
-    private static Set<String> registeredNames = new HashSet<>();
-    private static final boolean isMixingasmPresent;
-    static {
-        isMixingasmPresent = CachedTransformerProxyGenerator.class.getResource("/makamys/mixingasm/api/IMixinSafeTransformer.class") != null;
-    }
     private static final boolean DEBUG = Boolean.parseBoolean(System.getProperty("coretweaks.debugCachedTransformerProxyGenerator", "false"));
     
-    public static Class<?> generate(Class<?> parent, String transName) throws Exception {
-        String newName = parent.getName() + "$$" + transName;
-        int discriminator = 0;
-        while(registeredNames.contains(newName + (discriminator == 0 ? "": "$" + discriminator))) {
-            discriminator++;
-        }
-        newName = newName + (discriminator == 0 ? "": "$" + discriminator);
+    public static Class<?> generate(Class<?> parent, Class<?> transClass) throws Exception {
+        String newName = transClass.getName() + "$$CoreTweaksProxy";
         
-        byte[] result = generateBytecode(parent.getName(), transName);
+        byte[] result = generateBytecode(parent.getName(), transClass.getName());
         
         if(DEBUG) {
             FileUtils.writeByteArrayToFile(Util.childFile(CoreTweaks.OUT_DIR, "DUMP__" + newName + ".class"), result);
@@ -42,7 +29,6 @@ public class CachedTransformerProxyGenerator implements Opcodes {
         defineClass.setAccessible(true);
         defineClass.invoke(Launch.classLoader, newName, result, 0, result.length);
                 
-        registeredNames.add(newName);        
         return Class.forName(newName);
     }
     
@@ -52,13 +38,10 @@ public class CachedTransformerProxyGenerator implements Opcodes {
         MethodVisitor mv;
         AnnotationVisitor av0;
         
-        // TODO decide this in a better way...
-        boolean mixinSafe = transName.equals("DeobfuscationTransformer");
-
+        // TODO copy IMixinSafe interface
         cw.visit(52, ACC_PUBLIC + ACC_SUPER,
-                parentName.replace('.', '/') + "$$" + transName, null,
-                parentName.replace('.', '/'),
-                (isMixingasmPresent && mixinSafe) ? new String[] {"makamys/mixingasm/api/IMixinSafeTransformer"} : null);
+                transName.replace('.', '/') + "$$CoreTweaksProxy", null,
+                parentName.replace('.', '/'), null);
 
         {
             mv = cw.visitMethod(ACC_PUBLIC, "<init>", "(Lnet/minecraft/launchwrapper/IClassTransformer;)V", null, null);

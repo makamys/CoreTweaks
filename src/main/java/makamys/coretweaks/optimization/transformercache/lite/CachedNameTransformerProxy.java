@@ -19,7 +19,7 @@ public class CachedNameTransformerProxy extends CachedTransformerProxy implement
     }
 
     public static CachedTransformerProxy of(IClassTransformer transformer) throws Exception {
-        Class<?> cls = CachedTransformerProxyGenerator.generate(CachedNameTransformerProxy.class, transformer.getClass().getSimpleName());
+        Class<?> cls = CachedTransformerProxyGenerator.generate(CachedNameTransformerProxy.class, transformer.getClass());
         return (CachedTransformerProxy)cls.getConstructor(IClassTransformer.class).newInstance(transformer);
     }
 }
