@@ -17,8 +17,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
-
 import com.esotericsoftware.kryo.kryo5.Kryo;
 import com.esotericsoftware.kryo.kryo5.io.Input;
 import com.esotericsoftware.kryo.kryo5.io.Output;
@@ -27,12 +25,10 @@ import com.esotericsoftware.kryo.kryo5.unsafe.UnsafeOutput;
 import com.google.common.collect.Sets;
 import com.google.common.hash.Hashing;
 
-import cpw.mods.fml.relauncher.ReflectionHelper;
 import makamys.coretweaks.Config;
 import makamys.coretweaks.CoreTweaks;
 import makamys.coretweaks.IModEventListener;
 import makamys.coretweaks.optimization.NonFunctionAlteringWrapper;
-import makamys.coretweaks.optimization.ForgeFastWildcardTransformers.PatternConditionalTransformer;
 import makamys.coretweaks.optimization.transformercache.lite.TransformerCache.TransformerData.CachedTransformation;
 import makamys.coretweaks.util.Util;
 import makamys.coretweaks.util.WrappedAddListenableList;
@@ -42,7 +38,6 @@ import net.minecraft.launchwrapper.IClassNameTransformer;
 import net.minecraft.launchwrapper.IClassTransformer;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.launchwrapper.LaunchClassLoader;
-import net.minecraftforge.classloading.FluidIdTransformer;
 
 /* Format:
  * int8 0
@@ -74,7 +69,7 @@ public class TransformerCache implements IModEventListener, AdditionEventListene
     private static byte[] memoizedHashData;
     private static int memoizedHashValue;
     
-    public void init() {
+    public void init(boolean late) {
         if(inited) return;
         
         transformersToCache = Sets.newHashSet(Config.transformersToCache);
@@ -84,23 +79,30 @@ public class TransformerCache implements IModEventListener, AdditionEventListene
         
         loadData();
         
-        hookClassLoader();
+        hookClassLoader(late);
     }
 
-    private void hookClassLoader() {
+    private void hookClassLoader(boolean late) {
         try {
             LaunchClassLoader lcl = (LaunchClassLoader)Launch.classLoader;
             
             Field transformersField = LaunchClassLoader.class.getDeclaredField("transformers");
             transformersField.setAccessible(true);
             List<IClassTransformer> transformers = (List<IClassTransformer>)transformersField.get(lcl);
-            
-            WrappedAddListenableList<IClassTransformer> wrappedTransformers = 
-                    new WrappedAddListenableList<IClassTransformer>(transformers);
-            
-            transformersField.set(lcl, wrappedTransformers);
-            
-            wrappedTransformers.addListener(this);
+            if(!late) {
+                WrappedAddListenableList<IClassTransformer> wrappedTransformers = 
+                        new WrappedAddListenableList<IClassTransformer>(transformers);
+                wrappedTransformers.addListener(this);
+                
+                transformersField.set(lcl, wrappedTransformers);
+            } else {
+                for(int i = 0; i < transformers.size(); i++) {
+                    IClassTransformer proxy = createCachedProxy(transformers.get(i));
+                    if(proxy != null) {
+                        transformers.set(i, proxy);
+                    }
+                }
+            }
         } catch(Exception e) {
             e.printStackTrace();
         }
@@ -108,7 +110,13 @@ public class TransformerCache implements IModEventListener, AdditionEventListene
     
     @Override
     public void onAdd(AdditionEvent<IClassTransformer> event) {
-        IClassTransformer transformer = event.element;
+        IClassTransformer proxy = createCachedProxy(event.element);
+        if(proxy != null) {
+            event.element = proxy;
+        }
+    }
+    
+    private IClassTransformer createCachedProxy(IClassTransformer transformer) {
         IClassTransformer realTransformer = transformer;
         while(realTransformer instanceof NonFunctionAlteringWrapper<?>) {
             realTransformer = ((NonFunctionAlteringWrapper<IClassTransformer>)realTransformer).getOriginal();
@@ -117,18 +125,19 @@ public class TransformerCache implements IModEventListener, AdditionEventListene
             LOGGER.info("Replacing " + realTransformer.getClass().getCanonicalName() + " with cached proxy");
             
             try {
-            IClassTransformer newTransformer = transformer instanceof IClassNameTransformer
-                    ? CachedNameTransformerProxy.of(transformer) : CachedTransformerProxy.of(transformer);
-
-            myTransformers.add(newTransformer);
-            event.element = newTransformer;
+                IClassTransformer newTransformer = transformer instanceof IClassNameTransformer
+                        ? CachedNameTransformerProxy.of(transformer) : CachedTransformerProxy.of(transformer);
+    
+                myTransformers.add(newTransformer);
+                return newTransformer;
             } catch(Exception e) {
                 LOGGER.error("Failed to create proxy class for " + realTransformer.getClass().getCanonicalName());
                 e.printStackTrace();
             }
         }
+        return null;
     }
-    
+
     private void loadData() {
         long t0 = System.nanoTime();
         

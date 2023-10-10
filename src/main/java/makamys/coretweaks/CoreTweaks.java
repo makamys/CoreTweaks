@@ -59,8 +59,8 @@ public class CoreTweaks {
         if(Config.forgeFastWildcardTransformers.isActive()) {
             ForgeFastWildcardTransformers.instance = new ForgeFastWildcardTransformers();
         }
-        if(Config.transformerCache.isActive() && Config.transformerCacheMode == Config.TransformerCache.LITE) {
-            TransformerCache.instance.init();
+        if(Config.transformerCache.isActive() && Config.transformerCacheMode == Config.TransformerCache.LITE && !Config.lateLiteTransformerCache) {
+            TransformerCache.instance.init(false);
         }
     }
 

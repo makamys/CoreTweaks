@@ -152,6 +152,9 @@ public class Config {
     @ConfigInt(cat="Optimizations.transformerCache.lite", def=128, min=-1, max=Integer.MAX_VALUE,
             com="Maximum size (in MB) of cache. If the cache grows larger than this, the least recently used entries will be discarded. Set to -1 for no limit.")
     public static int liteTransformerCacheMaxSizeMB;
+    @ConfigBoolean(cat="Optimizations.transformerCache.lite", def=false,
+            com="Initialize later using a safer method, might improve compatibility at the cost of not caching early transformations.")
+    public static boolean lateLiteTransformerCache;
     
     public static enum CloudHeightCheck {
         VARIABLE_CORRECTED,
