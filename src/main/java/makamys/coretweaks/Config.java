@@ -93,7 +93,7 @@ public class Config {
     public static FeatureSetting tcpNoDelay;
     @ConfigWrappedEnum(cat="Optimizations", def=TRUE, com="Exclude libraries from being transformed. Speeds up startup slightly. This will break any mods that try to transform these libraries, though that's fairly unlikely.")
     public static FeatureSetting excludeLibraryTransformation;
-    @ConfigStringList(cat="Optimizations.excludeLibraryTransformation.packages", def={
+    @ConfigStringList(cat="Optimizations.excludeLibraryTransformation", def={
             "com.google.gson.", "joptsimple.", "io.netty.", "gnu.trove.", // vanilla+Forge
             "kotlin." // Forgelin
             }, com="Packages that should be added as class transformer exclusions.", resetOnLoad=true)
