@@ -80,7 +80,7 @@ public class TransformerCache implements IModEventListener, AdditionEventListene
         transformersToCache = Sets.newHashSet(Config.transformersToCache);
         
         // We get a ClassCircularityError if we don't add this
-        Launch.classLoader.addTransformerExclusion("makamys.coretweaks.optimization.transformercache.lite");
+        Launch.classLoader.addTransformerExclusion("makamys.coretweaks.optimization.transformercache.lite.TransformerCache");
         
         loadData();
         
@@ -116,11 +116,16 @@ public class TransformerCache implements IModEventListener, AdditionEventListene
         if(transformersToCache.contains(realTransformer.getClass().getCanonicalName())) {
             LOGGER.info("Replacing " + realTransformer.getClass().getCanonicalName() + " with cached proxy");
             
+            try {
             IClassTransformer newTransformer = transformer instanceof IClassNameTransformer
-                    ? new CachedNameTransformerProxy(transformer) : new CachedTransformerProxy(transformer);
+                    ? CachedNameTransformerProxy.of(transformer) : CachedTransformerProxy.of(transformer);
 
             myTransformers.add(newTransformer);
             event.element = newTransformer;
+            } catch(Exception e) {
+                LOGGER.error("Failed to create proxy class for " + realTransformer.getClass().getCanonicalName());
+                e.printStackTrace();
+            }
         }
     }
     

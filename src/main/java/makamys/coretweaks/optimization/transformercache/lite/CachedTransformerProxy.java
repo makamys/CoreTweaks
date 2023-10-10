@@ -1,10 +1,11 @@
 package makamys.coretweaks.optimization.transformercache.lite;
 
+import lombok.SneakyThrows;
 import makamys.coretweaks.optimization.NonFunctionAlteringWrapper;
 import net.minecraft.launchwrapper.IClassTransformer;
+import net.minecraft.launchwrapper.Launch;
 
 public class CachedTransformerProxy implements IClassTransformer, NonFunctionAlteringWrapper<IClassTransformer> {
-
     public int runs = 0;
     public int misses = 0;
     
@@ -27,6 +28,11 @@ public class CachedTransformerProxy implements IClassTransformer, NonFunctionAlt
             TransformerCache.instance.putCached(transformerName, name, transformedName, result);
         }
         return TransformerCache.fromNullableByteArray(result);
+    }
+    
+    public static CachedTransformerProxy of(IClassTransformer transformer) throws Exception {
+        Class<?> cls = CachedTransformerProxyGenerator.generate(CachedTransformerProxy.class, transformer.getClass().getSimpleName());
+        return (CachedTransformerProxy)cls.getConstructor(IClassTransformer.class).newInstance(transformer);
     }
     
     @Override

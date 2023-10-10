@@ -4,7 +4,6 @@ import net.minecraft.launchwrapper.IClassNameTransformer;
 import net.minecraft.launchwrapper.IClassTransformer;
 
 public class CachedNameTransformerProxy extends CachedTransformerProxy implements IClassTransformer, IClassNameTransformer {
-    
     public CachedNameTransformerProxy(IClassTransformer original) {
         super(original);
     }
@@ -19,4 +18,8 @@ public class CachedNameTransformerProxy extends CachedTransformerProxy implement
         return ((IClassNameTransformer)original).remapClassName(name);
     }
 
+    public static CachedTransformerProxy of(IClassTransformer transformer) throws Exception {
+        Class<?> cls = CachedTransformerProxyGenerator.generate(CachedNameTransformerProxy.class, transformer.getClass().getSimpleName());
+        return (CachedTransformerProxy)cls.getConstructor(IClassTransformer.class).newInstance(transformer);
+    }
 }
