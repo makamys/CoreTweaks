@@ -12,7 +12,6 @@ import makamys.coretweaks.optimization.LibraryTransformationExcluder;
 import makamys.coretweaks.optimization.ThreadedTextureLoader;
 import makamys.coretweaks.optimization.transformercache.full.CachingTransformer;
 import makamys.coretweaks.optimization.transformercache.lite.TransformerCache;
-import makamys.coretweaks.util.Util;
 import net.minecraft.launchwrapper.Launch;
 
 public class CoreTweaks {
@@ -34,12 +33,8 @@ public class CoreTweaks {
     public static final File CACHE_DIR = new File(MY_DIR, "cache");
     
     public static void init(){
-        // Exclude transformation to reduce class load time
-        if(Util.isClassPresent("makamys.coretweaks.repackage.com.esotericsoftware.kryo.kryo5.Kryo")) {
-            Launch.classLoader.addTransformerExclusion("makamys.coretweaks.repackage.com.esotericsoftware.kryo.kryo5.");
-        } else {
-            Launch.classLoader.addTransformerExclusion("com.esotericsoftware.kryo.kryo5.");
-        }
+        excludeRepackagedLibraries();
+        
         if(Config.excludeLibraryTransformation.isActive()) {
             LibraryTransformationExcluder.run();
         }
@@ -67,5 +62,12 @@ public class CoreTweaks {
         if(Config.transformerCache.isActive() && Config.transformerCacheMode == Config.TransformerCache.LITE) {
             TransformerCache.instance.init();
         }
+    }
+
+    private static void excludeRepackagedLibraries() {
+        // Exclude transformation to reduce class load time
+        // Note: the shadow plugin automatically relocates these strings in the built jar!
+        Launch.classLoader.addTransformerExclusion("com.esotericsoftware.kryo.kryo5.");
+        Launch.classLoader.addTransformerExclusion("net.sf.cglib.");
     }
 }
