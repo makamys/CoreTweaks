@@ -179,11 +179,6 @@ public class TransformerCache implements IModEventListener, AdditionEventListene
         if(map.containsValue(null)) {
             throw new RuntimeException("Map contains null value");
         }
-        for(String key : map.keySet()) {
-            if(!Util.isValidClassName(key)) {
-                throw new RuntimeException("Map contains invalid key: " + key);
-            }
-        }
         return map;
     }
     

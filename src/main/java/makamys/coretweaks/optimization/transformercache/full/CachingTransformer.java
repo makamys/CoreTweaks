@@ -151,9 +151,7 @@ public class CachingTransformer implements IClassTransformer, MapAddListener<Str
                         byte[] classData = new byte[classLength];
                         int bytesRead = in.read(classData, 0, classLength);
                         
-                        if(!Util.isValidClassName(className)) {
-                            throw new RuntimeException("Invalid class name: " + className);
-                        } else if(bytesRead != classLength) {
+                        if(bytesRead != classLength) {
                             throw new RuntimeException("Length of " + className + " doesn't match advertised length of " + classLength);
                         } else {
                             cache.put(className, Optional.of(classData));
