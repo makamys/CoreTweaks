@@ -1,9 +1,7 @@
 package makamys.coretweaks.optimization.transformercache.lite;
 
-import lombok.SneakyThrows;
 import makamys.coretweaks.optimization.NonFunctionAlteringWrapper;
 import net.minecraft.launchwrapper.IClassTransformer;
-import net.minecraft.launchwrapper.Launch;
 
 public class CachedTransformerProxy implements IClassTransformer, NonFunctionAlteringWrapper<IClassTransformer> {
     public int runs = 0;

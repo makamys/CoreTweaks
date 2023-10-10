@@ -13,6 +13,9 @@ import makamys.coretweaks.CoreTweaks;
 import makamys.coretweaks.util.Util;
 import net.minecraft.launchwrapper.Launch;
 
+/** <p>Generates a proxy class that wraps a class transformer without changing its functionality (a subclass of either {@link CachedTransformerProxy} or {@link CachedNameTransformerProxy}.)</p>
+ *  <p>The generated class has the same full name as the original class, only with the <code>$$CoreTweaksProxy</code> suffix added. This allows
+ *  seamless interoperation with mods like Mixin that do class name checks.</p>*/
 public class CachedTransformerProxyGenerator implements Opcodes {
     private static final boolean DEBUG = Boolean.parseBoolean(System.getProperty("coretweaks.debugCachedTransformerProxyGenerator", "false"));
     
