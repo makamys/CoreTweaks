@@ -254,7 +254,9 @@ public class Config {
     private static boolean firstLoad = true;
     
     public static void reload() {
-        Configuration config = new Configuration(new File(Launch.minecraftHome, "config/coretweaks.cfg"), CoreTweaks.VERSION);
+        File configFile = new File(Launch.minecraftHome, "config/coretweaks.cfg");
+        boolean configFileExisted = configFile.exists();
+        Configuration config = new Configuration(configFile, CoreTweaks.VERSION);
         
         config.load();
         configHelper.loadFields(config);
@@ -275,7 +277,7 @@ public class Config {
                 "Options for the lite caching class transformer. (only appliable if it's enabled)");
         
         String loadedVersion = config.getLoadedConfigVersion();
-        if(firstLoad) {
+        if(firstLoad && configFileExisted) {
             ConfigMigrator migrator = new ConfigMigrator(config);
             if((loadedVersion == null || (!loadedVersion.startsWith("@") && new ComparableVersion(config.getLoadedConfigVersion()).compareTo(new ComparableVersion("0.3")) < 0))) {
                 migrator.migrate_0_2_to_0_3();
