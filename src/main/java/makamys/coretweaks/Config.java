@@ -153,7 +153,7 @@ public class Config {
             com="Maximum size (in MB) of cache. If the cache grows larger than this, the least recently used entries will be discarded. Set to -1 for no limit.")
     public static int liteTransformerCacheMaxSizeMB;
     @ConfigBoolean(cat="Optimizations.transformerCache.lite", def=false,
-            com="Initialize later using a safer method, might improve compatibility at the cost of not caching early transformations.")
+            com="Initialize later using a safer method. Might improve compatibility at the cost of not caching early transformations.")
     public static boolean lateLiteTransformerCache;
     @ConfigBoolean(cat="Optimizations.transformerCache.lite", def=true,
             com="Only store the difference made by a transformation rather than the entire result.\nGreatly reduces cache size (by ~40-70%) but makes transformation slightly (~25%) slower in the cached case and ~50-100% slower when the cache is first created.\nDisable this if you want to maximize speed at the cost of increased disk and memory usage.")
