@@ -13,6 +13,10 @@ import makamys.coretweaks.optimization.transformerproxy.TransformerProxyManager.
 import net.minecraft.launchwrapper.IClassTransformer;
 import net.minecraftforge.classloading.FluidIdTransformer;
 
+/** Speeds up wildcard transformers (transformers that try to transform every class unconditionally) by scanning
+ * classes for a string pattern and skipping the transformation if they don't contain the pattern the transformer
+ * would look for.
+ */
 public class ForgeFastWildcardTransformers implements ITransformerWrapperProvider {
     public static ForgeFastWildcardTransformers instance;
     
