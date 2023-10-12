@@ -25,11 +25,13 @@ import com.esotericsoftware.kryo.kryo5.unsafe.UnsafeOutput;
 import com.google.common.collect.Sets;
 import com.google.common.hash.Hashing;
 
+import cpw.mods.fml.repackage.com.nothome.delta.Delta;
 import makamys.coretweaks.Config;
 import makamys.coretweaks.CoreTweaks;
 import makamys.coretweaks.IModEventListener;
 import makamys.coretweaks.optimization.NonFunctionAlteringWrapper;
 import makamys.coretweaks.optimization.transformercache.lite.TransformerCache.TransformerData.CachedTransformation;
+import makamys.coretweaks.util.InMemoryGDiffPatcher;
 import makamys.coretweaks.util.Util;
 import makamys.coretweaks.util.WrappedAddListenableList;
 import makamys.coretweaks.util.WrappedAddListenableList.AdditionEvent;
@@ -51,6 +53,8 @@ public class TransformerCache implements IModEventListener, AdditionEventListene
     private List<IClassTransformer> myTransformers = new ArrayList<>();
     private Map<String, TransformerData> transformerMap = new HashMap<>();
     
+    private static byte[] lastClassData;
+    
     private static final byte MAGIC_0 = 0;
     private static final byte VERSION = 2;
     
@@ -59,6 +63,8 @@ public class TransformerCache implements IModEventListener, AdditionEventListene
     private static final File DAT_ERRORED = Util.childFile(CoreTweaks.CACHE_DIR, "classTransformerLite.cache.errored");
     private static final File TRANSFORMERCACHE_PROFILER_CSV = Util.childFile(CoreTweaks.OUT_DIR, "transformercache_profiler.csv");
     private Kryo kryo;
+    
+    private static final Delta delta = new Delta();
     
     private static final byte[] NULL_BYTE_ARRAY = new byte[0];
     
@@ -74,8 +80,9 @@ public class TransformerCache implements IModEventListener, AdditionEventListene
         
         transformersToCache = Sets.newHashSet(Config.transformersToCache);
         
-        // We get a ClassCircularityError if we don't add this
+        // We get a ClassCircularityError if we don't add these
         Launch.classLoader.addTransformerExclusion("makamys.coretweaks.optimization.transformercache.lite.TransformerCache");
+        Launch.classLoader.addTransformerExclusion("makamys.coretweaks.util.InMemoryGDiffPatcher");
         
         loadData();
         
@@ -274,7 +281,7 @@ public class TransformerCache implements IModEventListener, AdditionEventListene
             if(trans != null) {
                 if(nullSafeLength(basicClass) == trans.preLength && calculateHash(basicClass) == trans.preHash) {
                     trans.lastAccessed = now();
-                    return trans.postHash == trans.preHash ? toNullableByteArray(basicClass) : trans.newClass;
+                    return trans.postHash == trans.preHash ? toNullableByteArray(basicClass) : trans.getNewClass(basicClass);
                 }
             }
         }
@@ -294,16 +301,16 @@ public class TransformerCache implements IModEventListener, AdditionEventListene
     }
 
     public void prePutCached(String transName, String name, String transformedName, byte[] basicClass) {
-        TransformerData data = transformerMap.get(transName);
-        if(data == null) {
-            transformerMap.put(transName, data = new TransformerData(transName));
-        }
-        data.transformationMap.put(transformedName, new CachedTransformation(transformedName, calculateHash(basicClass), nullSafeLength(basicClass)));
+        lastClassData = basicClass == null ? null : Arrays.copyOf(basicClass, basicClass.length);
     }
     
     /** MUST be preceded with a call to prePutCached. */
     public void putCached(String transName, String name, String transformedName, byte[] result) {
-        transformerMap.get(transName).transformationMap.get(transformedName).putClass(result);
+        TransformerData data = transformerMap.get(transName);
+        if(data == null) {
+            transformerMap.put(transName, data = new TransformerData(transName));
+        }
+        data.transformationMap.put(transformedName, new CachedTransformation(transformedName, lastClassData, result));
     }
     
     public static int calculateHash(byte[] data) {
@@ -334,28 +341,50 @@ public class TransformerCache implements IModEventListener, AdditionEventListene
             String targetClassName;
             int preLength;
             int preHash;
+            int postLength;
             int postHash;
-            byte[] newClass;
+            byte[] diff;
             int lastAccessed;
             
             public CachedTransformation() {}
             
-            public CachedTransformation(String targetClassName, int preHash, int preLength) {
+            public CachedTransformation(String targetClassName, byte[] source, byte[] target) {
                 this.targetClassName = targetClassName;
-                this.preHash = preHash;
-                this.preLength = preLength;
+                this.preHash = calculateHash(source);
+                this.preLength = nullSafeLength(source);
+                this.postLength = nullSafeLength(target);
+                this.postHash = calculateHash(target);
+                if(preHash != postHash) {
+                    diff = generateDiff(source, target);
+                }
                 this.lastAccessed = now();
             }
             
-            public void putClass(byte[] result) {
-                postHash = calculateHash(result);
-                if(preHash != postHash) {
-                    newClass = result;
+            private static byte[] generateDiff(byte[] source, byte[] target) {
+                if(source == null) {
+                    return target;
+                }
+                
+                try {
+                    return delta.compute(source, target);
+                } catch(Exception e) {
+                    LOGGER.error("Failed to generate diff");
+                    e.printStackTrace();
+                    throw new RuntimeException(e);
                 }
             }
             
+            public byte[] getNewClass(byte[] source) {
+                if(source == null) {
+                    return diff;
+                }
+                byte[] newClass = new byte[postLength];
+                InMemoryGDiffPatcher.patch(source, diff, newClass);
+                return newClass;
+            }
+
             public int getEstimatedSize() {
-                return targetClassName.length() + 4 + 4 + 4 + (newClass != null ? newClass.length : 0) + 4;
+                return targetClassName.length() + 4 + 4 + 4 + (diff != null ? diff.length : 0) + 4;
             }
         }
     }
