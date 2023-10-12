@@ -297,7 +297,7 @@ public class TransformerCache implements IModEventListener, ITransformerWrapperP
     }
     
     public static int calculateHash(byte[] data) {
-        return calculateHash(data, data.length);
+        return calculateHash(data, nullSafeLength(data));
     }
     
     public static int calculateHash(byte[] data, int len) {
