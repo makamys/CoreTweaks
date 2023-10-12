@@ -29,6 +29,7 @@ import com.google.common.hash.Hashing;
 
 import cpw.mods.fml.repackage.com.nothome.delta.Delta;
 import cpw.mods.fml.repackage.com.nothome.delta.GDiffWriter;
+import lombok.EqualsAndHashCode;
 import makamys.coretweaks.Config;
 import makamys.coretweaks.CoreTweaks;
 import makamys.coretweaks.IModEventListener;
@@ -45,6 +46,7 @@ import net.minecraft.launchwrapper.Launch;
 /* Format:
  * int8 0
  * int8 version
+ * CacheMeta meta
  * Map<String, TransformerData> map
  */
 public class TransformerCache implements IModEventListener, ITransformerWrapperProvider {
@@ -53,6 +55,7 @@ public class TransformerCache implements IModEventListener, ITransformerWrapperP
     
     private List<CachedTransformerWrapper> myTransformers = new ArrayList<>();
     private Map<String, TransformerData> transformerMap = new HashMap<>();
+    private CacheMeta meta = new CacheMeta();
     
     private static byte[] lastClassData;
     private static int lastClassDataLength;
@@ -107,6 +110,7 @@ public class TransformerCache implements IModEventListener, ITransformerWrapperP
         long t0 = System.nanoTime();
         
         kryo = new Kryo();
+        kryo.register(TransformerCache.CacheMeta.class);
         kryo.register(HashMap.class);
         kryo.register(TransformerCache.TransformerData.class);
         kryo.register(TransformerCache.TransformerData.CachedTransformation.class);
@@ -122,8 +126,11 @@ public class TransformerCache implements IModEventListener, ITransformerWrapperP
                 byte magic0 = kryo.readObject(is, byte.class);
                 byte version = kryo.readObject(is, byte.class);
                 
+                CacheMeta storedMeta = kryo.readObject(is, CacheMeta.class);
                 if(magic0 != MAGIC_0 || version != VERSION) {
                     CoreTweaks.LOGGER.warn("Transformer cache is either a different version or corrupted, discarding.");
+                } else if(!storedMeta.equals(meta)) {
+                    CoreTweaks.LOGGER.warn("Transformer cache settings have changed, discarding.");
                 } else {
                     transformerMap = returnVerifiedTransformerMap(kryo.readObject(is, HashMap.class));
                 }
@@ -176,6 +183,7 @@ public class TransformerCache implements IModEventListener, ITransformerWrapperP
         try(Output output = new UnsafeOutput(new BufferedOutputStream(new FileOutputStream(DAT)))) {
             kryo.writeObject(output, MAGIC_0);
             kryo.writeObject(output, VERSION);
+            kryo.writeObject(output, meta);
             kryo.writeObject(output, transformerMap);
         }
     }
@@ -306,6 +314,11 @@ public class TransformerCache implements IModEventListener, ITransformerWrapperP
         return (int)(System.currentTimeMillis() / 1000 / 60);
     }
     
+    @EqualsAndHashCode
+    public static class CacheMeta {
+        boolean enableDiffs = Config.useDiffsInTransformerCache;
+    }
+    
     public static class TransformerData {
         String transformerClassName;
         Map<String, CachedTransformation> transformationMap = new HashMap<>();
@@ -340,7 +353,7 @@ public class TransformerCache implements IModEventListener, ITransformerWrapperP
             }
             
             private static byte[] generateDiff(byte[] source, int sourceLen, byte[] target) {
-                if(source == null) {
+                if(source == null || !TransformerCache.instance.meta.enableDiffs) {
                     return target;
                 }
                 
@@ -356,7 +369,7 @@ public class TransformerCache implements IModEventListener, ITransformerWrapperP
             }
             
             public byte[] getNewClass(byte[] source) {
-                if(source == null) {
+                if(source == null || !TransformerCache.instance.meta.enableDiffs) {
                     return diff;
                 }
                 byte[] newClass = new byte[postLength];
