@@ -8,9 +8,9 @@ import net.minecraft.launchwrapper.Launch;
 
 public class LibraryTransformationExcluder {
     public static void run() {
-        final int n = Config.excludeLibraryTransformationPackages.length;
+        final int n = Config.excludeLibraryTransformationPackages.get().length;
         LOGGER.info("Adding transformer exclusions for " + n + " library package" + PluralUtil.pluralSuffix(n));
-        for(String s : Config.excludeLibraryTransformationPackages) {
+        for(String s : Config.excludeLibraryTransformationPackages.get()) {
             LOGGER.debug("  Excluding " + s);
             Launch.classLoader.addTransformerExclusion(s);
         }

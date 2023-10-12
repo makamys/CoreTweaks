@@ -5,6 +5,7 @@ import static makamys.coretweaks.CoreTweaks.LOGGER;
 
 import java.io.File;
 import java.lang.reflect.Field;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -97,7 +98,7 @@ public class Config {
             "com.google.gson.", "joptsimple.", "io.netty.", "gnu.trove.", // vanilla+Forge
             "kotlin." // Forgelin
             }, com="Packages that should be added as class transformer exclusions.", resetOnLoad=true)
-    public static String[] excludeLibraryTransformationPackages;
+    public static StringList excludeLibraryTransformationPackages;
     @ConfigWrappedEnum(cat="Optimizations", def=TRUE, com="Makes Forge's wildcard class transformers (FluidIdTransformer, SideTransformer and TerminalTransformer) more efficient. Might break mods that interact with the transformer list.")
     public static FeatureSetting forgeFastWildcardTransformers;
             
@@ -148,7 +149,7 @@ public class Config {
     public static int verbosity;
     
     @ConfigStringList(cat="Optimizations.transformerCache.lite", def={"cpw.mods.fml.common.asm.transformers.DeobfuscationTransformer", "codechicken.core.asm.MCPDeobfuscationTransformer", "net.minecraftforge.classloading.FluidIdTransformer", "cpw.mods.fml.common.asm.transformers.SideTransformer", "cpw.mods.fml.common.asm.transformers.TerminalTransformer"}, com="Canonical class names of the transformers that should be cached.")
-    public static String[] transformersToCache;
+    public static StringList transformersToCache;
     @ConfigInt(cat="Optimizations.transformerCache.lite", def=128, min=-1, max=Integer.MAX_VALUE,
             com="Maximum size (in MB) of cache. If the cache grows larger than this, the least recently used entries will be discarded. Set to -1 for no limit.")
     public static int liteTransformerCacheMaxSizeMB;
@@ -226,6 +227,26 @@ public class Config {
                 return setting == o.setting;
             }
             return super.equals(obj);
+        }
+    }
+    
+    public static class StringList {
+        private String[] listRaw;
+        private String[] list;
+        
+        public StringList(String[] list) {
+            set(list);
+        }
+        
+        public String[] getRaw() {
+            return listRaw;
+        }
+        public String[] get() {
+            return list;
+        }
+        public void set(String[] list) {
+            listRaw = list;
+            this.list = Arrays.copyOfRange(list, list.length > 0 && list[0].equals(":resetOnLoad") ? 1 : 0, list.length);
         }
     }
     

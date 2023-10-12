@@ -85,7 +85,7 @@ public class ConfigMigrator {
         migrateInt("transformer_cache_full", "recentCacheSize", (x) -> recentCacheSize = x);
         migrateInt("transformer_cache_full", "verbosity", (x) -> verbosity = x);
         
-        migrateStringList("transformer_cache_lite", "transformersToCache", (x) -> transformersToCache = x);
+        migrateStringList("transformer_cache_lite", "transformersToCache", (x) -> transformersToCache = new StringList(x));
         
         migrateEnum("tweaks", "cloudHeightCheck", (x) -> {
             if(x != null) {

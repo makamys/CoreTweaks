@@ -13,6 +13,7 @@ import java.util.Map;
 import org.apache.commons.lang3.EnumUtils;
 import org.apache.logging.log4j.Logger;
 
+import makamys.coretweaks.Config.StringList;
 import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
@@ -176,9 +177,9 @@ public class AnnotationBasedConfigHelper {
                         config.getCategory(snakeifyCategory(configStringList.cat())).remove(field.getName());
                         config.getStringList(field.getName(), snakeifyCategory(configStringList.cat()), defaultVal, comment);
                     }
-                    strings = configStringList.def();
+                    strings = defaultVal;
                 }
-                newValue = strings;
+                newValue = new StringList(strings);
             } else if(configString != null) {
                 newValue = config.getString(field.getName(), snakeifyCategory(configString.cat()), configString.def(), configString.com());
             }
@@ -235,6 +236,8 @@ public class AnnotationBasedConfigHelper {
                                 catName += "." + field.getName();
                             }
                             serializableFieldValue = wrappedEnum.getValue();
+                        } else if(fieldValue instanceof StringList) {
+                            serializableFieldValue = ((StringList)fieldValue).getRaw();
                         }
                         String snakeifiedCatName = snakeifyCategory(catName);
                         if(config.getCategoryNames().contains(snakeifiedCatName)) {
