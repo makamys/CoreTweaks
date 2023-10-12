@@ -4,12 +4,15 @@ import static makamys.coretweaks.CoreTweaks.LOGGER;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -26,11 +29,13 @@ import com.google.common.collect.Sets;
 import com.google.common.hash.Hashing;
 
 import cpw.mods.fml.repackage.com.nothome.delta.Delta;
+import cpw.mods.fml.repackage.com.nothome.delta.GDiffWriter;
 import makamys.coretweaks.Config;
 import makamys.coretweaks.CoreTweaks;
 import makamys.coretweaks.IModEventListener;
 import makamys.coretweaks.optimization.NonFunctionAlteringWrapper;
 import makamys.coretweaks.optimization.transformercache.lite.TransformerCache.TransformerData.CachedTransformation;
+import makamys.coretweaks.util.FastByteBufferSeekableSource;
 import makamys.coretweaks.util.InMemoryGDiffPatcher;
 import makamys.coretweaks.util.Util;
 import makamys.coretweaks.util.WrappedAddListenableList;
@@ -54,6 +59,7 @@ public class TransformerCache implements IModEventListener, AdditionEventListene
     private Map<String, TransformerData> transformerMap = new HashMap<>();
     
     private static byte[] lastClassData;
+    private static int lastClassDataLength;
     
     private static final byte MAGIC_0 = 0;
     private static final byte VERSION = 2;
@@ -83,6 +89,7 @@ public class TransformerCache implements IModEventListener, AdditionEventListene
         // We get a ClassCircularityError if we don't add these
         Launch.classLoader.addTransformerExclusion("makamys.coretweaks.optimization.transformercache.lite.TransformerCache");
         Launch.classLoader.addTransformerExclusion("makamys.coretweaks.util.InMemoryGDiffPatcher");
+        Launch.classLoader.addTransformerExclusion("makamys.coretweaks.util.FastByteBufferSeekableSource");
         
         loadData();
         
@@ -301,24 +308,45 @@ public class TransformerCache implements IModEventListener, AdditionEventListene
     }
 
     public void prePutCached(String transName, String name, String transformedName, byte[] basicClass) {
-        lastClassData = basicClass == null ? null : Arrays.copyOf(basicClass, basicClass.length);
+        putLastClassData(basicClass);
     }
     
+    private void putLastClassData(byte[] data) {
+        if(data != null) {
+            if(lastClassData == null || lastClassData.length < data.length) {
+                int newSize = 1;
+                while(newSize < data.length) {
+                    newSize *= 2;
+                }
+                lastClassData = new byte[newSize];
+            }
+            System.arraycopy(data, 0, lastClassData, 0, data.length);
+            lastClassDataLength = data.length;
+        } else {
+            lastClassData = null;
+            lastClassDataLength = 0;
+        }
+    }
+
     /** MUST be preceded with a call to prePutCached. */
     public void putCached(String transName, String name, String transformedName, byte[] result) {
         TransformerData data = transformerMap.get(transName);
         if(data == null) {
             transformerMap.put(transName, data = new TransformerData(transName));
         }
-        data.transformationMap.put(transformedName, new CachedTransformation(transformedName, lastClassData, result));
+        data.transformationMap.put(transformedName, new CachedTransformation(transformedName, lastClassData, lastClassDataLength, result));
     }
     
     public static int calculateHash(byte[] data) {
+        return calculateHash(data, data.length);
+    }
+    
+    public static int calculateHash(byte[] data, int len) {
         if(data == memoizedHashData) {
             return memoizedHashValue;
         }
         memoizedHashData = data;
-        memoizedHashValue = data == null ? -1 : Hashing.adler32().hashBytes(data).asInt();
+        memoizedHashValue = data == null ? -1 : Hashing.adler32().hashBytes(data, 0, len).asInt();
         return memoizedHashValue;
     }
     
@@ -348,25 +376,27 @@ public class TransformerCache implements IModEventListener, AdditionEventListene
             
             public CachedTransformation() {}
             
-            public CachedTransformation(String targetClassName, byte[] source, byte[] target) {
+            public CachedTransformation(String targetClassName, byte[] source, int sourceLen, byte[] target) {
                 this.targetClassName = targetClassName;
-                this.preHash = calculateHash(source);
-                this.preLength = nullSafeLength(source);
+                this.preHash = calculateHash(source, sourceLen);
+                this.preLength = sourceLen;
                 this.postLength = nullSafeLength(target);
                 this.postHash = calculateHash(target);
                 if(preHash != postHash) {
-                    diff = generateDiff(source, target);
+                    diff = generateDiff(source, sourceLen, target);
                 }
                 this.lastAccessed = now();
             }
             
-            private static byte[] generateDiff(byte[] source, byte[] target) {
+            private static byte[] generateDiff(byte[] source, int sourceLen, byte[] target) {
                 if(source == null) {
                     return target;
                 }
                 
                 try {
-                    return delta.compute(source, target);
+                    ByteArrayOutputStream os = new ByteArrayOutputStream();
+                    delta.compute(new FastByteBufferSeekableSource(ByteBuffer.wrap(source, 0, sourceLen)), new ByteArrayInputStream(target), new GDiffWriter(os));
+                    return os.toByteArray();
                 } catch(Exception e) {
                     LOGGER.error("Failed to generate diff");
                     e.printStackTrace();
