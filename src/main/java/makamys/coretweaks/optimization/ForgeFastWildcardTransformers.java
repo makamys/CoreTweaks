@@ -1,14 +1,11 @@
 package makamys.coretweaks.optimization;
 
-import static makamys.coretweaks.CoreTweaks.LOGGER;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import com.google.common.primitives.Bytes;
 
 import cpw.mods.fml.common.asm.transformers.SideTransformer;
-import cpw.mods.fml.common.asm.transformers.TerminalTransformer;
 import makamys.coretweaks.optimization.transformerproxy.ITransformerWrapper;
 import makamys.coretweaks.optimization.transformerproxy.TransformerProxy;
 import makamys.coretweaks.optimization.transformerproxy.TransformerProxyManager;
@@ -21,7 +18,6 @@ public class ForgeFastWildcardTransformers implements ITransformerWrapperProvide
     
     public static final String FLUID_ID_TRANSFORMER_PATTERN = "fluidID";
     public static final String SIDE_TRANSFORMER_PATTERN = "cpw/mods/fml/relauncher/SideOnly";
-    public static final String[] TERMINAL_TRANSFORMER_PATTERNS = new String[]{"java/lang/System", "java/lang/Runtime"};
     
     public ForgeFastWildcardTransformers(){
         TransformerProxyManager.instance.addAdditionListener(this, true);
@@ -33,8 +29,6 @@ public class ForgeFastWildcardTransformers implements ITransformerWrapperProvide
             return new PatternConditionalTransformerWrapper(FLUID_ID_TRANSFORMER_PATTERN);
         } else if(transformer instanceof SideTransformer) {
             return new PatternConditionalTransformerWrapper(SIDE_TRANSFORMER_PATTERN);
-        } else if(transformer instanceof TerminalTransformer) {
-            return new PatternConditionalTransformerWrapper(TERMINAL_TRANSFORMER_PATTERNS);
         } else {
             return null;
         }

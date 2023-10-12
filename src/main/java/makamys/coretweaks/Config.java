@@ -99,7 +99,7 @@ public class Config {
             "kotlin." // Forgelin
             }, com="Packages that should be added as class transformer exclusions.", resetOnLoad=true)
     public static StringList excludeLibraryTransformationPackages;
-    @ConfigWrappedEnum(cat="Optimizations", def=TRUE, com="Makes Forge's wildcard class transformers (FluidIdTransformer, SideTransformer and TerminalTransformer) more efficient. Might break mods that interact with the transformer list.")
+    @ConfigWrappedEnum(cat="Optimizations", def=TRUE, com="Makes Forge's wildcard class transformers (FluidIdTransformer and SideTransformer) more efficient. Might break mods that interact with the transformer list.")
     public static FeatureSetting forgeFastWildcardTransformers;
             
     //@ConfigBoolean(cat="Diagnostics", def=TRUE, com="Enables the /coretweaks command, used to access various diagnostics. Invoke it in-game for additional information.")
