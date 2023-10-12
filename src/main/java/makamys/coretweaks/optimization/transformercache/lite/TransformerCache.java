@@ -11,7 +11,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -33,29 +32,26 @@ import cpw.mods.fml.repackage.com.nothome.delta.GDiffWriter;
 import makamys.coretweaks.Config;
 import makamys.coretweaks.CoreTweaks;
 import makamys.coretweaks.IModEventListener;
-import makamys.coretweaks.optimization.NonFunctionAlteringWrapper;
 import makamys.coretweaks.optimization.transformercache.lite.TransformerCache.TransformerData.CachedTransformation;
+import makamys.coretweaks.optimization.transformerproxy.ITransformerWrapper;
+import makamys.coretweaks.optimization.transformerproxy.TransformerProxyManager;
+import makamys.coretweaks.optimization.transformerproxy.TransformerProxyManager.ITransformerWrapperProvider;
 import makamys.coretweaks.util.FastByteBufferSeekableSource;
 import makamys.coretweaks.util.InMemoryGDiffPatcher;
 import makamys.coretweaks.util.Util;
-import makamys.coretweaks.util.WrappedAddListenableList;
-import makamys.coretweaks.util.WrappedAddListenableList.AdditionEvent;
-import makamys.coretweaks.util.WrappedAddListenableList.AdditionEventListener;
-import net.minecraft.launchwrapper.IClassNameTransformer;
 import net.minecraft.launchwrapper.IClassTransformer;
 import net.minecraft.launchwrapper.Launch;
-import net.minecraft.launchwrapper.LaunchClassLoader;
 
 /* Format:
  * int8 0
  * int8 version
  * Map<String, TransformerData> map
  */
-public class TransformerCache implements IModEventListener, AdditionEventListener<IClassTransformer> {
+public class TransformerCache implements IModEventListener, ITransformerWrapperProvider {
     
     public static TransformerCache instance = new TransformerCache();
     
-    private List<IClassTransformer> myTransformers = new ArrayList<>();
+    private List<CachedTransformerWrapper> myTransformers = new ArrayList<>();
     private Map<String, TransformerData> transformerMap = new HashMap<>();
     
     private static byte[] lastClassData;
@@ -93,63 +89,18 @@ public class TransformerCache implements IModEventListener, AdditionEventListene
         
         loadData();
         
-        hookClassLoader(late);
-    }
-
-    private void hookClassLoader(boolean late) {
-        try {
-            LaunchClassLoader lcl = (LaunchClassLoader)Launch.classLoader;
-            
-            Field transformersField = LaunchClassLoader.class.getDeclaredField("transformers");
-            transformersField.setAccessible(true);
-            List<IClassTransformer> transformers = (List<IClassTransformer>)transformersField.get(lcl);
-            if(!late) {
-                WrappedAddListenableList<IClassTransformer> wrappedTransformers = 
-                        new WrappedAddListenableList<IClassTransformer>(transformers);
-                wrappedTransformers.addListener(this);
-                
-                transformersField.set(lcl, wrappedTransformers);
-            } else {
-                for(int i = 0; i < transformers.size(); i++) {
-                    IClassTransformer proxy = createCachedProxy(transformers.get(i));
-                    if(proxy != null) {
-                        transformers.set(i, proxy);
-                    }
-                }
-            }
-        } catch(Exception e) {
-            e.printStackTrace();
-        }
+        TransformerProxyManager.instance.addAdditionListener(this, !late);
     }
     
     @Override
-    public void onAdd(AdditionEvent<IClassTransformer> event) {
-        IClassTransformer proxy = createCachedProxy(event.element);
-        if(proxy != null) {
-            event.element = proxy;
+    public ITransformerWrapper wrap(IClassTransformer transformer) {
+        if(transformersToCache.contains(transformer.getClass().getCanonicalName())) {
+            CachedTransformerWrapper proxy = new CachedTransformerWrapper(transformer);
+            myTransformers.add(proxy);
+            return new CachedTransformerWrapper(transformer);
+        } else {
+            return null;
         }
-    }
-    
-    private IClassTransformer createCachedProxy(IClassTransformer transformer) {
-        IClassTransformer realTransformer = transformer;
-        while(realTransformer instanceof NonFunctionAlteringWrapper<?>) {
-            realTransformer = ((NonFunctionAlteringWrapper<IClassTransformer>)realTransformer).getOriginal();
-        }
-        if(transformersToCache.contains(realTransformer.getClass().getCanonicalName())) {
-            LOGGER.info("Replacing " + realTransformer.getClass().getCanonicalName() + " with cached proxy");
-            
-            try {
-                IClassTransformer newTransformer = transformer instanceof IClassNameTransformer
-                        ? CachedNameTransformerProxy.of(transformer) : CachedTransformerProxy.of(transformer);
-    
-                myTransformers.add(newTransformer);
-                return newTransformer;
-            } catch(Exception e) {
-                LOGGER.error("Failed to create proxy class for " + realTransformer.getClass().getCanonicalName());
-                e.printStackTrace();
-            }
-        }
-        return null;
     }
 
     private void loadData() {
@@ -266,13 +217,13 @@ public class TransformerCache implements IModEventListener, AdditionEventListene
     private void saveProfilingResults() throws IOException {
         try(FileWriter fw = new FileWriter(TRANSFORMERCACHE_PROFILER_CSV)){
             fw.write("class,name,runs,misses\n");
-            for(IClassTransformer transformer : myTransformers) {
+            for(CachedTransformerWrapper transformer : myTransformers) {
                 String className = transformer.getClass().getCanonicalName();
                 String name = transformer.toString();
                 int runs = 0;
                 int misses = 0;
-                if(transformer instanceof CachedTransformerProxy) {
-                    CachedTransformerProxy proxy = (CachedTransformerProxy)transformer;
+                if(transformer instanceof CachedTransformerWrapper) {
+                    CachedTransformerWrapper proxy = (CachedTransformerWrapper)transformer;
                     runs = proxy.runs;
                     misses = proxy.misses;
                 }

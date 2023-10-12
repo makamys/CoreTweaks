@@ -2,7 +2,6 @@ package makamys.coretweaks.optimization;
 
 import static makamys.coretweaks.CoreTweaks.LOGGER;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,15 +9,14 @@ import com.google.common.primitives.Bytes;
 
 import cpw.mods.fml.common.asm.transformers.SideTransformer;
 import cpw.mods.fml.common.asm.transformers.TerminalTransformer;
-import makamys.coretweaks.util.WrappedAddListenableList;
-import makamys.coretweaks.util.WrappedAddListenableList.AdditionEvent;
-import makamys.coretweaks.util.WrappedAddListenableList.AdditionEventListener;
+import makamys.coretweaks.optimization.transformerproxy.ITransformerWrapper;
+import makamys.coretweaks.optimization.transformerproxy.TransformerProxy;
+import makamys.coretweaks.optimization.transformerproxy.TransformerProxyManager;
+import makamys.coretweaks.optimization.transformerproxy.TransformerProxyManager.ITransformerWrapperProvider;
 import net.minecraft.launchwrapper.IClassTransformer;
-import net.minecraft.launchwrapper.Launch;
-import net.minecraft.launchwrapper.LaunchClassLoader;
 import net.minecraftforge.classloading.FluidIdTransformer;
 
-public class ForgeFastWildcardTransformers implements AdditionEventListener<IClassTransformer> {
+public class ForgeFastWildcardTransformers implements ITransformerWrapperProvider {
     public static ForgeFastWildcardTransformers instance;
     
     public static final String FLUID_ID_TRANSFORMER_PATTERN = "fluidID";
@@ -26,53 +24,35 @@ public class ForgeFastWildcardTransformers implements AdditionEventListener<ICla
     public static final String[] TERMINAL_TRANSFORMER_PATTERNS = new String[]{"java/lang/System", "java/lang/Runtime"};
     
     public ForgeFastWildcardTransformers(){
-        try {
-            LaunchClassLoader lcl = (LaunchClassLoader)Launch.classLoader;
-            
-            Field transformersField = LaunchClassLoader.class.getDeclaredField("transformers");
-            transformersField.setAccessible(true);
-            List<IClassTransformer> transformers = (List<IClassTransformer>)transformersField.get(lcl);
-            
-            WrappedAddListenableList<IClassTransformer> wrappedTransformers = 
-                    new WrappedAddListenableList<IClassTransformer>(transformers);
-            
-            transformersField.set(lcl, wrappedTransformers);
-            
-            wrappedTransformers.addListener(this);
-        } catch(Exception e) {
-            e.printStackTrace();
-        }
+        TransformerProxyManager.instance.addAdditionListener(this, true);
     }
-
+    
     @Override
-    public void onAdd(AdditionEvent<IClassTransformer> event) {
-        if(event.element instanceof FluidIdTransformer) {
-            LOGGER.info("Replacing " + event.element.getClass().getName() + " with conditional proxy");
-            event.element = new PatternConditionalTransformer(event.element, FLUID_ID_TRANSFORMER_PATTERN);
-        } else if(event.element instanceof SideTransformer) {
-            LOGGER.info("Replacing " + event.element.getClass().getName() + " with conditional proxy");
-            event.element = new PatternConditionalTransformer(event.element, SIDE_TRANSFORMER_PATTERN);
-        } else if(event.element instanceof TerminalTransformer) {
-            LOGGER.info("Replacing " + event.element.getClass().getName() + " with conditional proxy");
-            event.element = new PatternConditionalTransformer(event.element, TERMINAL_TRANSFORMER_PATTERNS);
+    public ITransformerWrapper wrap(IClassTransformer transformer) {
+        if(transformer instanceof FluidIdTransformer) {
+            return new PatternConditionalTransformerWrapper(FLUID_ID_TRANSFORMER_PATTERN);
+        } else if(transformer instanceof SideTransformer) {
+            return new PatternConditionalTransformerWrapper(SIDE_TRANSFORMER_PATTERN);
+        } else if(transformer instanceof TerminalTransformer) {
+            return new PatternConditionalTransformerWrapper(TERMINAL_TRANSFORMER_PATTERNS);
+        } else {
+            return null;
         }
     }
     
-    public static class PatternConditionalTransformer implements IClassTransformer, NonFunctionAlteringWrapper<IClassTransformer> {
-        private final IClassTransformer original;
+    public static class PatternConditionalTransformerWrapper implements ITransformerWrapper {
         private final List<byte[]> patterns = new ArrayList<>();
         
-        public PatternConditionalTransformer(IClassTransformer original, String... patterns) {
-            this.original = original;
+        public PatternConditionalTransformerWrapper(String... patterns) {
             for(String pattern : patterns) {
                 this.patterns.add(pattern.getBytes());
             }
         }
         
         @Override
-        public byte[] transform(String name, String transformedName, byte[] basicClass) {
+        public byte[] wrapTransform(String name, String transformedName, byte[] basicClass, TransformerProxy proxy) {
             if(containsAnyPattern(basicClass)) {
-                return original.transform(name, transformedName, basicClass);
+                return proxy.invokeNextHandler(name, transformedName, basicClass);
             } else {
                 return basicClass;
             }
@@ -89,15 +69,5 @@ public class ForgeFastWildcardTransformers implements AdditionEventListener<ICla
             }
             return false;
         }
-        
-        public IClassTransformer getOriginal() {
-            return original;
-        }
-        
-        @Override
-        public String toString() {
-            return "PatternConditionalTransformer{" + original.getClass().getName() + "}";
-        }
     }
-
 }
