@@ -230,6 +230,7 @@ public class Config {
     }
     
     private static AnnotationBasedConfigHelper configHelper = new AnnotationBasedConfigHelper(Config.class, LOGGER);
+    private static boolean firstLoad = true;
     
     public static void reload() {
         Configuration config = new Configuration(new File(Launch.minecraftHome, "config/coretweaks.cfg"), CoreTweaks.VERSION);
@@ -253,13 +254,15 @@ public class Config {
                 "Options for the lite caching class transformer. (only appliable if it's enabled)");
         
         String loadedVersion = config.getLoadedConfigVersion();
-        if((loadedVersion == null || (!loadedVersion.startsWith("@") && new ComparableVersion(config.getLoadedConfigVersion()).compareTo(new ComparableVersion("0.3")) < 0))) {
-            new ConfigMigrator(config).migrate_0_2_to_0_3();
-            configHelper.saveFields(config);
-        }
-        if(loadedVersion != null && (!loadedVersion.startsWith("@") && new ComparableVersion(config.getLoadedConfigVersion()).compareTo(new ComparableVersion("0.3.1")) < 0)) {
-            new ConfigMigrator(config).migrate_0_3_0_to_0_3_1();
-            configHelper.saveFields(config);
+        if(firstLoad) {
+            if((loadedVersion == null || (!loadedVersion.startsWith("@") && new ComparableVersion(config.getLoadedConfigVersion()).compareTo(new ComparableVersion("0.3")) < 0))) {
+                new ConfigMigrator(config).migrate_0_2_to_0_3();
+                configHelper.saveFields(config);
+            }
+            if(loadedVersion != null && (!loadedVersion.startsWith("@") && new ComparableVersion(config.getLoadedConfigVersion()).compareTo(new ComparableVersion("0.3.1")) < 0)) {
+                new ConfigMigrator(config).migrate_0_3_0_to_0_3_1();
+                configHelper.saveFields(config);
+            }
         }
         
         sortCategories(config);
@@ -269,6 +272,8 @@ public class Config {
         if(config.hasChanged() || !config.getDefinedConfigVersion().equals(config.getLoadedConfigVersion())) {
             config.save();
         }
+        
+        firstLoad = false;
     }
     
     /** Forge keeps categories in the order they were added. I want them to be sorted alphabetically,
