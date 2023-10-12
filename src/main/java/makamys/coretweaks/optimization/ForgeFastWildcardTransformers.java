@@ -8,7 +8,8 @@ import java.util.List;
 
 import com.google.common.primitives.Bytes;
 
-import makamys.coretweaks.optimization.transformercache.full.WrappedTransformerList;
+import cpw.mods.fml.common.asm.transformers.SideTransformer;
+import cpw.mods.fml.common.asm.transformers.TerminalTransformer;
 import makamys.coretweaks.util.WrappedAddListenableList;
 import makamys.coretweaks.util.WrappedAddListenableList.AdditionEvent;
 import makamys.coretweaks.util.WrappedAddListenableList.AdditionEventListener;
@@ -21,6 +22,8 @@ public class ForgeFastWildcardTransformers implements AdditionEventListener<ICla
     public static ForgeFastWildcardTransformers instance;
     
     public static final String FLUID_ID_TRANSFORMER_PATTERN = "fluidID";
+    public static final String SIDE_TRANSFORMER_PATTERN = "cpw/mods/fml/relauncher/SideOnly";
+    public static final String[] TERMINAL_TRANSFORMER_PATTERNS = new String[]{"java/lang/System", "java/lang/Runtime"};
     
     public ForgeFastWildcardTransformers(){
         try {
@@ -46,6 +49,12 @@ public class ForgeFastWildcardTransformers implements AdditionEventListener<ICla
         if(event.element instanceof FluidIdTransformer) {
             LOGGER.info("Replacing " + event.element.getClass().getName() + " with conditional proxy");
             event.element = new PatternConditionalTransformer(event.element, FLUID_ID_TRANSFORMER_PATTERN);
+        } else if(event.element instanceof SideTransformer) {
+            LOGGER.info("Replacing " + event.element.getClass().getName() + " with conditional proxy");
+            event.element = new PatternConditionalTransformer(event.element, SIDE_TRANSFORMER_PATTERN);
+        } else if(event.element instanceof TerminalTransformer) {
+            LOGGER.info("Replacing " + event.element.getClass().getName() + " with conditional proxy");
+            event.element = new PatternConditionalTransformer(event.element, TERMINAL_TRANSFORMER_PATTERNS);
         }
     }
     
@@ -83,6 +92,11 @@ public class ForgeFastWildcardTransformers implements AdditionEventListener<ICla
         
         public IClassTransformer getOriginal() {
             return original;
+        }
+        
+        @Override
+        public String toString() {
+            return "PatternConditionalTransformer{" + original.getClass().getName() + "}";
         }
     }
 
