@@ -255,14 +255,16 @@ public class Config {
         
         String loadedVersion = config.getLoadedConfigVersion();
         if(firstLoad) {
+            ConfigMigrator migrator = new ConfigMigrator(config);
             if((loadedVersion == null || (!loadedVersion.startsWith("@") && new ComparableVersion(config.getLoadedConfigVersion()).compareTo(new ComparableVersion("0.3")) < 0))) {
-                new ConfigMigrator(config).migrate_0_2_to_0_3();
+                migrator.migrate_0_2_to_0_3();
                 configHelper.saveFields(config);
             }
             if(loadedVersion != null && (!loadedVersion.startsWith("@") && new ComparableVersion(config.getLoadedConfigVersion()).compareTo(new ComparableVersion("0.3.1")) < 0)) {
-                new ConfigMigrator(config).migrate_0_3_0_to_0_3_1();
+                migrator.migrate_0_3_0_to_0_3_1(new ComparableVersion(config.getDefinedConfigVersion()).compareTo(new ComparableVersion("0.3.1")) >= 0);
                 configHelper.saveFields(config);
             }
+            migrator.writeWarnings();
         }
         
         sortCategories(config);

@@ -3,6 +3,11 @@ package makamys.coretweaks;
 import static makamys.coretweaks.Config.*;
 import static makamys.coretweaks.CoreTweaks.LOGGER;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Consumer;
 
 import org.apache.commons.lang3.EnumUtils;
@@ -19,9 +24,28 @@ import net.minecraftforge.common.config.Property.Type;
 public class ConfigMigrator {
     
     private Configuration config;
+    private List<String> warnings = new ArrayList<>();
     
     public ConfigMigrator(Configuration config) {
         this.config = config;
+    }
+    
+    public void writeWarnings() {
+        if(warnings.isEmpty()) return;
+        
+        File outFile = new File(config.getConfigFile().getParentFile(), config.getConfigFile().getName() + ".migration_log.txt");
+        boolean writeIntro = !outFile.exists();
+        try(FileWriter fw = new FileWriter(outFile, true)) {
+            if(writeIntro) {
+                fw.write("Warnings encountered while migrating the config are logged here.\nFeel free to delete this file once you are done looking at it.\n\n");
+            }
+            for(String warning : warnings) {
+                fw.write(warning + "\n");
+            }
+        } catch (IOException e) {
+            LOGGER.error("Failed to write migration log");
+            e.printStackTrace();
+        }
     }
     
     public void migrate_0_2_to_0_3() {
@@ -111,13 +135,26 @@ public class ConfigMigrator {
         }
     }
     
-    public void migrate_0_3_0_to_0_3_1() {
+    public void migrate_0_3_0_to_0_3_1(boolean newer) {
         LOGGER.info("Migrating config from 0.3 to 0.3.1");
         
         migrateRenamedFeatureSetting("optimizations.fast_folder_texture_pack", Config.fastFolderResourcePack);
         migrateRenamedFeatureSetting("optimizations.fast_default_texture_pack", Config.fastDefaultResourcePack);
         deleteIntIfDefault("tweaks.extend_sprint_time_limit", "sprintTimeLimit", 2147483647);
+        
+        if(newer) {
+            if(((Setting)Config.extendSprintTimeLimit.getValue()) == Setting.FALSE) {
+                warn("0.3.1", "extend_sprint_time_limit was changed to be enabled by default, but you have it set to the old default value of FALSE. You might wish to enable it.");
+            }
+        }
+        
         removeEmptyCategories();
+    }
+    
+    private void warn(String version, String message) {
+        String fullMessage = "Warning while migrating config to " + version + ": " + message;
+        LOGGER.warn(fullMessage);
+        warnings.add(fullMessage);
     }
     
     private void migrateRenamedFeatureSetting(String category, FeatureSetting setting) {
