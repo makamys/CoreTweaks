@@ -66,6 +66,15 @@ public class JarDiscovererCache implements IModEventListener {
         kryo.setInstantiatorStrategy(new DefaultInstantiatorStrategy(new StdInstantiatorStrategy()));
         kryo.register(Type.class, new TypeSerializer());
         kryo.register(ModAnnotation.class);
+        kryo.register(int[].class);
+        kryo.register(String[].class);
+        kryo.register(float[].class);
+        kryo.register(boolean[].class);
+        kryo.register(byte[].class);
+        kryo.register(char[].class);
+        kryo.register(short[].class);
+        kryo.register(long[].class);
+        kryo.register(double[].class);
         kryo.register(EnumHolder.class);
         kryo.register(java.util.HashMap.class);
         kryo.register(makamys.coretweaks.optimization.JarDiscovererCache.CachedModInfo.class);
