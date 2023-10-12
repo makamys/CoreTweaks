@@ -144,7 +144,7 @@ public class ConfigMigrator {
         
         if(newer) {
             if(((Setting)Config.extendSprintTimeLimit.getValue()) == Setting.FALSE) {
-                warn("0.3.1", "extend_sprint_time_limit was changed to be enabled by default, but you have it set to the old default value of FALSE. You might wish to enable it.");
+                warn("0.3.1", "The default value of extend_sprint_time_limit has changed to TRUE, but you have it set to the old default value of FALSE. You might wish to enable it.");
             }
         }
         
