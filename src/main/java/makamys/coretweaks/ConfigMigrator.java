@@ -146,6 +146,9 @@ public class ConfigMigrator {
             if(((Setting)Config.extendSprintTimeLimit.getValue()) == Setting.FALSE) {
                 warn("0.3.1", "The default value of extend_sprint_time_limit has changed to TRUE, but you have it set to the old default value of FALSE. You might wish to enable it.");
             }
+            if(((Setting)Config.fastDefaultResourcePack.getValue()) == Setting.FALSE) {
+                warn("0.3.1", "The default value of fast_folder_resource_pack has changed to TRUE, but you have it set to the old default value of FALSE. You might wish to enable it.");
+            }
         }
         
         removeEmptyCategories();
