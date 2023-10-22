@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 
 import com.google.common.collect.Lists;
 
-import makamys.coretweaks.optimization.NonFunctionAlteringWrapper;
+import makamys.coretweaks.api.IWrapper;
 import makamys.coretweaks.util.PluralUtil;
 import makamys.coretweaks.util.WrappedAddListenableList;
 import makamys.coretweaks.util.WrappedAddListenableList.AdditionEvent;
@@ -64,8 +64,8 @@ public class TransformerProxyManager implements AdditionEventListener<IClassTran
     
     private IClassTransformer createCachedProxy(IClassTransformer transformer, boolean onlyFirst) {
         IClassTransformer realTransformer = transformer;
-        while(realTransformer instanceof NonFunctionAlteringWrapper<?>) {
-            realTransformer = ((NonFunctionAlteringWrapper<IClassTransformer>)realTransformer).getOriginal();
+        while(realTransformer instanceof IWrapper<?>) {
+            realTransformer = ((IWrapper<IClassTransformer>)realTransformer).getOriginal();
         }
         List<ITransformerWrapper> wrappers = new ArrayList<>();
         for(ITransformerWrapperProvider l : (onlyFirst ? Collections.singletonList(listeners.get(0)) : listeners)) {

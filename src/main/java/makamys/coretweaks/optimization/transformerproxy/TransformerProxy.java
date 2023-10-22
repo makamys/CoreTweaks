@@ -3,11 +3,11 @@ package makamys.coretweaks.optimization.transformerproxy;
 import java.util.ArrayList;
 import java.util.List;
 
-import makamys.coretweaks.optimization.NonFunctionAlteringWrapper;
+import makamys.coretweaks.api.IWrapper;
 import net.minecraft.launchwrapper.IClassTransformer;
 
 /** <p>A proxy for an {@link IClassTransformer} that intercepts the {@link IClassTransformer#transform(String, String, byte[])} method and redirects it to a series of wrappers who may modify the method call as they wish.</p> */
-public class TransformerProxy implements IClassTransformer, NonFunctionAlteringWrapper<IClassTransformer> {
+public class TransformerProxy implements IClassTransformer, IWrapper<IClassTransformer> {
     protected IClassTransformer original;
     
     private List<ITransformerWrapper> wrappers = new ArrayList<>();
