@@ -22,7 +22,9 @@ public class CachedTransformerWrapper implements ITransformerWrapper {
             misses++;
             TransformerCache.instance.prePutCached(transformerName, name, transformedName, basicClass);
             result = proxy.invokeNextHandler(name, transformedName, basicClass);
-            TransformerCache.instance.putCached(transformerName, name, transformedName, result);
+            if(!TransformerCache.instance.putCached(transformerName, name, transformedName, result)) {
+                return basicClass;
+            }
         }
         return TransformerCache.fromNullableByteArray(result);
     }

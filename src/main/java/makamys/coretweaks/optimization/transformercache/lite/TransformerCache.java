@@ -12,6 +12,7 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.nio.channels.ClosedByInterruptException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -288,12 +289,17 @@ public class TransformerCache implements IModEventListener, ITransformerWrapperP
     }
 
     /** MUST be preceded with a call to prePutCached. */
-    public void putCached(String transName, String name, String transformedName, byte[] result) {
+    public boolean putCached(String transName, String name, String transformedName, byte[] result) {
         TransformerData data = transformerMap.get(transName);
         if(data == null) {
             transformerMap.put(transName, data = new TransformerData(transName));
         }
-        data.transformationMap.put(transformedName, new CachedTransformation(transformedName, lastClassData, lastClassDataLength, result));
+        CachedTransformation cached = new CachedTransformation(transformedName, lastClassData, lastClassDataLength, result);
+        if(cached.isValid()) {
+            data.transformationMap.put(transformedName, cached);
+            return true;
+        }
+        return false;
     }
     
     public static int calculateHash(byte[] data) {
@@ -330,6 +336,8 @@ public class TransformerCache implements IModEventListener, ITransformerWrapperP
         public TransformerData() {}
         
         public static class CachedTransformation {
+            private static final byte[] INVALID_RESULT = new byte[] {};
+            
             String targetClassName;
             int preLength;
             int preHash;
@@ -340,6 +348,10 @@ public class TransformerCache implements IModEventListener, ITransformerWrapperP
             
             public CachedTransformation() {}
             
+            public boolean isValid() {
+                return diff != INVALID_RESULT;
+            }
+
             public CachedTransformation(String targetClassName, byte[] source, int sourceLen, byte[] target) {
                 this.targetClassName = targetClassName;
                 this.preHash = calculateHash(source, sourceLen);
@@ -347,25 +359,34 @@ public class TransformerCache implements IModEventListener, ITransformerWrapperP
                 this.postLength = nullSafeLength(target);
                 this.postHash = calculateHash(target);
                 if(preHash != postHash) {
-                    diff = generateDiff(source, sourceLen, target);
+                    diff = generateDiff(source, sourceLen, target, targetClassName);
                 }
                 this.lastAccessed = now();
             }
             
-            private static byte[] generateDiff(byte[] source, int sourceLen, byte[] target) {
+            private static byte[] generateDiff(byte[] source, int sourceLen, byte[] target, String name) {
                 if(source == null || !TransformerCache.instance.meta.enableDiffs) {
                     return target;
                 }
                 
-                try {
-                    ByteArrayOutputStream os = new ByteArrayOutputStream();
-                    delta.compute(new FastByteBufferSeekableSource(ByteBuffer.wrap(source, 0, sourceLen)), new ByteArrayInputStream(target), new GDiffWriter(os));
-                    return os.toByteArray();
-                } catch(Exception e) {
-                    LOGGER.error("Failed to generate diff");
-                    e.printStackTrace();
-                    throw new RuntimeException(e);
+                for(int attemptsLeft = 4; attemptsLeft >= 0; attemptsLeft--) {
+                    try {
+                        ByteArrayOutputStream os = new ByteArrayOutputStream();
+                        delta.compute(new FastByteBufferSeekableSource(ByteBuffer.wrap(source, 0, sourceLen)), new ByteArrayInputStream(target), new GDiffWriter(os));
+                        return os.toByteArray();
+                    } catch(Exception e) {
+                        if(!(e instanceof ClosedByInterruptException)) {
+                            attemptsLeft = 0;
+                        }
+                        if(attemptsLeft > 0) {
+                            LOGGER.error("Failed to generate diff for class " + name + ", will try again " + attemptsLeft + " more times");
+                        } else {
+                            LOGGER.error("Failed to generate diff for class " + name + ". Please report this if it keeps happening!");
+                        }
+                        e.printStackTrace();
+                    }
                 }
+                return INVALID_RESULT;
             }
             
             public byte[] getNewClass(byte[] source) {
