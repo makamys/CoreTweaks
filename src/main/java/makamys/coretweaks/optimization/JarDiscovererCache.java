@@ -108,10 +108,12 @@ public class JarDiscovererCache implements IModEventListener {
                 cache.clear();
                 epoch = 0;
             }
+            long t1 = System.nanoTime();
+            LOGGER.debug("Loaded jar discoverer cache with " + cache.size() + " entries in " + (t1-t0) / 1_000_000_000.0 + "s");
+        } else {
+            long t1 = System.nanoTime();
+            LOGGER.debug("Created new jar discoverer cache in " + (t1-t0) / 1_000_000_000.0 + "s");
         }
-        
-        long t1 = System.nanoTime();
-        LOGGER.debug("Loaded jar discoverer cache in " + (t1-t0) / 1_000_000_000.0 + "s");
         
         hasLoaded = true;
     }

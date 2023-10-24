@@ -148,10 +148,16 @@ public class TransformerCache implements IModEventListener, ITransformerWrapperP
                 DAT.renameTo(DAT_ERRORED);
                 e.printStackTrace();
             }
+            long t1 = System.nanoTime();
+            LOGGER.debug("Loaded lite transformer cache with " + getSize() + " entries in " + ((t1-t0) / 1_000_000_000.0) + "s");
+        } else {
+            long t1 = System.nanoTime();
+            LOGGER.debug("Created new lite transformer cache in " + ((t1-t0) / 1_000_000_000.0) + "s");
         }
-        
-        long t1 = System.nanoTime();
-        LOGGER.debug("Loaded lite transformer cache in " + ((t1-t0) / 1_000_000_000.0) + "s");
+    }
+    
+    private int getSize() {
+        return transformerMap.values().stream().mapToInt(d -> d.transformationMap.size()).sum();
     }
     
     private static Map<String, TransformerData> returnVerifiedTransformerMap(Map<String, TransformerData> map) {
