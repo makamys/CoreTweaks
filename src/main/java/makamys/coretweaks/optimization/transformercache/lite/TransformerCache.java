@@ -1,6 +1,7 @@
 package makamys.coretweaks.optimization.transformercache.lite;
 
 import static makamys.coretweaks.CoreTweaks.LOGGER;
+import static makamys.coretweaks.CoreTweaks.logger;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -176,7 +177,7 @@ public class TransformerCache implements IModEventListener, ITransformerWrapperP
             saveTransformerCache();
             saveProfilingResults();
         } catch (IOException e) {
-            e.printStackTrace();
+            logger().error("Error in lite transformer cache shutdown hook", e);
         }
     }
     
@@ -185,7 +186,7 @@ public class TransformerCache implements IModEventListener, ITransformerWrapperP
             DAT.getParentFile().mkdirs();
             DAT.createNewFile();
         }
-        LOGGER.info("Saving transformer cache");
+        logger().info("Saving transformer cache");
         trimCache((long)Config.liteTransformerCacheMaxSizeMB * 1024l * 1024l);
         try(Output output = new UnsafeOutput(new BufferedOutputStream(new FileOutputStream(DAT)))) {
             kryo.writeObject(output, MAGIC_0);

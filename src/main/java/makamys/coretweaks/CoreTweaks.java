@@ -70,4 +70,10 @@ public class CoreTweaks {
         Launch.classLoader.addTransformerExclusion("com.esotericsoftware.kryo.kryo5.");
         Launch.classLoader.addTransformerExclusion("net.sf.cglib.");
     }
+    
+    /** Attempts to create a new logger every time it's called. This should be used in shutdown hooks, since the LOGGER
+     * reference becomes invalid. */
+    public static Logger logger() {
+        return LogManager.getLogger("coretweaks");
+    }
 }
