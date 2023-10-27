@@ -179,6 +179,9 @@ public class TransformerCache implements IModEventListener, ITransformerWrapperP
     @Override
     public void onShutdown() {
         try {
+            if(CachedTransformation.diffErrors > 0) {
+                logger().warn(CachedTransformation.diffErrors + " entries have errored. Please report this if it keeps happening!");
+            }
             saveTransformerCache();
             saveProfilingResults();
         } catch (IOException e) {
@@ -348,6 +351,8 @@ public class TransformerCache implements IModEventListener, ITransformerWrapperP
         public static class CachedTransformation {
             private static final byte[] INVALID_RESULT = new byte[] {};
             
+            static int diffErrors = 0;
+            
             String targetClassName;
             int preLength;
             int preHash;
@@ -379,23 +384,20 @@ public class TransformerCache implements IModEventListener, ITransformerWrapperP
                     return target;
                 }
                 
-                for(int attemptsLeft = 4; attemptsLeft >= 0; attemptsLeft--) {
-                    try {
-                        ByteArrayOutputStream os = new ByteArrayOutputStream();
-                        delta.compute(new FastByteBufferSeekableSource(ByteBuffer.wrap(source, 0, sourceLen)), new ByteArrayInputStream(target), new GDiffWriter(os));
-                        return os.toByteArray();
-                    } catch(Exception e) {
-                        if(!(e instanceof ClosedByInterruptException)) {
-                            attemptsLeft = 0;
-                        }
-                        if(attemptsLeft > 0) {
-                            LOGGER.error("Failed to generate diff for class " + name + ", will try again " + attemptsLeft + " more times");
-                        } else {
-                            LOGGER.error("Failed to generate diff for class " + name + ". Please report this if it keeps happening!");
-                        }
-                        e.printStackTrace();
-                    }
+                try {
+                    ByteArrayOutputStream os = new ByteArrayOutputStream();
+                    delta.compute(new FastByteBufferSeekableSource(ByteBuffer.wrap(source, 0, sourceLen)), new ByteArrayInputStream(target), new GDiffWriter(os));
+                    return os.toByteArray();
+                } catch(ClosedByInterruptException e) {
+                    // nothome delta library uses interruptible channels which throw an error if the thread gets interrupted.
+                    // No big deal, it's a race condition so it probably won't happen next time.
+                    LOGGER.debug("Failed to generate diff for class " + name + ", thread was interrupted.");
+                } catch(Exception e) {
+                    // Unknown exception. We want to know more about this, but it's not worth crashing over if it's a rare issue.
+                    LOGGER.error("Failed to generate diff for class " + name + ". Please report this if it keeps happening!");
+                    e.printStackTrace();
                 }
+                diffErrors++;
                 return INVALID_RESULT;
             }
             
