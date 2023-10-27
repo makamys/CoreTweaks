@@ -58,7 +58,7 @@ public class Config {
     public static CloudHeightCheck cloudHeightCheckMode;
     @ConfigWrappedEnum(cat="Bugfixes", def=TRUE, com="Fixes graphical glitches that happen after recovering from a game crash, caused by world renderer display lists getting deleted but never reallocated. From 1.12.")
     public static FeatureSetting fixDisplayListDelete;
-    @ConfigWrappedEnum(cat="Bugfixes", def=TRUE, com="Fixes heightmap calculation not including the top layer of 16x16x16 regions, causing lighting errors (MC-7508)")
+    @ConfigWrappedEnum(cat="Bugfixes", def=TRUE, com="Fixes heightmap calculation not including the top layer of 16x16x16 regions, causing lighting errors (MC-7508)\nCompatibility note: Not compatible with LUMINA, which ostensibly accomplishes the same thing (this feature will be disabled).")
     public static FeatureSetting fixHeightmapRange;
     @ConfigWrappedEnum(cat="Bugfixes", def=TRUE, com="Fixes an extra food item sometimes getting silently consumed (MC-849)")
     public static FeatureSetting fixDoubleEat;
@@ -361,6 +361,11 @@ public class Config {
         } else if(feature == tweakCloudHeightCheck) {
             if(Compat.isNotFinePresent()) {
                 LOGGER.info("Disabling cloud height check fix because NotFine is present.");
+                return true;
+            }
+        } else if(feature == fixHeightmapRange) {
+            if(Compat.isLuminaPresent()) {
+                LOGGER.info("Disabling heightmap range fix because LUMINA is present.");
                 return true;
             }
         }

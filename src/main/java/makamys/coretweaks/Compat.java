@@ -56,6 +56,10 @@ public class Compat {
         return Config.class.getResource("/jss/notfine/NotFine.class") != null;
     }
     
+    public static boolean isLuminaPresent() {
+        return Config.class.getResource("/com/falsepattern/lumina/api/LumiAPI.class") != null;
+    }
+    
     private static String getModVersion(String className) {
         String path = "/" + className.replace('.', '/') + ".class";
         try(InputStream is = Compat.class.getResourceAsStream(path)) {
