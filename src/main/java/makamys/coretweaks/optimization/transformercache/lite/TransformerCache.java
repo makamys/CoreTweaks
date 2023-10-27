@@ -18,8 +18,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import com.esotericsoftware.kryo.kryo5.Kryo;
 import com.esotericsoftware.kryo.kryo5.io.Input;
@@ -137,9 +139,12 @@ public class TransformerCache implements IModEventListener, ITransformerWrapperP
                     transformerMap = returnVerifiedTransformerMap(kryo.readObject(is, HashMap.class));
                 }
                 
-                for(TransformerData data : transformerMap.values()) {
-                    if(!Arrays.asList(Config.transformersToCache).contains(data.transformerClassName)) {
-                        CoreTweaks.LOGGER.info("Dropping " + data.transformerClassName + " from cache because we don't care about it anymore.");
+                Iterator<Entry<String, TransformerData>> it = transformerMap.entrySet().iterator();
+                while(it.hasNext()) {
+                    Entry<String, TransformerData> e = it.next();
+                    if(!Arrays.asList(Config.transformersToCache.get()).contains(e.getKey())) {
+                        CoreTweaks.LOGGER.info("Dropping " + e.getKey() + " from cache because we don't care about it anymore.");
+                        it.remove();
                     }
                 }
             } catch (IOException e) {
