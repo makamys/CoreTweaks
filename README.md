@@ -1,6 +1,6 @@
 # CoreTweaks
 
-A Minecraft 1.7.10 coremod that contains various bug fixes, tweaks and optimizations (mainly to startup time).
+A Minecraft 1.7.10 coremod that contains various vanilla(-adjacent) bug fixes, tweaks and optimizations (mainly to startup time).
 
 ## Features
 * [VanillaFix](https://www.curseforge.com/minecraft/mc-mods/vanillafix)-like crash handling
