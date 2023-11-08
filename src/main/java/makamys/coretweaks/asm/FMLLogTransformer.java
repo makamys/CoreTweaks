@@ -20,7 +20,7 @@ import static makamys.coretweaks.CoreTweaks.LOGGER;
  *    classes from a mod which contains a tweaker. Log4j tries to load all classes in the stack trace
  *    so it can display which jar they originate from. But in this case, classes from the mod are on the
  *    parent class loader's class path (since the mod contains a tweaker), while the Minecraft classes
- *    it references are not (only LaunchClassLoader remaps the names of these.) Thus a ClassNotFoundError
+ *    it references are not (only LaunchClassLoader remaps the names of these). Thus a ClassNotFoundError
  *    happens when trying to load these classes, which log4j does not catch.
  * <p>We use a transformer instead of a mixin because FML is a minefield for mixin errors.
  */

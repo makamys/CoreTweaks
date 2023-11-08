@@ -39,7 +39,7 @@ public class LoadLastWorldButton implements IModEventListener {
                 buttonWidth = originalWidth - (originalWidth / 3 * 2 + 2);
                 buttonHeight = newWorld.height;
             } else {
-                // Something is interfering (probably CustomMainMenu.) Let's just put it to the right of the single player button's original position.
+                // Something is interfering (probably CustomMainMenu). Let's just put it to the right of the single player button's original position.
                 int originalX = event.gui.width / 2 - 100;
                 int originalY = event.gui.height / 4 + 48;
                 int originalWidth = 200;

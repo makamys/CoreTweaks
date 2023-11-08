@@ -66,7 +66,7 @@ public class Config {
     public static FeatureSetting fixForgeChatLinkCrash;
     @ConfigWrappedEnum(cat="Bugfixes", def=TRUE, com="Backports most of https://github.com/MinecraftForge/MinecraftForge/pull/5160, a patch that fixes minecarts duplicating and vanishing.")
     public static FeatureSetting fixEntityTracking;
-    @ConfigWrappedEnum(cat="Bugfixes", def=TRUE, com="Fixes click sounds not playing in guis with scroll bars (e.g. the video settings screen.)")
+    @ConfigWrappedEnum(cat="Bugfixes", def=TRUE, com="Fixes click sounds not playing in guis with scroll bars (e.g. the video settings screen).")
     public static FeatureSetting guiClickSound;
     @ConfigWrappedEnum(cat="Bugfixes", def=TRUE, com="Fixes the NoClassDefFoundError that can occur when FML logs an exception originating from a coremod, losing the original exception in the process. This ostensibly happens due to a bug in the version of log4j that 1.7.10 ships with.")
     public static FeatureSetting forgeFixLoggerClassLoadingError;
@@ -119,7 +119,7 @@ public class Config {
     public static TransformerCache transformerCacheMode;
     @ConfigWrappedEnum(cat="Optimizations", def=TRUE, com="Cache the file paths contained in folder resource packs. Eliminates the immense slowdown they add to the loading of large modpacks.")
     public static FeatureSetting fastFolderResourcePack;
-    @ConfigWrappedEnum(cat="Optimizations", def=TRUE, com="Cache the folders contained in DefaultResourcePacks. Makes the biggest difference in dev environments and on slow file systems (looking at you Windows.)")
+    @ConfigWrappedEnum(cat="Optimizations", def=TRUE, com="Cache the folders contained in DefaultResourcePacks. Makes the biggest difference in dev environments and on slow file systems (looking at you Windows).")
     public static FeatureSetting fastDefaultResourcePack;
             
     //@ConfigInt(cat="Optimizations", def=0, min=0, max=Integer.MAX_VALUE, com="How many threads to use for loading textures? (0: auto (all cores))")
