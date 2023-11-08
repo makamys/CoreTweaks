@@ -108,7 +108,7 @@ public class PrefixedClasspathResourceAccelerator {
         
         if(DEBUG) {
             if((vanillaResult == null) != (result == null)) {
-                LOGGER.error("Mismatch detected in DefaultResourcePack optimization! (path=" + path + ", vanillaResult=" + vanillaResult + ", result=" + result + ") Please report the issue and disable the option (`fastDefaultTexturePack`) for now.");
+                LOGGER.error("Mismatch detected in DefaultResourcePack optimization! (path=" + path + ", vanillaResult=" + vanillaResult + ", result=" + result + ") Please report the issue and disable the option (`fast_default_resource_pack`) for now.");
             }
         }
         return result;

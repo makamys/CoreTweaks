@@ -67,7 +67,7 @@ public class PrefixedFolderResourceAccelerator {
         
         if(DEBUG) {
             if(vanillaResult != result) {
-                LOGGER.error("Mismatch detected in FolderResourcePack optimization! (path=" + file.getPath() + ", vanillaResult=" + vanillaResult + ", result=" + result + ") Please report the issue and disable the option (`fast_folder_texture_pack`) for now.");
+                LOGGER.error("Mismatch detected in FolderResourcePack optimization! (path=" + file.getPath() + ", vanillaResult=" + vanillaResult + ", result=" + result + ") Please report the issue and disable the option (`fast_folder_resource_pack`) for now.");
             }
         }
         
