@@ -40,13 +40,13 @@ public class FMLLogTransformer implements IClassTransformer {
      * public static void log(String targetLog, Level level, Throwable ex, String format, Object... data)
      * {
      * -   coreLog.log(targetLog, level, ex, format, data);
-     * +   FMLLogTransformer.redirectLog(targetLog, level, ex, format, data, coreLog);
+     * +   FMLLogTransformer.Hooks.redirectLog(targetLog, level, ex, format, data, coreLog);
      * }
      * 
      * public static void log(Level level, Throwable ex, String format, Object... data)
      * {
      * -   coreLog.log(level, ex, format, data);
-     * +   FMLLogTransformer.redirectLog(level, ex, format, data, coreLog);
+     * +   FMLLogTransformer.Hooks.redirectLog(level, ex, format, data, coreLog);
      * }
      * </pre>
      */
