@@ -95,12 +95,12 @@ public class PrefixedClasspathResourceAccelerator {
         // Only look for resource in jars which have the directory...
         InputStream vanillaResult = null;
         if(DEBUG) {
-            vanillaResult = DefaultResourcePack.class.getResourceAsStream("/" + path);
+            vanillaResult = DefaultResourcePack.class.getResourceAsStream(path);
         }
         
         InputStream result = null;
         try {
-            result = findResourceAsStream(path);
+            result = findResourceAsStream(path.substring(1));
         } catch(Exception e) {
             LOGGER.error("DefaultResourcePack accelerator failed to find resource " + path);
             e.printStackTrace();
