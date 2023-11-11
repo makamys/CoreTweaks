@@ -21,11 +21,13 @@ The mod comes in two flavors:
 ## Suggested mods
 For more 1.7.10 bugfix/performance/debug mods, refer to [this list](https://gist.github.com/makamys/7cb74cd71d93a4332d2891db2624e17c).
 
-## License
+## License & Credits
 
 This mod is licensed under the [MIT License](https://github.com/makamys/CoreTweaks/blob/master/LICENSE).
 
 It contains code based on minecraft-backport5160, a mod by Itaros which in turn was based on code from Forge and Paper contributors. See [CREDITS](CREDITS) for details.
+
+The Intel rendering fix was implemented based on [the research](https://www.minecraftforum.net/forums/mapping-and-modding-java-edition/minecraft-mods/1294926-themastercavers-world?page=13#c294) done by PheonixVX and TheMasterCaver.
 
 ## Contributing
 

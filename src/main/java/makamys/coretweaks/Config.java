@@ -70,7 +70,12 @@ public class Config {
     public static FeatureSetting guiClickSound;
     @ConfigWrappedEnum(cat="Bugfixes", def=TRUE, com="Fixes the NoClassDefFoundError that can occur when FML logs an exception originating from a coremod, losing the original exception in the process. This ostensibly happens due to a bug in the version of log4j that 1.7.10 ships with.")
     public static FeatureSetting forgeFixLoggerClassLoadingError;
-            
+    @ConfigWrappedEnum(cat="Bugfixes", def=TRUE, com="Fixes rendering bug that causes the entire screen to get filled with a single color when using Intel drivers. Thanks to PheonixVX and TheMasterCaver for identifying the reason.")
+    public static FeatureSetting fixIntelRendering;
+    @ConfigBoolean(cat="Bugfixes.fixIntelRendering", def=false,
+            com="Fix the rendering issue in an alternate, more intrusive way, which is how the fix was originally prescribed. Try enabling this if the issue still happens.")
+    public static boolean useAlternateIntelRenderingFix;
+    
     @ConfigWrappedEnum(cat="Optimizations", def=TRUE, com="Optimizes WorldServer#getPendingBlockUpdates. Speeds up chunk unloading.\nCompatibility note: Not compatible with OptiFine, which does the same thing (this feature will be disabled).")
     public static FeatureSetting optimizeGetPendingBlockUpdates;
     //@ConfigWrappedEnum(cat="Optimizations", def=FALSE, com="(WIP) Faster implementation of ChunkProviderClient#chunkMapping. From 1.16 (I don't know when exactly it was added). Might be a little buggy (it should only cause client-side errors though).")

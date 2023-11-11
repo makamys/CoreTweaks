@@ -1,3 +1,8 @@
+The Intel rendering fix was implemented based on the research done by PheonixVX
+and TheMasterCaver.
+
+------
+
 This project contains code based on
 https://github.com/Itaros/minecraft-backport5160,
 a mod created by Itaros, based on work by gabizou, aikar, liach, williewillus,

@@ -92,6 +92,9 @@ public class MixinConfigPlugin implements IMixinConfigPlugin {
             if(Config.guiClickSound.isActive()) {
                 mixins.add("bugfix.guiclicksound.MixinGuiListExtended");
             }
+            if(Config.fixIntelRendering.isActive()) {
+                mixins.add(!Config.useAlternateIntelRenderingFix ? "bugfix.intelcolor.MixinTessellator" : "bugfix.intelcolor.MixinOpenGlHelper");
+            }
             
             if(Config.forceUncapFramerate.isActive()) mixins.add("tweak.synctweak.MixinMinecraft");
             if(Config.optimizeGetPendingBlockUpdates.isActive()) mixins.add("optimization.getpendingblockupdates.MixinWorldServer");
