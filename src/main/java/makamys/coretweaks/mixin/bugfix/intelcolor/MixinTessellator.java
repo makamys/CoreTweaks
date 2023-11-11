@@ -17,7 +17,7 @@ import net.minecraft.client.renderer.Tessellator;
 // Note for testing this: the issue only happens if the -XX:HeapDumpPath=MojangTricksIntelDriversForPerformance_javaw.exe_minecraft.exe.heapdump JVM flag is set.
 @Mixin(Tessellator.class)
 abstract class MixinTessellator {
-    @Inject(method = "draw", at = @At(value = "INVOKE", target = "Lorg/lwjgl/opengl/GL11;glTexCoordPointer(IILjava/nio/FloatBuffer;)V", ordinal = 0))
+    @Inject(method = "draw", at = @At(value = "HEAD"))
     private void setClientActiveTextureToDefault(CallbackInfoReturnable<Integer> cir) {
         OpenGlHelper.setClientActiveTexture(OpenGlHelper.defaultTexUnit);
     }
