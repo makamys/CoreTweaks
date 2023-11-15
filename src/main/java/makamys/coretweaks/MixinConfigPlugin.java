@@ -151,6 +151,9 @@ public class MixinConfigPlugin implements IMixinConfigPlugin {
             if(Config.enhanceMapStorageErrors.isActive()) {
                 mixins.add("diagnostics.enhancemapstorageerrors.MixinMapStorage");
             }
+            if(Config.detectDataWatcherIdConflicts.isActive()) {
+                mixins.add("diagnostics.detectdatawatcherconflict.MixinDataWatcher");
+            }
         }
         return mixins;
     }

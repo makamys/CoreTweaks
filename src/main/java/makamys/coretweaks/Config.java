@@ -113,6 +113,10 @@ public class Config {
     public static FeatureSetting coreTweaksCommand = FeatureSetting.FALSE;
     @ConfigWrappedEnum(cat="Diagnostics", def=TRUE, com="Makes MapStorage's errors more informative.")
     public static FeatureSetting enhanceMapStorageErrors;
+    @ConfigWrappedEnum(cat="Diagnostics", def=TRUE, com="Emit warning when a mod registers a typed DataWatcher object in an already occupied ID slot (vanilla only warns in the typeless registration method).")
+    public static FeatureSetting detectDataWatcherIdConflicts;
+    @ConfigBoolean(cat="Diagnostics.detect_data_watcher_id_conflicts", def=false, com="Keep track of all registration stack traces, and print which ones conflict. Off by default because it adds some overhead to DataWatcher object registration.")
+    public static boolean detectDataWatcherIdConflictCulprit;
             
     //@ConfigBoolean(cat="Optimizations", def=FALSE, com="Use multi-threaded texture loading when stitching textures? Placebo.")
     public static FeatureSetting threadedTextureLoader = FeatureSetting.FALSE;
