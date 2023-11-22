@@ -1,6 +1,7 @@
 package makamys.coretweaks.optimization.transformerproxy;
 
 import java.lang.reflect.Method;
+import java.security.ProtectionDomain;
 
 import org.apache.commons.io.FileUtils;
 import org.objectweb.asm.AnnotationVisitor;
@@ -28,9 +29,9 @@ public class TransformerProxyGenerator implements Opcodes {
             FileUtils.writeByteArrayToFile(Util.childFile(CoreTweaks.OUT_DIR, "DUMP__" + newName + ".class"), result);
         }
         
-        Method defineClass = ClassLoader.class.getDeclaredMethod("defineClass", String.class, byte[].class, int.class, int.class);
+        Method defineClass = ClassLoader.class.getDeclaredMethod("defineClass", String.class, byte[].class, int.class, int.class, ProtectionDomain.class);
         defineClass.setAccessible(true);
-        defineClass.invoke(Launch.classLoader, newName, result, 0, result.length);
+        defineClass.invoke(Launch.classLoader, newName, result, 0, result.length, transClass.getProtectionDomain());
                 
         return Class.forName(newName);
     }
