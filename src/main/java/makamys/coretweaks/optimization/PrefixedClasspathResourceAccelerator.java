@@ -40,7 +40,11 @@ public class PrefixedClasspathResourceAccelerator {
         long t0 = System.nanoTime();
         classSources = new ArrayList<>();
         for(URL url : Launch.classLoader.getSources()) {
-            classSources.add(Index.fromURL(url));
+            try {
+                classSources.add(Index.fromURL(url));
+            } catch(Exception e) {
+                LOGGER.warn("Failed to index file " + url, e);
+            }
         }
         long t1 = System.nanoTime();
         LOGGER.debug("Indexed classpath resources in " + ((t1 - t0)/1_000_000_000.0) + "s");
