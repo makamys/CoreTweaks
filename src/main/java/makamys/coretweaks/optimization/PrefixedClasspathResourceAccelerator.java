@@ -20,6 +20,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import lombok.SneakyThrows;
+import makamys.coretweaks.util.DefaultLibraries;
 import net.minecraft.client.resources.DefaultResourcePack;
 import net.minecraft.launchwrapper.Launch;
 
@@ -33,6 +34,8 @@ public class PrefixedClasspathResourceAccelerator {
 
     private static final boolean DEBUG = Boolean.parseBoolean(System.getProperty("coretweaks.debugPrefixedClasspathResourceAccelerator", "false"));
     
+    private boolean skipLibraries = true;
+    
     private List<Index> classSources;
     
     private Map<String, List<Index>> directoryOwners = new HashMap<>();
@@ -41,10 +44,12 @@ public class PrefixedClasspathResourceAccelerator {
         long t0 = System.nanoTime();
         classSources = new ArrayList<>();
         for(URL url : Launch.classLoader.getSources().stream().distinct().collect(Collectors.toList())) {
-            try {
-                classSources.add(Index.fromURL(url));
-            } catch(Exception e) {
-                LOGGER.warn("Failed to index file " + url, e);
+            if(!skipLibraries || !DefaultLibraries.isDefaultLibrary(url)) {
+                try {
+                    classSources.add(Index.fromURL(url));
+                } catch(Exception e) {
+                    LOGGER.warn("Failed to index file " + url, e);
+                }
             }
         }
         long t1 = System.nanoTime();
