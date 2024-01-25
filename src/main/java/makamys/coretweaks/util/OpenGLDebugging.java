@@ -1,9 +1,15 @@
 package makamys.coretweaks.util;
 
-import static makamys.coretweaks.CoreTweaks.LOGGER;
-
+import java.io.File;
+import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Consumer;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 
@@ -13,6 +19,10 @@ import org.lwjgl.opengl.GL11;
  * Date: 9/02/14
  */
 public class OpenGLDebugging {
+    public static final Logger LOGGER = LogManager.getLogger("gldumper");
+    
+    private static final Consumer<String> LINE_LOGGER = (line) -> LOGGER.debug(line);
+    
     public class GLproperty {
         public GLproperty(int init_gLconstant, String init_name, String init_description, String init_category, String init_fetchCommand) {
             gLconstant = init_gLconstant;
@@ -75,29 +85,64 @@ public class OpenGLDebugging {
             new GLproperty(GL11.GL_GREEN_BITS, "GL_GREEN_BITS", "Number of bits per green component in color buffers", "capability", "glGetIntegerv()"), new GLproperty(GL11.GL_BLUE_BITS, "GL_BLUE_BITS", "Number of bits per blue component in color buffers", "capability", "glGetIntegerv()"), new GLproperty(GL11.GL_ALPHA_BITS, "GL_ALPHA_BITS", "Number of bits per alpha component in color buffers", "capability", "glGetIntegerv()"), new GLproperty(GL11.GL_INDEX_BITS, "GL_INDEX_BITS", "Number of bits per index in color buffers", "capability", "glGetIntegerv()"), new GLproperty(GL11.GL_DEPTH_BITS, "GL_DEPTH_BITS", "Number of depth-buffer bitplanes", "capability", "glGetIntegerv()"), new GLproperty(GL11.GL_STENCIL_BITS, "GL_STENCIL_BITS", "Number of stencil bitplanes", "capability", "glGetIntegerv()"), new GLproperty(GL11.GL_ACCUM_RED_BITS, "GL_ACCUM_RED_BITS", "Number of bits per red component in the accumulation buffer", "capability", "glGetIntegerv()"), new GLproperty(GL11.GL_ACCUM_GREEN_BITS, "GL_ACCUM_GREEN_BITS", "Number of bits per green component in the accumulation buffer", "capability", "glGetIntegerv()"),
             new GLproperty(GL11.GL_ACCUM_BLUE_BITS, "GL_ACCUM_BLUE_BITS", "Number of bits per blue component in the accumulation buffer", "capability", "glGetIntegerv()"), new GLproperty(GL11.GL_ACCUM_ALPHA_BITS, "GL_ACCUM_ALPHA_BITS", "Number of bits per alpha component in the accumulation buffer", "capability", "glGetIntegerv()"), new GLproperty(GL11.GL_LIST_BASE, "GL_LIST_BASE", "Setting of glListBase()", "list", "glGetIntegerv()"), new GLproperty(GL11.GL_LIST_INDEX, "GL_LIST_INDEX", "Number of display list under construction; 0 if none", "current", "glGetIntegerv()"), new GLproperty(GL11.GL_LIST_MODE, "GL_LIST_MODE", "Mode of display list under construction; undefined if none", "current", "glGetIntegerv()"), new GLproperty(GL11.GL_ATTRIB_STACK_DEPTH, "GL_ATTRIB_STACK_DEPTH", "Attribute stack pointer", "current", "glGetIntegerv()"), new GLproperty(GL11.GL_CLIENT_ATTRIB_STACK_DEPTH, "GL_CLIENT_ATTRIB_STACK_DEPTH", "Client attribute stack pointer", "current", "glGetIntegerv()"), new GLproperty(GL11.GL_NAME_STACK_DEPTH, "GL_NAME_STACK_DEPTH", "Name stack depth", "current", "glGetIntegerv()"),
             new GLproperty(GL11.GL_RENDER_MODE, "GL_RENDER_MODE", "glRenderMode() setting", "current", "glGetIntegerv()"), new GLproperty(GL11.GL_SELECTION_BUFFER_POINTER, "GL_SELECTION_BUFFER_POINTER", "Pointer to selection buffer", "select", "glGetPointerv()"), new GLproperty(GL11.GL_SELECTION_BUFFER_SIZE, "GL_SELECTION_BUFFER_SIZE", "Size of selection buffer", "select", "glGetIntegerv()"), new GLproperty(GL11.GL_FEEDBACK_BUFFER_POINTER, "GL_FEEDBACK_BUFFER_POINTER", "Pointer to feedback buffer", "feedback", "glGetPointerv()"), new GLproperty(GL11.GL_FEEDBACK_BUFFER_SIZE, "GL_FEEDBACK_BUFFER_SIZE", "Size of feedback buffer", "feedback", "glGetIntegerv()"), new GLproperty(GL11.GL_FEEDBACK_BUFFER_TYPE, "GL_FEEDBACK_BUFFER_TYPE", "Type of feedback buffer", "feedback", "glGetIntegerv()"), };
-
-    public static void dumpOpenGLState() {
-        for (int i = 0; i < instance.propertyList.length; ++i) {
-            LOGGER.debug(instance.propertyList[i].name + ":" + getPropertyAsString(i) + " (" + instance.propertyList[i].description + ")");
+    
+    public static void dumpToFile(Consumer<Consumer<String>> dumper, String fileName) {
+        List<String> lines = new ArrayList<>();
+        dumper.accept((line) -> lines.add(line));
+        try {
+            FileUtils.writeLines(new File(fileName), lines);
+        } catch(IOException e) {
+            LOGGER.error("Failed to write file");
+            e.printStackTrace();
         }
     }
-
+    
+    public static void dumpOpenGLStateToFile() {
+        dumpToFile((p) -> dumpOpenGLState(p), "gl_dump_state.txt");
+    }
+    
+    public static void dumpOpenGLState() {
+        dumpOpenGLState(LINE_LOGGER);
+    }
+    
+    public static void dumpOpenGLState(Consumer<String> printer) {
+        for (int i = 0; i < instance.propertyList.length; ++i) {
+            printer.accept(instance.propertyList[i].name + ":" + getPropertyAsString(i) + " (" + instance.propertyList[i].description + ")");
+        }
+    }
+    
+    public static void dumpAllIsEnabledToFile() {
+        dumpToFile((p) -> dumpAllIsEnabled(p), "gl_dump_enabled.txt");
+    }
+    
     public static void dumpAllIsEnabled() {
+        dumpAllIsEnabled(LINE_LOGGER);
+    }
+
+    public static void dumpAllIsEnabled(Consumer<String> printer) {
         for (int i = 0; i < instance.propertyList.length; ++i) {
             if (instance.propertyList[i].fetchCommand.equals("glIsEnabled()")) {
-                System.out.print(instance.propertyList[i].name + ":");
-                System.out.print(GL11.glIsEnabled(instance.propertyList[i].gLconstant));
-                LOGGER.info(" (" + instance.propertyList[i].description + ")");
+                printer.accept(instance.propertyList[i].name + ":");
+                printer.accept("" + GL11.glIsEnabled(instance.propertyList[i].gLconstant));
+                printer.accept(" (" + instance.propertyList[i].description + ")");
             }
         }
     }
-
+    
+    public static void dumpAllTypeToFile(String type) {
+        dumpToFile((p) -> dumpAllType(type, p), "gl_dump_type.txt");
+    }
+    
     public static void dumpAllType(String type) {
+        dumpAllType(type, LINE_LOGGER);
+    }
+
+    public static void dumpAllType(String type, Consumer<String> printer) {
         for (int i = 0; i < instance.propertyList.length; ++i) {
             if (instance.propertyList[i].category.equals(type)) {
-                System.out.print(instance.propertyList[i].name + ":");
-                LOGGER.info(getPropertyAsString(i));
-                LOGGER.info(" (" + instance.propertyList[i].description + ")");
+                printer.accept(instance.propertyList[i].name + ":");
+                printer.accept(getPropertyAsString(i));
+                printer.accept(" (" + instance.propertyList[i].description + ")");
             }
         }
     }
