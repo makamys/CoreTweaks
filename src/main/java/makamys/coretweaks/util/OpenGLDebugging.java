@@ -98,7 +98,7 @@ public class OpenGLDebugging {
     }
     
     public static void dumpOpenGLStateToFile() {
-        dumpToFile((p) -> dumpOpenGLState(p), "gl_dump_state.txt");
+        dumpToFile((p) -> dumpOpenGLState(p), "gl-dump-state.txt");
     }
     
     public static void dumpOpenGLState() {
@@ -112,7 +112,7 @@ public class OpenGLDebugging {
     }
     
     public static void dumpAllIsEnabledToFile() {
-        dumpToFile((p) -> dumpAllIsEnabled(p), "gl_dump_enabled.txt");
+        dumpToFile((p) -> dumpAllIsEnabled(p), "gl-dump-enabled.txt");
     }
     
     public static void dumpAllIsEnabled() {
@@ -130,7 +130,7 @@ public class OpenGLDebugging {
     }
     
     public static void dumpAllTypeToFile(String type) {
-        dumpToFile((p) -> dumpAllType(type, p), "gl_dump_type.txt");
+        dumpToFile((p) -> dumpAllType(type, p), "gl-dump-type-" + type + ".txt");
     }
     
     public static void dumpAllType(String type) {
