@@ -15,7 +15,7 @@ public class GLUtil {
     public static void resetState() {
         LOGGER.debug("Attempting to reset GL state.");
         LOGGER.debug("GL state before restore:");
-        OpenGLDebugging.dumpOpenGLState();
+        OpenGLDebugging.dumpState();
         
         glMatrixMode(GL_MODELVIEW);
         for(int i = 0; i < glGetInteger(GL_MODELVIEW_STACK_DEPTH) - 1; i++) {
@@ -32,7 +32,7 @@ public class GLUtil {
         // TODO restore other stuff too, like attrib stack
         
         LOGGER.debug("GL state after restore:");
-        OpenGLDebugging.dumpOpenGLState();
+        OpenGLDebugging.dumpState();
     }
     
 }

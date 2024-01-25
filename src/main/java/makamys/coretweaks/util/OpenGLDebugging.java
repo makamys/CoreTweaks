@@ -97,29 +97,29 @@ public class OpenGLDebugging {
         }
     }
     
-    public static void dumpOpenGLStateToFile() {
-        dumpToFile((p) -> dumpOpenGLState(p), "gl-dump-state.txt");
+    public static void dumpStateToFile() {
+        dumpToFile((p) -> dumpState(p), "gl-dump-state.txt");
     }
     
-    public static void dumpOpenGLState() {
-        dumpOpenGLState(LINE_LOGGER);
+    public static void dumpState() {
+        dumpState(LINE_LOGGER);
     }
     
-    public static void dumpOpenGLState(Consumer<String> printer) {
+    public static void dumpState(Consumer<String> printer) {
         for (int i = 0; i < instance.propertyList.length; ++i) {
             printer.accept(instance.propertyList[i].name + ":" + getPropertyAsString(i) + " (" + instance.propertyList[i].description + ")");
         }
     }
     
-    public static void dumpAllIsEnabledToFile() {
-        dumpToFile((p) -> dumpAllIsEnabled(p), "gl-dump-enabled.txt");
+    public static void dumpIsEnabledToFile() {
+        dumpToFile((p) -> dumpIsEnabled(p), "gl-dump-enabled.txt");
     }
     
-    public static void dumpAllIsEnabled() {
-        dumpAllIsEnabled(LINE_LOGGER);
+    public static void dumpIsEnabled() {
+        dumpIsEnabled(LINE_LOGGER);
     }
 
-    public static void dumpAllIsEnabled(Consumer<String> printer) {
+    public static void dumpIsEnabled(Consumer<String> printer) {
         for (int i = 0; i < instance.propertyList.length; ++i) {
             if (instance.propertyList[i].fetchCommand.equals("glIsEnabled()")) {
                 printer.accept(instance.propertyList[i].name + ":");
@@ -129,15 +129,15 @@ public class OpenGLDebugging {
         }
     }
     
-    public static void dumpAllTypeToFile(String type) {
-        dumpToFile((p) -> dumpAllType(type, p), "gl-dump-type-" + type + ".txt");
+    public static void dumpTypeToFile(String type) {
+        dumpToFile((p) -> dumpType(type, p), "gl-dump-type-" + type + ".txt");
     }
     
-    public static void dumpAllType(String type) {
-        dumpAllType(type, LINE_LOGGER);
+    public static void dumpType(String type) {
+        dumpType(type, LINE_LOGGER);
     }
 
-    public static void dumpAllType(String type, Consumer<String> printer) {
+    public static void dumpType(String type, Consumer<String> printer) {
         for (int i = 0; i < instance.propertyList.length; ++i) {
             if (instance.propertyList[i].category.equals(type)) {
                 printer.accept(instance.propertyList[i].name + ":");
