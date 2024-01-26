@@ -1,5 +1,10 @@
 package makamys.coretweaks.util;
 
+/** nothome's GDiffPatcher is implemented in a horribly inefficient way where it
+copies bytes one by one. This can be mitigated by providing a custom
+SeekableSource implementation (~53% faster), but reimplementing the algorithm
+from scratch using arrays is even better (~150% faster), which is what this
+class does. */
 public class InMemoryGDiffPatcher {
     private static final int BYTE = 1, UBYTE = 2, SHORT = 3, USHORT = 4, INT = 5, UINT = 6, LONG = 7, ULONG = 8;
     
