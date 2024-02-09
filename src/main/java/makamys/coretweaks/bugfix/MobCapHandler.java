@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EnumCreatureType;
@@ -13,21 +14,24 @@ import static makamys.coretweaks.CoreTweaks.LOGGER;
 
 public class MobCapHandler {
 
-    private static Map<Class<? extends Entity>, EnumCreatureType> creatureTypeLookup = new HashMap<>();
+    private static Map<Class<? extends Entity>, Optional<EnumCreatureType>> creatureTypeLookup = new HashMap<>();
     
     public static boolean isCreatureType(Entity entity, EnumCreatureType type) {
         Class<? extends Entity> cls = entity.getClass();
-        EnumCreatureType spawnType = creatureTypeLookup.get(cls);
-        if(spawnType == null) {
-            spawnType = computeSpawnType(entity);
-            creatureTypeLookup.put(cls, spawnType);
+        Optional<EnumCreatureType> spawnTypeOpt = creatureTypeLookup.get(cls);
+        if(spawnTypeOpt == null) {
+            EnumCreatureType spawnType = computeSpawnType(entity);
+            spawnTypeOpt = Optional.ofNullable(spawnType);
+            creatureTypeLookup.put(cls, spawnTypeOpt);
             
             List<EnumCreatureType> vanillaTypes = computeVanillaCreatureTypes(entity);
-            if(vanillaTypes.size() != 1 || vanillaTypes.get(0) != spawnType) {
+            if(vanillaTypes.size() > 1
+                    || (vanillaTypes.size() == 1 && vanillaTypes.get(0) != spawnType)
+                    || (vanillaTypes.isEmpty() && spawnType != null)) {
                 LOGGER.debug("Changed creature type of " + entity.getClass().getName() + " from " + vanillaTypes + " to " + spawnType);
             }
         }
-        return spawnType == type;
+        return spawnTypeOpt.orElse(null) == type;
     }
 
     // We could also hook EntityRegistry#addSpawn but this feels safer
@@ -48,19 +52,25 @@ public class MobCapHandler {
             }
         }
         
-        EnumCreatureType type = EnumCreatureType.values()[maxIndex(counts)];
+        int candidateCount = countNonZero(counts);
         
-        if(countNonZero(counts) != 1) {
-            List<EnumCreatureType> types = new ArrayList<>();
-            for(int i = 0; i < counts.length; i++) {
-                if(counts[i] != 0) {
-                    types.add(EnumCreatureType.values()[i]);
+        if(candidateCount == 0) {
+            return null;
+        } else {
+            EnumCreatureType type = EnumCreatureType.values()[maxIndex(counts)];
+            
+            if(candidateCount != 1) {
+                List<EnumCreatureType> types = new ArrayList<>();
+                for(int i = 0; i < counts.length; i++) {
+                    if(counts[i] != 0) {
+                        types.add(EnumCreatureType.values()[i]);
+                    }
                 }
+                LOGGER.debug("Entity " + entity + " has multiple spawn types registered: " + types + ". Choosing " + type);
             }
-            LOGGER.debug("Entity " + entity + " has multiple spawn types registered: " + types + ". Choosing " + type);
+            
+            return type;
         }
-        
-        return type;
     }
     
     private static List<EnumCreatureType> computeVanillaCreatureTypes(Entity entity) {
