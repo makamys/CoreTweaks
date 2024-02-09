@@ -75,6 +75,8 @@ public class Config {
     @ConfigBoolean(cat="Bugfixes.fixIntelRendering", def=false,
             com="Fix the rendering issue in an alternate, more intrusive way, which is how the fix was originally prescribed. Try enabling this if the issue still happens.")
     public static boolean useAlternateIntelRenderingFix;
+    @ConfigWrappedEnum(cat="Bugfixes", def=FALSE, com="Use the spawn type of mobs to determine which mob cap they should count towards, rather than their class. Fixes aquatic mobs spawning endlessly with certain mods.")
+    public static FeatureSetting useSpawnTypeForMobCap;
     
     @ConfigWrappedEnum(cat="Optimizations", def=TRUE, com="Optimizes WorldServer#getPendingBlockUpdates. Speeds up chunk unloading.\nCompatibility note: Not compatible with OptiFine, which does the same thing (this feature will be disabled).")
     public static FeatureSetting optimizeGetPendingBlockUpdates;
