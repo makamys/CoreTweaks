@@ -23,7 +23,10 @@ public class MobCapHandler {
             List<EnumCreatureType> vanillaTypes = computeVanillaCreatureTypes(entity);
             EnumCreatureType spawnType;
             
-            if(vanillaTypes.isEmpty()) {
+            if(entity.getClass().getName().startsWith("net.minecraft.")) {
+                // Leave vanilla mobs alone
+                spawnType = vanillaTypes.isEmpty() ? null : vanillaTypes.get(0);
+            } else if(vanillaTypes.isEmpty()) {
                 // e.g. imc.entities.EntityWildSheep replaces vanilla sheep but doesn't spawn normally
                 LOGGER.debug("Creature " + entity.getClass().getName() + " has no type according to vanilla logic, leaving type as default: " + vanillaTypes);
                 spawnType = null;
