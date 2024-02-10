@@ -20,14 +20,26 @@ public class MobCapHandler {
         Class<? extends Entity> cls = entity.getClass();
         Optional<EnumCreatureType> spawnTypeOpt = creatureTypeLookup.get(cls);
         if(spawnTypeOpt == null) {
-            EnumCreatureType spawnType = computeSpawnType(entity);
+            List<EnumCreatureType> vanillaTypes = computeVanillaCreatureTypes(entity);
+            EnumCreatureType spawnType;
+            
+            if(vanillaTypes.isEmpty()) {
+                // e.g. imc.entities.EntityWildSheep replaces vanilla sheep but doesn't spawn normally
+                LOGGER.debug("Creature " + entity.getClass().getName() + " has no type according to vanilla logic, leaving type as default: " + vanillaTypes);
+                spawnType = null;
+            } else {
+                spawnType = computeSpawnType(entity);
+                if(spawnType == null) {
+                    // e.g. Reika.ChromatiCraft.Entity.EntityBallLightning has no type, and uses custom logic for despawning
+                    LOGGER.debug("Creature " + entity.getClass().getName() + " is not in the biome spawn registry, leaving type as default: " + vanillaTypes);
+                    spawnType = vanillaTypes.get(0);
+                }
+            }
             spawnTypeOpt = Optional.ofNullable(spawnType);
             creatureTypeLookup.put(cls, spawnTypeOpt);
             
-            List<EnumCreatureType> vanillaTypes = computeVanillaCreatureTypes(entity);
             if(vanillaTypes.size() > 1
-                    || (vanillaTypes.size() == 1 && vanillaTypes.get(0) != spawnType)
-                    || (vanillaTypes.isEmpty() && spawnType != null)) {
+                    || (vanillaTypes.size() == 1 && vanillaTypes.get(0) != spawnType)) {
                 LOGGER.debug("Changed creature type of " + entity.getClass().getName() + " from " + vanillaTypes + " to " + spawnType);
             }
         }
