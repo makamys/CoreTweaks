@@ -68,7 +68,7 @@ public class MobCapHandler {
                         types.add(EnumCreatureType.values()[i]);
                     }
                 }
-                LOGGER.debug("Entity " + entity + " has multiple spawn types registered: " + types + ". Choosing " + type);
+                LOGGER.debug("Entity " + entity.getClass().getName() + " has multiple spawn types registered: " + types + ". Choosing " + type);
             }
             
             return type;
