@@ -41,11 +41,13 @@ public class MobCapHandler {
         for(BiomeGenBase biome : BiomeGenBase.getBiomeGenArray()) {
             if(biome != null) {
                 for(EnumCreatureType type : EnumCreatureType.values()) {
-                    ListLoop:
-                    for(BiomeGenBase.SpawnListEntry entry : (List<BiomeGenBase.SpawnListEntry>)biome.getSpawnableList(type)) {
-                        if(entry.entityClass == entity.getClass()) {
-                            counts[type.ordinal()]++;
-                            break ListLoop;
+                    List<BiomeGenBase.SpawnListEntry> spawnableList = biome.getSpawnableList(type);
+                    if(spawnableList != null) {
+                        for(BiomeGenBase.SpawnListEntry entry : spawnableList) {
+                            if(entry.entityClass == entity.getClass()) {
+                                counts[type.ordinal()]++;
+                                break;
+                            }
                         }
                     }
                 }
@@ -72,7 +74,7 @@ public class MobCapHandler {
             return type;
         }
     }
-    
+
     private static List<EnumCreatureType> computeVanillaCreatureTypes(Entity entity) {
         List<EnumCreatureType> types = new ArrayList<>();
         for(EnumCreatureType type : EnumCreatureType.values()) {
